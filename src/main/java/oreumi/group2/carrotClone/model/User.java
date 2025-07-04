@@ -49,13 +49,13 @@ public class User {
     @Column(nullable = false)
     private UserStatus status;
 
-    @Column
+    @Column(name = "neighborhood_verified")
     private boolean neighborhoodVerified;
 
-    @Column(length = 100)
+    @Column(name = "neighborhood_name", length = 100)
     private String neighborhoodName;
 
-    @Column
+    @Column(name = "neighborhood_verified_at")
     private LocalDateTime neighborhoodVerifiedAt;
 
     @Enumerated(EnumType.STRING)
@@ -73,9 +73,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes = new ArrayList<>(); /* like */
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<ChatRoom> chatRooms = new ArrayList<>();
-
-    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChatMessage> setMessages = new ArrayList<>();
 }
