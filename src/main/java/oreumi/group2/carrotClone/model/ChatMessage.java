@@ -17,7 +17,7 @@ public class ChatMessage {
     private Long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "chat_room_id", nullable = false)
+    @JoinColumn(name = "chatRoom_id", nullable = false)
     private ChatRoom chatRoom;
 
     @ManyToOne(optional = false)
