@@ -31,6 +31,6 @@ public class ChatRoom {
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatMessage> messages = new ArrayList<>();
 
-    @Column(name = "ischatbot", nullable = false)
+    @Column(name = "is_chatbot", nullable = false)
     private boolean isChatBot;
 }
