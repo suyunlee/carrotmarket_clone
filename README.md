@@ -341,23 +341,21 @@ com.projectname
 
 ## 📌 URL 명세표 - 중고거래 프로젝트
 
-| 기능 구분       | HTTP 메서드 | URL                         | 설명                         |
-|----------------|-------------|------------------------------|------------------------------|
-| 🔐 회원가입     | GET         | /users/signup               | 회원가입 폼 페이지           |
-|                | POST        | /users                      | 회원 등록 처리               |
-| 🔐 로그인       | GET         | /login                      | 로그인 페이지                 |
-|                | POST        | /login                      | 로그인 요청                   |
-| 🧑 마이페이지   | GET         | /users/me                   | 내 프로필 정보 보기           |
-| 📦 게시글 목록  | GET         | /posts                      | 전체 게시글 목록              |
-| 📦 게시글 등록  | GET         | /posts/new                  | 게시글 작성 폼               |
-|                | POST        | /posts                      | 게시글 등록 처리             |
-| 📄 게시글 상세  | GET         | /posts/{id}                 | 특정 게시글 상세 보기         |
-| ✏ 게시글 수정  | GET         | /posts/{id}/edit            | 게시글 수정 폼               |
-|                | PUT         | /posts/{id}                 | 게시글 수정 처리             |
-| ❌ 게시글 삭제  | DELETE      | /posts/{id}                 | 게시글 삭제 처리             |
-| ❤️ 좋아요       | POST        | /posts/{id}/like            | 게시글 좋아요 추가            |
-|                | DELETE      | /posts/{id}/like            | 좋아요 취소                  |
-| 💬 댓글 등록    | POST        | /posts/{id}/comments        | 게시글에 댓글 작성            |
-| 💬 댓글 삭제    | DELETE      | /comments/{commentId}       | 댓글 삭제                    |
-| 💬 댓글 목록    | GET         | /posts/{id}/comments        | 게시글 댓글 목록 조회         |
-| 💬 채팅방 입장  | GET         | /chat/{roomId}              | 채팅방 페이지 진입            |
+| 기능 구분      | HTTP 메서드 | URL                 | 설명           |
+|------------|----------|---------------------|--------------|
+| 🔐 회원가입    | GET      | /users/signup       | 회원가입 폼 페이지   |
+|            | POST     | /users              | 회원 등록 처리     |
+| 🔐 로그인     | GET      | /login              | 로그인 페이지      |
+|            | POST     | /login              | 로그인 요청       |
+| 🧑 유저페이지   | GET      | /users/{id}         | 프로필 정보 보기    |
+| 📦 게시글 목록  | GET      | /posts              | 전체 게시글 목록    |
+| 📦 게시글 등록  | GET      | /posts/new          | 게시글 작성 폼     |
+|            | POST     | /posts              | 게시글 등록 처리    |
+| 📄 게시글 상세  | GET      | /posts/{id}         | 특정 게시글 상세 보기 |
+| ✏ 게시글 수정   | GET      | /posts/{id}/edit    | 게시글 수정 폼     |
+|            | POST     | /posts/{id}         | 게시글 수정 처리    |
+| ❌ 게시글 삭제   | DELETE   | /posts/{id}         | 게시글 삭제 처리    |
+| ❤️ 좋아요     | POST     | /posts/{id}/like    | 게시글 좋아요 추가   |
+|            | POST     | /posts/{id}/like    | 좋아요 취소       |
+| 💬 채팅방 입장  | GET      | /chat/{roomId}      | 채팅방 페이지 진입   |
+| 💬 채팅방 보내기 | POST     | /chat/{roomId}/send | 채팅           |
