@@ -6,14 +6,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.swing.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+public class PostDTO  implements Serializable {
 
-public class PostDTO {
+    private static final long serialVersionUID = 1L;
+
     private Long id;    // 게시물 ID
     private String title;   // 게시글 제목
     private String description; // 내용
