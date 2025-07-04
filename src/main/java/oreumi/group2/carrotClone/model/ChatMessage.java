@@ -2,8 +2,10 @@ package oreumi.group2.carrotClone.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ChatMessage {
 
     @Id
@@ -21,6 +24,7 @@ public class ChatMessage {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "chatRoom_id", nullable = false)
+    @JsonIgnore
     private ChatRoom chatRoom;
 
     @Column(nullable = false, columnDefinition = "TEXT")
