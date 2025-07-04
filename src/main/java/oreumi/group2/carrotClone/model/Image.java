@@ -20,6 +20,6 @@ public class Image {
     @JoinColumn(name = "post_id",nullable = false)
     private Post post; /* post 정보 */
 
-    @Column(nullable = false)
-    private String  imageUrl; /* 이미지 url */
+    @Column(nullable = false,name = "url")
+    private String imageUrl; /* 이미지 url  */
 }
