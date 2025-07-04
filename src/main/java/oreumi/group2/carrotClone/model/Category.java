@@ -21,7 +21,4 @@ public class Category {
 
     @Column(nullable = false, length = 100)
     private String name; /* 카테고리 이름 */
-
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Post> posts = new ArrayList<>();  /* Post 랑 연동 */
 }
