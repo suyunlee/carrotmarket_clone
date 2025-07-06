@@ -17,7 +17,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
 
     @Override
-    public void sendMessage(Long chatRoomId, String content) {
+    public void saveMessage(Long chatRoomId, String content) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new RuntimeException("채팅방이 없습니다."));
 
@@ -27,9 +27,6 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 .build();
 
         chatMessageRepository.save(message);
-
-        //전송 부분
-
     }
 
     public List<ChatMessage> getMessages(Long chatRoomId) {
