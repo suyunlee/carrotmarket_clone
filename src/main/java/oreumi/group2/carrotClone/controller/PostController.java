@@ -23,7 +23,7 @@ public class PostController {
 
     /* 게시글 등록 처리 */
     @PostMapping
-    public String registerForm(){
+    public String registerForm( ){
         return "";
     }
 
