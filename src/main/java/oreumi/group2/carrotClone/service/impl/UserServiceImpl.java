@@ -61,8 +61,15 @@ public class UserServiceImpl implements UserService {
         exiting.setUsername(user.getUsername());
         exiting.setNickname(user.getNickname());
         exiting.setPhoneNumber(user.getPhoneNumber());
+        exiting.setLocation(user.getLocation());
 
         return userRepository.save(user);
+    }
+
+    /* id 기준 위치 조회 */
+    @Override
+    public String getLocation(Long id) {
+        return userRepository.findById(id).get().getLocation();
     }
 
     /* id 기준 유저 삭제 */
