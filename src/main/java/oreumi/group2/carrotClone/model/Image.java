@@ -22,4 +22,5 @@ public class Image {
 
     @Column(nullable = false,name = "url")
     private String imageUrl; /* 이미지 url  */
+
 }
