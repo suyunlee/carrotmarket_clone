@@ -16,6 +16,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) /* 개발중임으로 */
             /* userDetailService 추가 필요 */
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))  // ← 이 부분 추가!
             .authorizeHttpRequests(user -> user
                     .anyRequest().permitAll())
             .formLogin(user -> user
