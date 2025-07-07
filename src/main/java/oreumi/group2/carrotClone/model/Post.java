@@ -1,10 +1,8 @@
 package oreumi.group2.carrotClone.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -16,8 +14,8 @@ import java.util.List;
 @Entity
 @Table(name = "post")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Post {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +30,8 @@ public class Post {
     @Column(nullable = false,precision = 15,scale = 2)
     private BigDecimal price; /* 가격 */
 
-    private boolean isSold; /* 판매여부 */
+    @Column(nullable = false)
+    private boolean Sold; /* 판매여부 */
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -67,4 +66,7 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category; /* category 정보 */
+
+
+
 }
