@@ -33,4 +33,8 @@ public class ChatMessage {
     @CreationTimestamp
     @Column(nullable = false, updatable = false, name = "created_at")
     private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id",nullable = false)
+    private User sender; // id 값만
 }
