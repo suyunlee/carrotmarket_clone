@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import oreumi.group2.carrotClone.model.Image;
 
 import javax.swing.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -26,4 +28,5 @@ public class PostDTO  implements Serializable {
     private Spring location;    // 글 등록 위치
     private Integer viewCount;  // 조회수
     private Long userId;    // 게시글 작성 유저 아이디
+    private List<String> images;
 }
