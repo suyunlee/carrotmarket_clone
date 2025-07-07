@@ -23,4 +23,9 @@ public class Like {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_id",nullable = false)
     private Post post;
+
+    public Like(Post post, User user){
+        this.user = user;
+        this.post = post;
+    }
 }
