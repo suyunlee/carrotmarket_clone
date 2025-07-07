@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import oreumi.group2.carrotClone.model.enums.AuthProvider;
 import oreumi.group2.carrotClone.model.enums.UserRole;
-import oreumi.group2.carrotClone.model.enums.UserStatus;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -44,10 +43,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private UserRole role;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UserStatus status;
 
     @Column(name = "neighborhood_verified")
     private boolean neighborhoodVerified;
