@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="'채팅방 ' + ${roomId}">채팅방</title>
+</head>
+<body>
+    <h2 th:text="'채팅방 ' + ${roomId} + '    ' + ${currentUser}">채팅방</h2>
+
+    <!-- 과거 메시지: data-id 속성 추가 -->
+    <ul id="chatArea">
+        <li th:each="msg : ${messages}" th:attr="data-id=${msg.id}">
+            <strong th:text="${msg.senderNickname}">닉네임</strong>:
+            <span th:text="${msg.content}">메시지</span>
+            <em th:text="${#temporals.format(msg.createdAt, 'HH:mm')}"></em>
+        </li>
+    </ul>
+    <input type="text" id="msg" placeholder="메시지 입력"/>
+    <button id="sendBtn">전송</button>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2/lib/stomp.min.js"></script>
+    <script th:inline="javascript">
+
+    // Cdata 묶어서 사용
+    /*<![CDATA[*/
+        // Thymeleaf 바인딩
+        const currentUser = /*[[${currentUser}]]*/; // 현재 등록된 유저 정보 (로그인한 유저로 바꿔야함)
+        const roomId = /*[[${roomId}]]*/; // 연동된 방 id
+        const chatArea = document.getElementById('chatArea');
+
+        // 이미 렌더된 메시지 ID 저장용 Set
+        const renderIds = new Set();
+
+        // 이중 메세지 방지
+        document.querySelectorAll('#chatArea li').forEach(li => {
+          const id = Number(li.dataset.id);
+          if (id) renderIds.add(id); // 이미 메세지가 존재할시
+        });
+
+        // 메시지 렌더 함수
+        function renderMessage(msg) {
+          if (renderIds.has(msg.id)) return;
+          renderIds.add(msg.id);
+
+          const li = document.createElement('li');
+          li.dataset.id = msg.id;
+          // 메세지 전달
+          li.innerHTML = `<strong>${msg.senderNickname}</strong>: ${msg.content}
+                          <em>${new Date(msg.createdAt).toLocaleTimeString()}</em>`;
+          chatArea.append(li);
+        }
+
+        // 2) REST 로 과거 메시지 로딩
+        fetch(`/chat/room/${roomId}/messages`)
+          .then(r => r.json())
+          .then(list => list.forEach(renderMessage))
+          .catch(console.error);
+
+        // 3) STOMP 연결 (새 메시지만 렌더)
+        const client = Stomp.over(new SockJS('/ws-chat'));
+        client.connect({}, () => {
+          client.subscribe(`/topic/chat/${roomId}`, msg =>
+            renderMessage(JSON.parse(msg.body))
+          );
+        });
+
+        // 4) 메시지 보내기
+        document.getElementById('sendBtn').addEventListener('click', () => {
+          const content = document.getElementById('msg').value.trim();
+          if (!content) return;
+          client.send(
+            `/app/room/${roomId}/send`,
+            { 'content-type': 'application/json' },
+            // JSON 형태 변환
+            JSON.stringify({
+              content,
+              senderUsername: currentUser // < 로그인시 삭제필요
+            })
+          );
+          document.getElementById('msg').value = '';
+        });
+    /*]]>*/
+</script>
+</body>
+</html>
