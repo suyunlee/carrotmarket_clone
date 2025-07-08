@@ -62,6 +62,10 @@ public class UserServiceImpl implements UserService {
         exiting.setNickname(user.getNickname());
         exiting.setPhoneNumber(user.getPhoneNumber());
         exiting.setLocation(user.getLocation());
+        exiting.setNeighborhoodVerifiedAt(user.getNeighborhoodVerifiedAt());
+        exiting.setNeighborhoodName(user.getNeighborhoodName());
+        exiting.setNeighborhoodVerifiedAt(user.getNeighborhoodVerifiedAt());
+        exiting.setRole(user.getRole());
 
         return userRepository.save(user);
     }
