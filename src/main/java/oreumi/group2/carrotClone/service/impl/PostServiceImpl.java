@@ -2,10 +2,7 @@ package oreumi.group2.carrotClone.service.impl;
 
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
-import oreumi.group2.carrotClone.model.Image;
-import oreumi.group2.carrotClone.model.Like;
-import oreumi.group2.carrotClone.model.Post;
-import oreumi.group2.carrotClone.model.User;
+import oreumi.group2.carrotClone.model.*;
 import oreumi.group2.carrotClone.repository.LikeRepository;
 import oreumi.group2.carrotClone.repository.PostRepository;
 import oreumi.group2.carrotClone.service.PostService;
@@ -28,6 +25,11 @@ public class PostServiceImpl implements PostService {
     /* DI */
     @Autowired LikeRepository likeRepository;
 
+
+    /* ID 기반 게시물 찾기 */
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Post> findById(Long id) { return postRepository.findById(id); }
 
     /* 전체 조회 */
     @Override
@@ -67,13 +69,15 @@ public class PostServiceImpl implements PostService {
 
     // 게시물 등록
     @Override
-    public Post createPost(String title, String description, BigDecimal price,
-                           String location, List<String> images) {
+    public Post createPost(User user, String title, String description, BigDecimal price,
+                           String location, List<String> images, Category category) {
         Post p = new Post();
+        p.setUser(user);
         p.setTitle(title);
         p.setDescription(description);
         p.setPrice(price);
         p.setLocation(location);
+        p.setCategory(category);
 
         List<Image> imageList = new ArrayList<>();
         for(String s : images){
