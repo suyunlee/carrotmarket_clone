@@ -16,6 +16,7 @@ public class UserDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String username;    // 로그인용 아이디 (이멜)
+    private String password;    //비밀번호
     private String nickname;    // 사용자 닉네임
     private String phoneNumber; // 전화번호
     private String location;   // 위치

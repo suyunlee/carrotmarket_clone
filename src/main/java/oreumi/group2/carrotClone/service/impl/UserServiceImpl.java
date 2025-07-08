@@ -6,6 +6,7 @@ import oreumi.group2.carrotClone.model.enums.AuthProvider;
 import oreumi.group2.carrotClone.repository.UserRepository;
 import oreumi.group2.carrotClone.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +17,14 @@ import java.util.Optional;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    @Autowired private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     /* user 정보 저장 */
     @Override
@@ -30,6 +38,13 @@ public class UserServiceImpl implements UserService {
         }
         if(userRepository.existsByPhoneNumber(user.getPhoneNumber())){
             throw new EntityExistsException("이미 등록된 전화번호입니다.");
+        }
+        if (user.getPassword() != null && !user.getPassword().isEmpty()){
+            if (user.getPassword().length() <= 2){
+                throw new IllegalArgumentException(("비밀번호는 3자리 이상이어야 합니다."));
+            }
+
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         return userRepository.save(user);
     }
@@ -69,7 +84,9 @@ public class UserServiceImpl implements UserService {
     /* id 기준 위치 조회 */
     @Override
     public String getLocation(Long id) {
-        return userRepository.findById(id).get().getLocation();
+        return userRepository.findById(id)
+                .orElseThrow(() -> new EntityExistsException("해당 유저는 존재하지 않습니다"))
+                .getLocation();
     }
 
     /* id 기준 유저 삭제 */
