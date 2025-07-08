@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>새 게시물 등록</title>
+    <link rel="stylesheet" href="/css/post.css">
+</head>
+<body>
+    <div class="container">
+        <form th:action="@{/posts}" method="post" id="postForm" enctype="multipart/form-data">
+            <div class="product-info-section">
+                <img id="previewImage" src="https://placehold.co/210x210"
+                     alt="image upload">
+                <input hidden type="file" id="fileInput" name="files" accept="image/*" multiple>
+                <div class="product-group">
+                    <label>글 제목</label>
+                    <input type="text" id="title" name="title" required
+                           placeholder="글 제목" maxlenth="100" />
+                    <label>가격</label>
+                    <input type="number" id="price" name="price" required placeholder="가격" />
+                </div>
+            </div>
+            <div class="product-group">
+                <label>물품 설명</label>
+                <textarea id="description" name="description" required
+                       placeholder="게시글 내용을 작성해주세요." maxlength="5000"></textarea>
+                <label>카테 고리</label>
+                <select id="category" name="category" required>
+                    <option value="전자기기">전자기기</option>
+                    <option value="가구">가구</option>
+                    <option value="의류">의류</option>
+                </select>
+                <label>거래 희망 장소</label>
+                <input type="text" id="location" name="location" required
+                       placeholder="거래를 희망하는 장소" maxlenth="100" />
+            </div>
+            <button class="c-btn" type="submit">완료</button>
+        </form>
+    </div>
+
+    <script src="/js/post.js"></script>
+</body>
+</html>
