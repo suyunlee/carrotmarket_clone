@@ -8,6 +8,6 @@ class CarrotCloneApplicationTests {
 
 	@Test
 	void contextLoads() {
-	}
 
+	}
 }
