@@ -1,13 +1,30 @@
 package oreumi.group2.carrotClone.controller;
 
+import lombok.RequiredArgsConstructor;
+import oreumi.group2.carrotClone.model.Post;
+import oreumi.group2.carrotClone.service.PostService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/posts")
+@RequiredArgsConstructor
 public class PostController {
+
+    private final PostService postService;
+
+    @GetMapping("/{postId}")
+    public String view(@PathVariable Long postId, Model model){
+        Post post = postService.getPostById(postId);
+        model.addAttribute("post",post);
+        return "post";
+    }
+
+
 
     /* 전체 계시글 목록 */
     @GetMapping
@@ -28,10 +45,10 @@ public class PostController {
     }
 
     /* 특정 게시글 상세 보기 */
-    @GetMapping("/{id}")
-    public String specificFormDetail(){
-        return "";
-    }
+//    @GetMapping("/{id}")
+//    public String specificFormDetail(){
+//        return "";
+//    }
 
     /* 게시글 수정 폼 */
     @GetMapping("/{id}/edit")
