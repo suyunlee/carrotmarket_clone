@@ -13,4 +13,5 @@ public interface ChatRoomService {
     List<ChatRoom> findAllChatRooms(); /* 모든 채팅방 조회 */
     List<ChatRoom> findChatRoomsByUserId(Long userId); /* userId 기준 조회 */
     Optional<ChatRoom> findByPostIdAndUserId(Long postId, Long userId); /* 게시물 페이지 > 채팅하기 때 사용 */
+    List<ChatRoom> findChatRoomsByPostId(Long id);
 }
