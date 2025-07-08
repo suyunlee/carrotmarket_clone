@@ -29,20 +29,26 @@ public class ChatServiceImpl implements ChatRoomService, ChatMessageService {
 
     /* 채팅방 생성 */
     @Override
-    public ChatRoom createChatRoom(Long postId, Long userId) {
-        return chatRoomRepository.findByPostIdAndUserId(postId, userId)
+    public ChatRoom createChatRoom(Long postId, Long buyerId) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(()-> new EntityNotFoundException("게시물이 존재하지않습니다."));
+        /* 판매자 아이디 */
+        Long sellerId = post.getUser().getId();
+        /* 구매자인 경우 */
+        if(sellerId.equals(buyerId)){
+            throw new IllegalArgumentException("판매자는 방을 생성할 수 없습니다.");
+        }
+
+        return chatRoomRepository.findByPostIdAndUserId(postId, buyerId)
                 .orElseGet(()->{
 
-                    Optional<User> u = userRepository.findById(userId);
-                    Optional<Post> p = postRepository.findById(postId);
-
-                    if(u == null || p == null){
-                        throw new RuntimeException("게시물 혹은 유저 정보가 없습니다.");
-                    }
-
                     ChatRoom chatRoom = new ChatRoom();
-                    chatRoom.setPost(p.get());
-                    chatRoom.setUser(u.get());
+                    chatRoom.setPost(post);
+                    chatRoom.setUser(
+                            userRepository.findById(buyerId)
+                                    .orElseThrow(() -> new EntityNotFoundException("유저가 없습니다."))
+                    );
                     chatRoom.setChatBot(false);
 
                     return chatRoomRepository.save(chatRoom);
@@ -83,6 +89,12 @@ public class ChatServiceImpl implements ChatRoomService, ChatMessageService {
         }
     }
 
+    /* 특정 게시물 채팅방 조회 */
+    @Override
+    public List<ChatRoom> findChatRoomsByPostId(Long id) {
+        return chatRoomRepository.findAllByPostId(id);
+    }
+
     /* 전체 조회 */
     @Override
     public List<ChatRoom> findAllChatRooms(){
@@ -110,16 +122,23 @@ public class ChatServiceImpl implements ChatRoomService, ChatMessageService {
 
     /* 메세지 저장 */
     @Override
-    public void saveMessage(Long chatRoomId, String content) {
+    public ChatMessage saveMessage(Long chatRoomId, String content, String username) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new RuntimeException("채팅방이 없습니다."));
 
+        User sender = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("유저가 없습니다."));
+
         ChatMessage message = ChatMessage.builder()
                 .chatRoom(chatRoom)
+                .sender(sender)
                 .content(content)
                 .build();
 
-        chatMessageRepository.save(message);
+        ChatMessage saved = chatMessageRepository.save(message);
+        saved.getChatRoom().getPost().getUser().getUsername();
+        saved.getChatRoom().getUser().getUsername();
+        return saved;
     }
 
     /* 메세지 get */
