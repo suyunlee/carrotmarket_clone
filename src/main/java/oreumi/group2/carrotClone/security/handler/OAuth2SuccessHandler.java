@@ -1,4 +1,4 @@
-package oreumi.group2.carrotClone.handler;
+package oreumi.group2.carrotClone.security.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -6,14 +6,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import oreumi.group2.carrotClone.model.User;
 import oreumi.group2.carrotClone.model.enums.AuthProvider;
+import oreumi.group2.carrotClone.model.enums.UserRole;
+import oreumi.group2.carrotClone.security.CustomOAuth2User;
 import oreumi.group2.carrotClone.service.UserService;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * OAuth2 로그인 성공 시 사용자 정보 DB 저장 및 리다이렉트 처리
+ */
 @Component
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
@@ -24,18 +28,18 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        String email = oAuth2User.getAttribute("email");
+        CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+        String email = oAuth2User.getEmail();
 
         userService.findByUsername(email).orElseGet(() -> {
             User user = User.builder()
                     .username(email)
-                    .password("") // 소셜 로그인은 패스워드 없음
-                    .nickname(oAuth2User.getAttribute("name"))
-                    .role("ROLE_USER")
+                    .password("") // OAuth는 비밀번호 없음
+                    .nickname(oAuth2User.getName())
+                    .role(UserRole.ROLE_USER)
                     .status("ACTIVE")
                     .provider(AuthProvider.GOOGLE)
-                    .providerId(oAuth2User.getName())
+                    .providerId(oAuth2User.getProviderId())
                     .build();
             return userService.register(user);
         });
