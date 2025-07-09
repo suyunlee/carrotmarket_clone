@@ -17,10 +17,9 @@ public interface PostService {
     List<Post> getPostsSortedByNewest (); /* 최신순  */
     List<Post> getPostsSortedByPrice (boolean ascending); /* 가격순 */
     Post getPostById (Long id); /* Id 기반 조회 */
-    Post createPost (User user, String title, String description, BigDecimal price,
-                     String location,List<String> images, Category category); /* 저장 */
+    Post createPost (User user, PostDTO postDTO, List<String> images); /* 저장 */
     void deletePost(Long id); // 삭제
-    Post updatePost(User user, Category category, Long id, PostDTO p); /* 단일 업데이트 */
+    Post updatePost(Long id, PostDTO p); /* 단일 업데이트 */
     boolean isLikedByUser(Long postId, User user);
     void increaseViewCount(Long postId);
 }

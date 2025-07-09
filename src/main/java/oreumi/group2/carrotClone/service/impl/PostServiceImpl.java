@@ -71,15 +71,14 @@ public class PostServiceImpl implements PostService {
 
     // 게시물 등록
     @Override
-    public Post createPost(User user, String title, String description, BigDecimal price,
-                           String location, List<String> images, Category category) {
+    public Post createPost(User user, PostDTO postDTO, List<String> images) {
         Post p = new Post();
         p.setUser(user);
-        p.setTitle(title);
-        p.setDescription(description);
-        p.setPrice(price);
-        p.setLocation(location);
-        p.setCategory(category);
+        p.setTitle(postDTO.getTitle());
+        p.setDescription(postDTO.getDescription());
+        p.setPrice(postDTO.getPrice());
+        p.setLocation(postDTO.getLocation());
+        p.setCategory(postDTO.getCategory());
 
         List<Image> imageList = new ArrayList<>();
         for(String s : images){
@@ -105,17 +104,15 @@ public class PostServiceImpl implements PostService {
 
     /* 게시물 업데이트 */
     @Override
-    public Post updatePost(User user, Category category, Long id, PostDTO p) {
+    public Post updatePost(Long id, PostDTO p) {
         return postRepository.findById(id).map(
                 existingPost -> {
-                    System.out.println("게시물 저장 시작");
                     existingPost.setTitle(p.getTitle());
                     existingPost.setPrice(p.getPrice());
                     existingPost.setSold(p.isSold());
                     existingPost.setLocation(p.getLocation());
                     existingPost.setDescription(p.getDescription());
-                    existingPost.setCategory(category);
-                    existingPost.setUser(user);
+                    existingPost.setCategory(p.getCategory());
                     return postRepository.save(existingPost);
                 }).orElseThrow(() -> new EntityExistsException("존재하지않는 게시물입니다."));
     }

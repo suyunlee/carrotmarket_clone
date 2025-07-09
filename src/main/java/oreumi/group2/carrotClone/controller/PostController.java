@@ -1,6 +1,7 @@
 package oreumi.group2.carrotClone.controller;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import oreumi.group2.carrotClone.DTO.PostDTO;
 import oreumi.group2.carrotClone.model.Category;
 import oreumi.group2.carrotClone.model.Post;
@@ -15,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -34,12 +36,11 @@ public class PostController {
     /* 테스트 로그인 */
     @GetMapping("/test-login")
     public String testLogin(HttpSession session) {
-        // 이미 DB에 같은 username이 있으면 가져오고, 없으면 새로 만듦
         String username = "testuser";
         User user = userRepository.findByUsername(username).orElseGet(() -> {
             User newUser = new User();
             newUser.setUsername(username);
-            newUser.setPassword("testpassword"); // 실제로는 암호화 필요
+            newUser.setPassword("testpassword");
             newUser.setNickname("테스트유저");
             newUser.setPhoneNumber("010-0000-0000");
             newUser.setLocation("서울");
@@ -49,10 +50,9 @@ public class PostController {
             return userRepository.save(newUser);
         });
 
-        // 세션에 저장
         session.setAttribute("user", user);
 
-        return "redirect:/posts/new"; // 테스트 후 리다이렉트
+        return "redirect:/posts/new";
     }
 
     /* 전체 게시글 목록 */
@@ -76,25 +76,34 @@ public class PostController {
             redirectAttributes.addFlashAttribute("error", "동네 인증이 필요합니다.");
             return "redirect:/maps";
         }
+        Post post = new Post();
+        post.setLocation(user.getLocation());
         model.addAttribute("mode", "new");
         model.addAttribute("user", user);
+        model.addAttribute("post", post);
+        model.addAttribute("categories", categoryRepository.findAll());
         return "post_form";
     }
 
     /* 게시글 등록 처리 */
     @PostMapping
     public String registerForm(@RequestParam("files") List<MultipartFile> files,
-                               @RequestParam String title,
-                               @RequestParam BigDecimal price,
-                               @RequestParam String description,
-                               @RequestParam String location,
-                               @RequestParam String category,
+                               @Valid @ModelAttribute PostDTO postDTO,
+                               BindingResult bindingResult,
                                HttpSession session,
                                @AuthenticationPrincipal OAuth2User oAuth2User,
                                RedirectAttributes redirectAttributes) {
+
+        if(bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getAllErrors().get(0).getDefaultMessage();
+            redirectAttributes.addFlashAttribute("error", errorMessage);
+            return "redirect:/posts/new";
+        }
+
         User user = getCurrentUser(session, oAuth2User);
-        Category categoryEntity = categoryRepository.findByName(category)
+        Category category = categoryRepository.findById(postDTO.getCategory().getId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
+        postDTO.setCategory(category);
 
 //      private final S3Uploader s3Uploader;
         List<String> images = new ArrayList<>();
@@ -103,23 +112,7 @@ public class PostController {
 //            images.add(image);
 //      }
         try {
-            if(title.trim().isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "제목을 입력하세요.");
-                return "redirect:/posts/new";
-            }
-            if(price == null) {
-                redirectAttributes.addFlashAttribute("error", "가격을 입력하세요.");
-                return "redirect:/posts/new";
-            }
-            if(description.trim().isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "설명을 입력하세요.");
-                return "redirect:/posts/new";
-            }
-            if(location.trim().isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "위치를 입력하세요.");
-                return "redirect:/posts/new";
-            }
-            Post post = postService.createPost(user, title.trim(), description.trim(), price, location.trim(), images, categoryEntity);
+            Post post = postService.createPost(user, postDTO, images);
             redirectAttributes.addFlashAttribute("success", "게시글이 성공적으로 등록되었습니다.");
             return "redirect:/posts/" + post.getId();
         } catch (Exception e) {
@@ -137,8 +130,7 @@ public class PostController {
 
         postService.increaseViewCount(id);
         Optional<Post> postOpt = postService.findById(id);
-        if(postOpt.isEmpty()) return "post_detail";
-        // return "redirect:/posts";
+        if(postOpt.isEmpty()) return "redirect:/posts";
 
         Post post = postOpt.get();
         User user = getCurrentUser(session, oAuth2User);
@@ -175,6 +167,7 @@ public class PostController {
         model.addAttribute("post", post);
         model.addAttribute("user", user);
         model.addAttribute("mode", "edit");
+        model.addAttribute("categories", categoryRepository.findAll());
 
         return "post_form";
     }
@@ -183,14 +176,21 @@ public class PostController {
     @PostMapping("/{id}/edit")
     public String registerEditForm(@PathVariable Long id,
                                    @RequestParam("files") List<MultipartFile> files,
-                                   @ModelAttribute PostDTO postDTO,
-                                   @RequestParam String category,
+                                   @Valid @ModelAttribute PostDTO postDTO,
+                                   BindingResult bindingResult,
                                    HttpSession session,
                                    @AuthenticationPrincipal OAuth2User oAuth2User,
                                    RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getAllErrors().get(0).getDefaultMessage();
+            redirectAttributes.addFlashAttribute("error", errorMessage);
+            return "redirect:/posts/" + id + "/edit";
+        }
+
         User user = getCurrentUser(session, oAuth2User);
-        Category categoryEntity = categoryRepository.findByName(category)
+        Category category = categoryRepository.findById(postDTO.getCategory().getId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
+        postDTO.setCategory(category);
 
 //      private final S3Uploader s3Uploader;
         List<String> images = new ArrayList<>();
@@ -200,28 +200,8 @@ public class PostController {
 //      }
 //        postDTO.setImages(images);
         try {
-            if(postDTO.getTitle().trim().isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "제목을 입력하세요.");
-                return "redirect:/posts/" + id + "/edit";
-            }
-            if(postDTO.getPrice() == null) {
-                redirectAttributes.addFlashAttribute("error", "가격을 입력하세요.");
-                return "redirect:/posts/" + id + "/edit";
-            }
-            if(postDTO.getDescription().trim().isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "설명을 입력하세요.");
-                return "redirect:/posts/" + id + "/edit";
-            }
-            if(postDTO.getLocation().trim().isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "위치를 입력하세요.");
-                return "redirect:/posts/" + id + "/edit";
-            }
-            postDTO.setTitle(postDTO.getTitle().trim());
-            postDTO.setDescription(postDTO.getDescription().trim());
-            postDTO.setLocation(postDTO.getLocation().trim());
             postDTO.setSold(true); //예시
-
-            Post post = postService.updatePost(user, categoryEntity, id, postDTO);
+            Post post = postService.updatePost(id, postDTO);
             redirectAttributes.addFlashAttribute("success", "게시글이 성공적으로 수정되었습니다.");
             return "redirect:/posts/" + post.getId();
         } catch (Exception e) {
@@ -234,7 +214,7 @@ public class PostController {
     @PostMapping("/{id}")
     public String deletePost(@PathVariable Long id) {
         postService.deletePost(id);
-        return "post_detail";
+        return "redirect:/posts";
     }
     /* 게시글 좋아요 추가 */
     /* 좋아요 취소 */
