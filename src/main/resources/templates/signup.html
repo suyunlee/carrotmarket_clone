@@ -1,46 +1,119 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
-    <meta charset="UTF-8"/>
-    <title>회원가입</title>
+    <meta charset="UTF-8">
+    <title>회원가입 | 당근 클론</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .error { color : red; font-size: 12px; margin-top: 4px;}
+    </style>
 </head>
 <body>
-<h1>회원가입</h1>
+<div class="auth-container">
+    <div class="logo">당근 마켓</div>
+    <form id="signupForm" class="auth-form" action="/users/signup" method="post" novalidate>
+        <!-- username -->
+        <div class="form-group">
+            <label for="username">아이디</label>
+            <input type="text" id="username" name="username" placeholder="2~12자 한글/영문/숫자" required>
+            <div id="usernameError" class="error"></div>
+        </div>
+        <!-- password -->
+        <div class="form-group">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" placeholder="최소 3자" required>
+            <div id="passwordError" class="error"></div>
+        </div>
+        <!-- confirmPassword -->
+        <div class="form-group">
+            <label for="confirmPassword">비밀번호 확인</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="비밀번호 재입력" required>
+            <div id="confirmError" class="error"></div>
+        </div>
+        <!-- nickname -->
+        <div class="form-group">
+            <label for="nickname">닉네임</label>
+            <input type="text" id="nickname" name="nickname" placeholder="닉네임 입력" required>
+            <div id="nicknameError" class="error"></div>
+        </div>
+        <!-- phoneNumber -->
+        <div class="form-group">
+            <label for="phoneNumber">전화번호</label>
+            <input type="text" id="phoneNumber" name="phoneNumber" placeholder="숫자만 입력" required>
+            <div id="phoneError" class="error"></div>
+        </div>
+        <!-- location (선택) -->
+        <div class="form-group">
+            <label for="location">동네</label>
+            <input type="text" id="location" name="location" placeholder="동네 입력 (선택)">
+        </div>
+        <button type="submit" class="btn btn-primary">회원가입</button>
+        <p class="link-text">
+            이미 계정이 있으신가요?
+            <a href="/users/login">로그인</a>
+        </p>
+    </form>
+</div>
 
-<!-- th:object 으로 user 모델을 바인딩 -->
-<form th:action="@{/users/signup}" th:object="${user}" method="post">
-    <div>
-        <label>이메일:
-            <input type="email" th:field="*{username}" placeholder="이메일 입력"/>
-        </label>
-        <div th:if="${usernameError}" th:text="${usernameError}"></div>
-    </div>
+<script>
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+      let valid = true;
 
-    <div>
-        <label>비밀번호:
-            <input type="password" th:field="*{password}" placeholder="비밀번호 입력"/>
-        </label>
-        <div th:if="${passwordError}" th:text="${passwordError}"></div>
-    </div>
+      // Username: 2~12자 한글/영문/숫자
+      const userEl = document.getElementById('username');
+      const userErr = document.getElementById('usernameError');
+      const userVal = userEl.value.trim();
+      const userPat = /^[A-Za-z0-9가-힣]{2,12}$/;
+      if (!userPat.test(userVal)) {
+        userErr.textContent = '아이디는 2~12자의 한글/영문/숫자만 가능합니다.';
+        valid = false;
+      } else {
+        userErr.textContent = '';
+      }
 
-    <div>
-        <label>닉네임:
-            <input type="text" th:field="*{nickname}" placeholder="닉네임 입력"/>
-        </label>
-    </div>
+      // Password: 최소 3자
+      const pwEl = document.getElementById('password');
+      const pwErr = document.getElementById('passwordError');
+      if (pwEl.value.length < 3) {
+        pwErr.textContent = '비밀번호는 최소 3자 이상이어야 합니다.';
+        valid = false;
+      } else {
+        pwErr.textContent = '';
+      }
 
-    <div>
-        <label>전화번호:
-            <input type="text" th:field="*{phoneNumber}" placeholder="전화번호 입력"/>
-        </label>
-    </div>
+      // Confirm Password: 일치 여부
+      const cpwEl = document.getElementById('confirmPassword');
+      const cpwErr = document.getElementById('confirmError');
+      if (cpwEl.value !== pwEl.value) {
+        cpwErr.textContent = '비밀번호가 일치하지 않습니다.';
+        valid = false;
+      } else {
+        cpwErr.textContent = '';
+      }
 
-    <button type="submit">가입하기</button>
-</form>
+      // Nickname: 공백 체크
+      const nnEl = document.getElementById('nickname');
+      const nnErr = document.getElementById('nicknameError');
+      if (nnEl.value.trim() === '') {
+        nnErr.textContent = '닉네임을 입력해주세요.';
+        valid = false;
+      } else {
+        nnErr.textContent = '';
+      }
 
-<p>
-    이미 계정이 있으신가요?
-    <a th:href="@{/users/login}">로그인</a>
-</p>
+      // Phone: 숫자만, 공백 체크
+      const phEl = document.getElementById('phoneNumber');
+      const phErr = document.getElementById('phoneError');
+      const phVal = phEl.value.trim();
+      if (!/^[0-9]+$/.test(phVal)) {
+        phErr.textContent = '전화번호는 숫자만 입력해야 합니다.';
+        valid = false;
+      } else {
+        phErr.textContent = '';
+      }
+
+      if (!valid) e.preventDefault();
+    });
+</script>
 </body>
 </html>

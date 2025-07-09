@@ -13,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor // ✅ 생성자 기반 의존성 주입 활성화
+@RequiredArgsConstructor // 생성자 기반 의존성 주입 활성화
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;

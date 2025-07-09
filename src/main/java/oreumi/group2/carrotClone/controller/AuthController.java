@@ -27,6 +27,7 @@ public class AuthController {
     @PostMapping("/signup")
     public String postRegister(@ModelAttribute("user") @Valid UserDTO userDTO,
                                BindingResult result, Model model) {
+
         if (userService.findByUsername(userDTO.getUsername()).isPresent()) {
             model.addAttribute("usernameError", "이미 존재하는 이메일입니다.");
             return "signup";
