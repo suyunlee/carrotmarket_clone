@@ -20,6 +20,7 @@ public interface PostService {
     Post createPost (User user, String title, String description, BigDecimal price,
                      String location,List<String> images, Category category); /* 저장 */
     void deletePost(Long id); // 삭제
-    Post updatePost(Post post); /* 단일 업데이트 */
+    Post updatePost(User user, Category category, Long id, PostDTO p); /* 단일 업데이트 */
     boolean isLikedByUser(Long postId, User user);
+    void increaseViewCount(Long postId);
 }

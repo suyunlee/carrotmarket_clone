@@ -2,6 +2,7 @@ package oreumi.group2.carrotClone.service.impl;
 
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
+import oreumi.group2.carrotClone.DTO.PostDTO;
 import oreumi.group2.carrotClone.model.*;
 import oreumi.group2.carrotClone.repository.LikeRepository;
 import oreumi.group2.carrotClone.repository.PostRepository;
@@ -9,6 +10,7 @@ import oreumi.group2.carrotClone.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -103,14 +105,17 @@ public class PostServiceImpl implements PostService {
 
     /* 게시물 업데이트 */
     @Override
-    public Post updatePost(Post p) {
-        return postRepository.findById(p.getId()).map(
+    public Post updatePost(User user, Category category, Long id, PostDTO p) {
+        return postRepository.findById(id).map(
                 existingPost -> {
+                    System.out.println("게시물 저장 시작");
                     existingPost.setTitle(p.getTitle());
                     existingPost.setPrice(p.getPrice());
                     existingPost.setSold(p.isSold());
                     existingPost.setLocation(p.getLocation());
                     existingPost.setDescription(p.getDescription());
+                    existingPost.setCategory(category);
+                    existingPost.setUser(user);
                     return postRepository.save(existingPost);
                 }).orElseThrow(() -> new EntityExistsException("존재하지않는 게시물입니다."));
     }
@@ -120,7 +125,7 @@ public class PostServiceImpl implements PostService {
     @Transactional(readOnly = true)
     public boolean isLikedByUser(Long postId, User user) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("강의를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));
 
         Optional<Like> existingLike = likeRepository.findByPostIdAndUserId(postId , user.getId());
 
@@ -131,5 +136,11 @@ public class PostServiceImpl implements PostService {
             likeRepository.save(like);
         }
         return likeRepository.existsByPostIdAndUserId(postId,user.getId());
+    }
+
+    /* 조회수 */
+    @Transactional
+    public void increaseViewCount(Long postId) {
+        postRepository.increaseViewCount(postId);
     }
 }

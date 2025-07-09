@@ -1,6 +1,7 @@
 package oreumi.group2.carrotClone.controller;
 
 import jakarta.servlet.http.HttpSession;
+import oreumi.group2.carrotClone.DTO.PostDTO;
 import oreumi.group2.carrotClone.model.Category;
 import oreumi.group2.carrotClone.model.Post;
 import oreumi.group2.carrotClone.model.User;
@@ -64,6 +65,7 @@ public class PostController {
     @GetMapping("/new")
     public String showNewForm(HttpSession session,
                               @AuthenticationPrincipal OAuth2User oAuth2User,
+                              Model model,
                               RedirectAttributes redirectAttributes){
         User user = getCurrentUser(session, oAuth2User);
         if(user == null) {
@@ -74,6 +76,8 @@ public class PostController {
             redirectAttributes.addFlashAttribute("error", "동네 인증이 필요합니다.");
             return "redirect:/maps";
         }
+        model.addAttribute("mode", "new");
+        model.addAttribute("user", user);
         return "post_form";
     }
 
@@ -130,26 +134,108 @@ public class PostController {
                                      Model model,
                                      HttpSession session,
                                      @AuthenticationPrincipal OAuth2User oAuth2User) {
+
+        postService.increaseViewCount(id);
         Optional<Post> postOpt = postService.findById(id);
-        if(postOpt.isEmpty()) return "redirect:/posts";
-        // return "post_detail";
+        if(postOpt.isEmpty()) return "post_detail";
+        // return "redirect:/posts";
 
         Post post = postOpt.get();
         User user = getCurrentUser(session, oAuth2User);
 
         model.addAttribute("post", post);
         model.addAttribute("user", user);
+        model.addAttribute("chatCount", post.getChatRoomsCount());
+        model.addAttribute("likeCount", post.getLikeCount());
+
+        if(user != null) {
+            model.addAttribute("isLikedByCurrentUser", postService.isLikedByUser(id, user));
+        } else {
+            model.addAttribute("isLikedByCurrentUser", false);
+        }
 
         return "post_detail";
     }
 
     /* 게시글 수정 폼 */
     @GetMapping("/{id}/edit")
-    public String editForm(){
-        return "";
+    public String editForm(@PathVariable Long id,
+                           Model model,
+                           HttpSession session,
+                           @AuthenticationPrincipal OAuth2User oAuth2User){
+        Optional<Post> postOpt = postService.findById(id);
+        if(postOpt.isEmpty()) return "redirect:/posts";
+        Post post = postOpt.get();
+
+        User user = getCurrentUser(session, oAuth2User);
+        if (user == null) return "redirect:/login";
+
+        if(!post.getUser().getId().equals(user.getId())) return "redirect:/posts";
+
+        model.addAttribute("post", post);
+        model.addAttribute("user", user);
+        model.addAttribute("mode", "edit");
+
+        return "post_form";
     }
+
     /* 게시글 수정 처리 */
+    @PostMapping("/{id}/edit")
+    public String registerEditForm(@PathVariable Long id,
+                                   @RequestParam("files") List<MultipartFile> files,
+                                   @ModelAttribute PostDTO postDTO,
+                                   @RequestParam String category,
+                                   HttpSession session,
+                                   @AuthenticationPrincipal OAuth2User oAuth2User,
+                                   RedirectAttributes redirectAttributes) {
+        User user = getCurrentUser(session, oAuth2User);
+        Category categoryEntity = categoryRepository.findByName(category)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
+
+//      private final S3Uploader s3Uploader;
+        List<String> images = new ArrayList<>();
+//      for(MultipartFile file : files) {
+//            String image = s3Uploader.upload(file, "folder-name");
+//            images.add(image);
+//      }
+//        postDTO.setImages(images);
+        try {
+            if(postDTO.getTitle().trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "제목을 입력하세요.");
+                return "redirect:/posts/" + id + "/edit";
+            }
+            if(postDTO.getPrice() == null) {
+                redirectAttributes.addFlashAttribute("error", "가격을 입력하세요.");
+                return "redirect:/posts/" + id + "/edit";
+            }
+            if(postDTO.getDescription().trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "설명을 입력하세요.");
+                return "redirect:/posts/" + id + "/edit";
+            }
+            if(postDTO.getLocation().trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "위치를 입력하세요.");
+                return "redirect:/posts/" + id + "/edit";
+            }
+            postDTO.setTitle(postDTO.getTitle().trim());
+            postDTO.setDescription(postDTO.getDescription().trim());
+            postDTO.setLocation(postDTO.getLocation().trim());
+            postDTO.setSold(true); //예시
+
+            Post post = postService.updatePost(user, categoryEntity, id, postDTO);
+            redirectAttributes.addFlashAttribute("success", "게시글이 성공적으로 수정되었습니다.");
+            return "redirect:/posts/" + post.getId();
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "게시글 수정 중 오류가 발생했습니다.");
+            return "redirect:/posts/" + id + "/edit";
+        }
+    }
+
     /* 게시글 삭제 처리 */
+    @PostMapping("/{id}")
+    public String deletePost(@PathVariable Long id) {
+        postService.deletePost(id);
+        return "post_detail";
+    }
     /* 게시글 좋아요 추가 */
     /* 좋아요 취소 */
 

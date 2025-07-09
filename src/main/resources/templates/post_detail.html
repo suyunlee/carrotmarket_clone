@@ -8,13 +8,13 @@
 <body>
     <div id="postDetail" class="container">
         <div id="backBtn">
-            <img src="/images/icons/leftarrow_icon.svg" alt="뒤로가기 화살표" id="arrowImage">
-            <a th:href="@{/posts}" class="back-btn">뒤로가기</a>
+            <img src="/images/icons/leftarrow_icon.svg" alt="목록보기 화살표" id="arrowImage">
+            <a th:href="@{/posts}" class="back-btn">목록보기</a>
         </div>
         <div id="postContent">
 
             <div id="imageView">
-                <img src="#">
+                <img src="/images/placeholder.png">
             </div>
 
             <div id="userView">
@@ -33,7 +33,8 @@
                     <div id="priceView"><span th:text="${post != null ? #numbers.formatDecimal(post.price, 0, 'COMMA', 0, 'POINT') : '50,000'}"></span> 원</div>
                 </div>
                 <div id="countView">
-                    <div>조회 | 채팅</div>
+                    <div>조회 <span th:text="${post != null ? post.viewCount : '0'}"></span>
+                        | 채팅 <span th:text="${chatCount != null ? chatCount : '0'}"></span></div>
                 </div>
             </div>
 
@@ -41,11 +42,13 @@
 
             <div id="locationView">희망 거래장소 | <span th:text="${post != null ? post.location : '부평역 1번출구'}"></span></div>
 
-            <div id="editContainer">
+            <div id="editContainer" th:if="${user?.id == post.user.id}">
                 <div id="editButton">
-                    <button id="deleteBt">삭제하기</button>
-                    <span> | </span>
-                    <button id="updateBt">수정하기</button>
+                    <form th:action="@{/posts/{id}(id=${post.id})}" method="post">
+                        <input type="submit" id="deleteBt" value="삭제하기" onclick="return confirm('삭제하시겠습니까?');">
+                    </form>
+                    <div id="vertical">|</div>
+                    <a th:href="@{/posts/{id}/edit(id=${post.id})}" id="updateBt">수정하기</a>
                 </div>
             </div>
         </div>

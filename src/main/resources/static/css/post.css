@@ -165,8 +165,10 @@ textarea::-webkit-scrollbar-thumb {
 }
 
 #horizon {
-  border: 1px solid #DBDCE2;
+  border: 0.5px solid #DBDCE2;
   width: 100%;
+  border-width: 1px 0px 0px 0px;
+  height: 1px;
 }
 
 #postInfoView {
@@ -200,11 +202,19 @@ textarea::-webkit-scrollbar-thumb {
     position: absolute;
     right: 0;
     bottom: 0;
+    display: flex;
+    gap: 8px;
 }
-#editButton button {
+#deleteBt, #updateBt {
     height: 17px;
     border: none;
     background: none;
     font-size: 14px;
     color: #898A93;
+    cursor: pointer;
+}
+#deleteBt:hover, #updateBt:hover {
+    background: #F2F3F6;
+    border-radius: 10px;
+    border: none;
 }

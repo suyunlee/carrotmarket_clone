@@ -7,7 +7,7 @@
 </head>
 <body>
     <div class="container">
-        <form th:action="@{/posts}" method="post" id="postForm" enctype="multipart/form-data">
+        <form th:action="${mode} == 'new' ? @{/posts} : @{/posts/{id}(id=${post.id})}" method="post" id="postForm" enctype="multipart/form-data">
             <div class="product-info-section">
                 <img id="previewImage" src="https://placehold.co/210x210"
                      alt="image upload">
@@ -15,24 +15,28 @@
                 <div class="product-group">
                     <label>글 제목</label>
                     <input type="text" id="title" name="title" required
-                           placeholder="글 제목" maxlenth="100" />
+                           placeholder="글 제목" maxlength="100"
+                           th:value="${mode == 'new' ? '' : post.title}"/>
                     <label>가격</label>
-                    <input type="number" id="price" name="price" required placeholder="가격" />
+                    <input type="number" id="price" name="price" required placeholder="가격"
+                           th:value="${mode == 'new' ? '' : post.price}" />
                 </div>
             </div>
             <div class="product-group">
                 <label>물품 설명</label>
                 <textarea id="description" name="description" required
-                       placeholder="게시글 내용을 작성해주세요." maxlength="5000"></textarea>
+                       placeholder="게시글 내용을 작성해주세요." maxlength="5000"
+                          th:text="${mode == 'new' ? '' : post.description}"></textarea>
                 <label>카테 고리</label>
                 <select id="category" name="category" required>
-                    <option value="전자기기">전자기기</option>
-                    <option value="가구">가구</option>
-                    <option value="의류">의류</option>
+                    <option value="전자기기" th:selected="${mode != 'new' and post.category == '전자기기'}">전자기기</option>
+                    <option value="가구" th:selected="${mode != 'new' and post.category == '가구'}">가구</option>
+                    <option value="의류" th:selected="${mode != 'new' and post.category == '의류'}">의류</option>
                 </select>
                 <label>거래 희망 장소</label>
                 <input type="text" id="location" name="location" required
-                       placeholder="거래를 희망하는 장소" maxlenth="100" />
+                       placeholder="거래를 희망하는 장소" maxlength="100"
+                       th:value="${mode == 'new' ? user.location : post.location}" />
             </div>
             <button class="c-btn" type="submit">완료</button>
         </form>
