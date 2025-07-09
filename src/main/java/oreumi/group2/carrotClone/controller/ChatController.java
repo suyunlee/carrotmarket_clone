@@ -2,8 +2,10 @@ package oreumi.group2.carrotClone.controller;
 
 import lombok.RequiredArgsConstructor;
 import oreumi.group2.carrotClone.DTO.ChatMessageDTO;
+import oreumi.group2.carrotClone.DTO.ReadReceiptDTO;
 import oreumi.group2.carrotClone.model.ChatMessage;
 import oreumi.group2.carrotClone.service.ChatMessageService;
+import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -31,6 +33,10 @@ public class ChatController {
             Model model)
     {
         // String username = principal.getName();
+
+        //입장 전 상대방 메세지 읽음 처리
+        chatMessageService.markRead(roomId,username);
+        
         model.addAttribute("roomId", roomId);
         model.addAttribute("currentUser",username);
 
@@ -72,5 +78,22 @@ public class ChatController {
         ChatMessageDTO dto = ChatMessageDTO.fromEntity(saved);
         // 같은 방 (topic) 구독자에게 메세지 전달
         template.convertAndSend("/topic/chat/" + roomId,dto);
+    }
+
+    /* 실시간 읽음 처리 */
+    @MessageMapping("/room/{roomId}/read")
+    public void stompRead(
+            @DestinationVariable Long roomId,
+            @Payload ReadReceiptDTO receiptDTO)
+    {
+        receiptDTO.getMessageIds().forEach(chatMessageService::markSingleRead);
+        template.convertAndSend("/topic/chat/" + roomId + "/read", receiptDTO);
+    }
+
+    @PostMapping("/read")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void markRead(@PathVariable Long roomId,
+                         @RequestParam String username){
+        chatMessageService.markRead(roomId,username);
     }
 }

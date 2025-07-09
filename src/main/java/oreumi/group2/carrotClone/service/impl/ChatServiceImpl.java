@@ -55,6 +55,20 @@ public class ChatServiceImpl implements ChatRoomService, ChatMessageService {
                 });
     }
 
+    /* 개별 메세지 한 건 읽음 처리 */
+    @Override
+    public void markSingleRead(Long messageId) {
+        ChatMessage m = chatMessageRepository.findById(messageId)
+                .orElseThrow(() -> new RuntimeException("메세지가 존재하지않습니다."));
+        m.setRead(true);
+    }
+
+    /* 보낸 사람이 아닌 상대 ㅁㅅ지를 모두 읽음 처리 */
+    @Override
+    public void markRead(Long roomId, String username) {
+        chatMessageRepository.markAllRead(roomId,username);
+    }
+
     /* 채팅방 업데이트 */
     @Override
     public ChatRoom updateChatRoom(ChatRoom chatRoom) {

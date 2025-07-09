@@ -3,16 +3,42 @@
 <head>
     <meta charset="UTF-8"/>
     <title th:text="'채팅방 ' + ${roomId}">채팅방</title>
+    <style>
+        .read-badge {
+          display: inline-block;
+          margin-left: 0.5em;
+          font-size: 0.75em;
+          color: #666;
+        }
+        .unread-badge {
+            display: inline-block;
+            margin-left: 0.5em;
+            font-size: 0.75em;
+            background: red;
+            color: white;
+            border-radius: 10px;
+            padding: 0 4px;
+        }
+    </style>
 </head>
 <body>
     <h2 th:text="'채팅방 ' + ${roomId} + '    ' + ${currentUser}">채팅방</h2>
 
     <!-- 과거 메시지: data-id 속성 추가 -->
     <ul id="chatArea">
-        <li th:each="msg : ${messages}" th:attr="data-id=${msg.id}">
+        <li th:each="msg : ${messages}" th:attr="data-id=${msg.id}, data-sender=${msg.senderUsername}">
             <strong th:text="${msg.senderNickname}">닉네임</strong>:
             <span th:text="${msg.content}">메시지</span>
             <em th:text="${#temporals.format(msg.createdAt, 'HH:mm')}"></em>
+            <span class="read-badge"
+                  th:if="${msg.senderUsername == currentUser and msg.isRead}">
+              읽음
+            </span>
+            <!-- 내 메시지면서 아직 상대가 안 읽었을 때만 1 -->
+            <span class="unread-badge"
+                  th:if="${msg.senderUsername == currentUser and !msg.isRead}">
+              1
+            </span>
         </li>
     </ul>
     <input type="text" id="msg" placeholder="메시지 입력"/>
@@ -37,31 +63,102 @@
           if (id) renderIds.add(id); // 이미 메세지가 존재할시
         });
 
+        // 메세지 읽음 처리
+        function sendReadReceipt() {
+            const toMark = Array.from(chatArea.querySelectorAll('li'))
+                .filter(li => {
+                    const mine = li.dataset.sender === currentUser;
+                    return li.dataset.id && !mine && !li.classList.contains('read');
+                })
+                .map(li => +li.dataset.id);
+
+                if (!toMark.length) return;
+
+                 client.send(
+                    `/app/room/${roomId}/read`,
+                    {'content-type':'application/json'},
+                    JSON.stringify({ readerUsername: currentUser, messageIds: toMark })
+                );
+
+            // UI 에도 즉시 반영
+            toMark.forEach(id => {
+                const li = document.querySelector(`#chatArea li[data-id='${id}']`);
+                if (!li.classList.contains('read')) {
+                    li.classList.add('read');
+                    const badge = document.createElement('span');
+                    badge.className = 'read-badge';
+                    badge.textContent = '읽음';
+                    li.append(badge);
+                }
+            });
+        }
+
         // 메시지 렌더 함수
         function renderMessage(msg) {
-          if (renderIds.has(msg.id)) return;
-          renderIds.add(msg.id);
+            if (renderIds.has(msg.id)) return;
+            renderIds.add(msg.id);
 
+            const isMine = (msg.senderUsername === currentUser);
+            let badgeHtml = isMine
+                ? (msg.isRead
+                    ? '<span class="read-badge">읽음</span>'
+                    : '<span class="unread-badge">1</span>')
+                :'';
+
+          // 메세지 전달
           const li = document.createElement('li');
           li.dataset.id = msg.id;
-          // 메세지 전달
-          li.innerHTML = `<strong>${msg.senderNickname}</strong>: ${msg.content}
-                          <em>${new Date(msg.createdAt).toLocaleTimeString()}</em>`;
+          li.dataset.sender = msg.senderUsername;
+
+           li.innerHTML = `
+                        <strong>${msg.senderNickname}</strong>: ${msg.content}
+                        <em>${new Date(msg.createdAt).toLocaleTimeString()}</em>
+                        ${badgeHtml}
+                        `;
           chatArea.append(li);
         }
 
-        // 2) REST 로 과거 메시지 로딩
         fetch(`/chat/room/${roomId}/messages`)
-          .then(r => r.json())
-          .then(list => list.forEach(renderMessage))
-          .catch(console.error);
+            .then(r => r.json())
+            .then(list => {
+                list.forEach(renderMessage);
+                sendReadReceipt();
+            })
+            .catch(console.error);
 
         // 3) STOMP 연결 (새 메시지만 렌더)
         const client = Stomp.over(new SockJS('/ws-chat'));
         client.connect({}, () => {
-          client.subscribe(`/topic/chat/${roomId}`, msg =>
-            renderMessage(JSON.parse(msg.body))
-          );
+
+             client.subscribe(`/topic/chat/${roomId}`, frame => {
+                    const msg = JSON.parse(frame.body);
+                    renderMessage(msg);
+                });
+
+
+            client.subscribe(`/topic/chat/${roomId}/read`, frame => {
+                const { messageIds, readerUsername } = JSON.parse(frame.body);
+                const payload = JSON.parse(frame.body);
+
+                messageIds.forEach(id => {
+                    const li = document.querySelector(`#chatArea li[data-id='${id}']`);
+                    if (li
+                     && !li.classList.contains('read')
+                     && readerUsername !== currentUser
+                     && li.dataset.sender === readerUsername
+                    ){
+                        li.classList.add('read');
+                        const ub = li.querySelector('.unread-badge');
+                        if (ub) ub.remove();
+                        const rb = document.createElement('span');
+                        rb.className = 'read-badge';
+                        rb.textContent = '읽음';
+                        li.append(rb);
+                    }
+                });
+            });
+
+
         });
 
         // 4) 메시지 보내기

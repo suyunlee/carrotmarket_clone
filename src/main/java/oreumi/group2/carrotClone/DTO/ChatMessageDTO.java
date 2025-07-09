@@ -17,6 +17,7 @@ public class ChatMessageDTO {
     private String senderUsername;
     private String senderNickname;
     private LocalDateTime createdAt;
+    private boolean isRead;
 
     /* 필터링된 DTO 반환 */
     public static ChatMessageDTO fromEntity(ChatMessage m){
@@ -25,7 +26,8 @@ public class ChatMessageDTO {
                 m.getContent(),
                 m.getSender().getUsername(),
                 m.getSender().getNickname(),
-                m.getCreatedAt()
+                m.getCreatedAt(),
+                m.isRead()
         );
     }
 }
