@@ -24,6 +24,9 @@ public class User {
     @Column(unique = true, nullable = false, length = 255)
     private String username;
 
+    @Column(updatable = true)
+    private String email; // 소셜로그인한 이메일
+
     @Column(nullable = false, length = 255)
     private String password;
 
@@ -68,6 +71,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes = new ArrayList<>(); /* like */
 
+
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<ChatRoom> chatRooms = new ArrayList<>();
+
+
 }

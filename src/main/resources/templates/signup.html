@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>회원가입</title>
+</head>
+<body>
+<h1>회원가입</h1>
+
+<!-- th:object 으로 user 모델을 바인딩 -->
+<form th:action="@{/users/signup}" th:object="${user}" method="post">
+    <div>
+        <label>이메일:
+            <input type="email" th:field="*{username}" placeholder="이메일 입력"/>
+        </label>
+        <div th:if="${usernameError}" th:text="${usernameError}"></div>
+    </div>
+
+    <div>
+        <label>비밀번호:
+            <input type="password" th:field="*{password}" placeholder="비밀번호 입력"/>
+        </label>
+        <div th:if="${passwordError}" th:text="${passwordError}"></div>
+    </div>
+
+    <div>
+        <label>닉네임:
+            <input type="text" th:field="*{nickname}" placeholder="닉네임 입력"/>
+        </label>
+    </div>
+
+    <div>
+        <label>전화번호:
+            <input type="text" th:field="*{phoneNumber}" placeholder="전화번호 입력"/>
+        </label>
+    </div>
+
+    <button type="submit">가입하기</button>
+</form>
+
+<p>
+    이미 계정이 있으신가요?
+    <a th:href="@{/users/login}">로그인</a>
+</p>
+</body>
+</html>

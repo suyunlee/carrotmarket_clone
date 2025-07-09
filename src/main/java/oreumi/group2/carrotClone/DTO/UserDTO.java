@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import oreumi.group2.carrotClone.model.enums.AuthProvider;
 
 import java.io.Serializable;
 
@@ -16,6 +17,7 @@ public class UserDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String username;    // 로그인용 아이디 (이멜)
+    private String email;
     private String password;    //비밀번호
     private String nickname;    // 사용자 닉네임
     private String phoneNumber; // 전화번호
@@ -24,4 +26,6 @@ public class UserDTO implements Serializable {
     private String status;  // 회원 상태
     private Boolean NeighborhoodVerified;   //동네 인증 여부
     private String NeighborhoodName;    // 동네 이름
+    private AuthProvider provider;
+    private String providerId;
 }
