@@ -1,56 +1,80 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>회원가입 | 당근 클론</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>회원가입 | 당근마켓 클론</title>
+    <link rel="stylesheet" href="/css/styles.css">
     <style>
-        .error { color : red; font-size: 12px; margin-top: 4px;}
+        .error { color: red; font-size: 12px; margin-top: 4px; }
     </style>
 </head>
 <body>
 <div class="auth-container">
     <div class="logo">당근 마켓</div>
-    <form id="signupForm" class="auth-form" action="/users/signup" method="post" novalidate>
-        <!-- username -->
+
+    <form th:action="@{/users/signup}" th:object="${user}"
+          method="post" id="signupForm" class="auth-form" novalidate>
+
+        <!-- USERNAME -->
         <div class="form-group">
             <label for="username">아이디</label>
-            <input type="text" id="username" name="username" placeholder="2~12자 한글/영문/숫자" required>
+            <!-- th:field 가 *{username} 을 user.username 에 바인딩 -->
+            <input type="text" id="username" th:field="*{username}"
+                   placeholder="2~12자 한글/영문/숫자" required />
+            <!-- 서버쪽 Validation 에러 -->
+            <div th:if="${#fields.hasErrors('username')}"
+                 th:errors="*{username}" class="error"></div>
+            <!-- 프론트 검증 에러 -->
             <div id="usernameError" class="error"></div>
         </div>
-        <!-- password -->
+
+        <!-- PASSWORD -->
         <div class="form-group">
             <label for="password">비밀번호</label>
-            <input type="password" id="password" name="password" placeholder="최소 3자" required>
+            <input type="password" id="password" th:field="*{password}"
+                   placeholder="최소 3자" required />
+            <div th:if="${#fields.hasErrors('password')}"
+                 th:errors="*{password}" class="error"></div>
             <div id="passwordError" class="error"></div>
         </div>
-        <!-- confirmPassword -->
+
+        <!-- CONFIRM PASSWORD DTO 연결 없이 JS 에서만 검증 -->
         <div class="form-group">
             <label for="confirmPassword">비밀번호 확인</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="비밀번호 재입력" required>
+            <input type="password" id="confirmPassword" name="confirmPassword"
+                   placeholder="비밀번호 재입력" required />
             <div id="confirmError" class="error"></div>
         </div>
-        <!-- nickname -->
+
+        <!-- NICKNAME / PHONE / LOCATION-->
         <div class="form-group">
             <label for="nickname">닉네임</label>
-            <input type="text" id="nickname" name="nickname" placeholder="닉네임 입력" required>
+            <input type="text" id="nickname" th:field="*{nickname}"
+                   placeholder="닉네임 입력" required />
             <div id="nicknameError" class="error"></div>
         </div>
-        <!-- phoneNumber -->
+
         <div class="form-group">
             <label for="phoneNumber">전화번호</label>
-            <input type="text" id="phoneNumber" name="phoneNumber" placeholder="숫자만 입력" required>
+            <input type="text" id="phoneNumber" th:field="*{phoneNumber}"
+                   placeholder="숫자만 입력" required />
             <div id="phoneError" class="error"></div>
         </div>
-        <!-- location (선택) -->
+
         <div class="form-group">
             <label for="location">동네</label>
-            <input type="text" id="location" name="location" placeholder="동네 입력 (선택)">
+            <input type="text" id="location" th:field="*{location}"
+                   placeholder="동네 입력 (선택)" />
         </div>
+
         <button type="submit" class="btn btn-primary">회원가입</button>
+
+        <div th:if="${usernameError}" class="error"
+             th:text="${usernameError}"></div>
+
         <p class="link-text">
             이미 계정이 있으신가요?
-            <a href="/users/login">로그인</a>
+            <a th:href="@{/users/login}">로그인</a>
         </p>
     </form>
 </div>
@@ -58,59 +82,40 @@
 <script>
     document.getElementById('signupForm').addEventListener('submit', function(e) {
       let valid = true;
-
-      // Username: 2~12자 한글/영문/숫자
-      const userEl = document.getElementById('username');
+      const userVal = this.username.value.trim();
       const userErr = document.getElementById('usernameError');
-      const userVal = userEl.value.trim();
-      const userPat = /^[A-Za-z0-9가-힣]{2,12}$/;
-      if (!userPat.test(userVal)) {
+      if (!/^[A-Za-z0-9가-힣]{2,12}$/.test(userVal)) {
         userErr.textContent = '아이디는 2~12자의 한글/영문/숫자만 가능합니다.';
         valid = false;
-      } else {
-        userErr.textContent = '';
-      }
+      } else { userErr.textContent = ''; }
 
-      // Password: 최소 3자
-      const pwEl = document.getElementById('password');
+      const pw = this.password.value;
       const pwErr = document.getElementById('passwordError');
-      if (pwEl.value.length < 3) {
+      if (pw.length < 3) {
         pwErr.textContent = '비밀번호는 최소 3자 이상이어야 합니다.';
         valid = false;
-      } else {
-        pwErr.textContent = '';
-      }
+      } else { pwErr.textContent = ''; }
 
-      // Confirm Password: 일치 여부
-      const cpwEl = document.getElementById('confirmPassword');
+      const cpw = document.getElementById('confirmPassword').value;
       const cpwErr = document.getElementById('confirmError');
-      if (cpwEl.value !== pwEl.value) {
+      if (cpw !== pw) {
         cpwErr.textContent = '비밀번호가 일치하지 않습니다.';
         valid = false;
-      } else {
-        cpwErr.textContent = '';
-      }
+      } else { cpwErr.textContent = ''; }
 
-      // Nickname: 공백 체크
-      const nnEl = document.getElementById('nickname');
+      const nn = this.nickname.value.trim();
       const nnErr = document.getElementById('nicknameError');
-      if (nnEl.value.trim() === '') {
+      if (!nn) {
         nnErr.textContent = '닉네임을 입력해주세요.';
         valid = false;
-      } else {
-        nnErr.textContent = '';
-      }
+      } else { nnErr.textContent = ''; }
 
-      // Phone: 숫자만, 공백 체크
-      const phEl = document.getElementById('phoneNumber');
+      const ph = this.phoneNumber.value.trim();
       const phErr = document.getElementById('phoneError');
-      const phVal = phEl.value.trim();
-      if (!/^[0-9]+$/.test(phVal)) {
+      if (!/^[0-9]+$/.test(ph)) {
         phErr.textContent = '전화번호는 숫자만 입력해야 합니다.';
         valid = false;
-      } else {
-        phErr.textContent = '';
-      }
+      } else { phErr.textContent = ''; }
 
       if (!valid) e.preventDefault();
     });
