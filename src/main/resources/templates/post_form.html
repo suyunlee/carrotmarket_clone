@@ -7,7 +7,7 @@
 </head>
 <body>
     <div class="container">
-        <form th:action="${mode} == 'new' ? @{/posts} : @{/posts/{id}(id=${post.id})}" method="post" id="postForm" enctype="multipart/form-data">
+        <form th:action="${mode} == 'new' ? @{/posts} : @{/posts/{id}/edit(id=${post.id})}" method="post" id="postForm" enctype="multipart/form-data">
             <div class="product-info-section">
                 <img id="previewImage" src="https://placehold.co/210x210"
                      alt="image upload">
