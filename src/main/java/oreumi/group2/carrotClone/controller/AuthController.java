@@ -1,6 +1,9 @@
 package oreumi.group2.carrotClone.controller;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import jakarta.validation.Valid;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import oreumi.group2.carrotClone.DTO.UserDTO;
 import oreumi.group2.carrotClone.model.User;
@@ -14,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Builder
+@Entity
 public class AuthController {
 
     private final UserService userService;
