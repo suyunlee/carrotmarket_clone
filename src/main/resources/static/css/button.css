@@ -25,3 +25,15 @@
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+.btn-store{
+    width: 190px;
+    height: 60px;
+    border-radius: 10px;
+    background: #FF6F0E;
+    color: #fff;
+    border: none;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 100%;
+}

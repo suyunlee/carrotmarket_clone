@@ -31,3 +31,48 @@
 .text-center{
     text-align : center;
 }
+
+.home-section-banner{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    padding: 0 120px;
+
+    width:1440px;
+    height:720px;
+}
+
+.home-main{
+    display:flex;
+    flex-direction:column;
+
+    width: 100%;
+    align-items: center;
+}
+
+.banner-text-area{
+    flex-grow:1;
+    min-width:0;
+}
+
+.banner-image-area{
+    flex-shrink:0;
+}
+
+.banner-main-text{
+    font-size: 51px;
+    font-weight: 700;
+    line-height: 64px;
+    letter-spacing: 0%;
+    width: 377px;
+    height: 128px;
+}
+
+.banner-sub-text{
+    height: 52px;
+    opacity: 50%;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 28px;
+    margin-top: 10px;
+}
