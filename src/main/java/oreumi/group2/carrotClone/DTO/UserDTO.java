@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import oreumi.group2.carrotClone.model.enums.AuthProvider;
+import oreumi.group2.carrotClone.validation.UserValidation.ValidUsername;
+import oreumi.group2.carrotClone.validation.UserValidation.ValidPassword;
 
 import java.io.Serializable;
 
@@ -19,10 +21,11 @@ public class UserDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @NotBlank(message = "아이디는 필수 입력입니다!")
-    @Size (min = 2, max = 12, message = "아이디는 2~12자로 입력해주세요.")
+    @ValidUsername
     private String username;    // 로그인용 아이디 (이멜)
 
     @NotBlank (message = "비밀번호는 필수 입력입니다!")
+    @ValidPassword
     @Size (min = 3, message = "비밀번호는 최소 3자여야 합니다.")
 
     private String password;    //비밀번호
