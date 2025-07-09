@@ -90,7 +90,7 @@ let map;
                       });
 
                       circle = new google.maps.Circle({
-                          strokeWeight: 2,
+                          strokeWeight: 0,
                           fillColor: '#0000FF',
                           fillOpacity: 0.1,
                           map: map,

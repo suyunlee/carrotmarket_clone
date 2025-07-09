@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -38,7 +39,7 @@ public class MapsController {
 //    주소 명 >
 //    어느 유저 저장할거냐? > 세션(priciple) > authen >>> 저장하기.
     @PostMapping("/verify")
-    public String verifyLocation(@RequestParam String userCurrentAddress, Model model){
+    public String verifyLocation(@RequestParam String userCurrentAddress, RedirectAttributes redirectAttributes){
 
         //임시로 1번 유저에 무조건 위치 저장하도록 (h2-console로 유저 삽입)
         Optional<User> userOptional = userService.getUserById(1L);
@@ -51,11 +52,11 @@ public class MapsController {
 
             userService.updateUser(user);
 
-            model.addAttribute("verifyResult", "위치 인증이 완료되었습니다. 내 동네 : " + userCurrentAddress);
-            return "location-result";
+            redirectAttributes.addFlashAttribute("message", "위치 인증이 완료되었습니다. 내 동네 : " + userCurrentAddress);
         }else{
-            model.addAttribute("verifyResult", "위치 인증에 실패했습니다. 다시 시도해주세요");
-            return "location-result";
+            redirectAttributes.addFlashAttribute("message", "위치 인증에 실패했습니다. 다시 시도해주세요");
         }
+
+        return "redirect:/";
     }
 }

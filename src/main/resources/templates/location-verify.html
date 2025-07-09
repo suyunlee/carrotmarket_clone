@@ -1,29 +1,47 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>지도 인증 페이지</title>
-  <script th:src="'https://maps.googleapis.com/maps/api/js?key=' + ${googleMapsApiKey} + '&libraries=places'" defer></script>
-  <script src="/scripts/location-verify.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지도 인증 페이지</title>
+    <script th:src="'https://maps.googleapis.com/maps/api/js?key=' + ${googleMapsApiKey} + '&libraries=places'"
+            defer></script>
+    <script th:src="@{/scripts/location-verify.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/background.css}"/>
+    <link rel="stylesheet" th:href="@{/css/font.css}"/>
+    <link rel="stylesheet" th:href="@{/css/input.css}"/>
+    <link rel="stylesheet" th:href="@{/css/button.css}"/>
+    <link rel="stylesheet" th:href="@{/css/layout.css}"/>
 </head>
-<body>
-  <div id="loadingElement">지도 로딩 중입니다</div>
-  <form th:action="@{/maps/verify}" id="verifyForm" method="post" style="visibility:hidden;">
-    <p>내 동네 설정</p>
-    <input type="text" id="userAddress" name="userAddress" placeholder="예) 서울 강서구 화곡동" width="500px">
-    <button type="button" class="btn-location" onclick="setUserAddress()">내 동네 설정</button>
+<body class="bg-yellow-200 font-pretendard">
+<main class="location-main">
+    <div id="loadingElement">지도 로딩 중입니다</div>
+        <section class="location-section">
+            <p>어디에 살고 계신가요?</p>
+            <div class="location-search-box">
+                <label for="userAddress" class="label-hidden">동네 인증 주소 입력</label>
+                <input type="text" class="input-location-search" id="userAddress" name="userAddress"
+                       placeholder="예) 서울 강서구 화곡동" width="500px">
+                <button type="button" class="btn-location btn-location-search" onclick="setUserAddress()">내 동네 설정
+                </button>
+            </div>
+        </section>
 
-    <br/><br/>
+        <section class="map-section">
+          <p>현재 위치로 동네 인증하기</p>
+          <div id="map" style="height: 468px; width: 870px; pointer-events: none;"></div>
 
-    <div id="map" style="height: 468px; width: 870px; pointer-events: none;"></div>
+          <p class="text-center">현재 위치는 <span id="dong-name">(알 수 없음)</span>입니다.
 
-    <p>현재 위치는 <span id="dong-name">(알 수 없음)</span>입니다.</p>
-      <input type="hidden" id="userCurrentAddress" name="userCurrentAddress">
-    <p id="location-match-message" style="visibility:hidden">현재 위치가 내 동네 설정과 같습니다.</p>
+          <form th:action="@{/maps/verify}" id="verifyForm" method="post">
+          <input type="hidden" id="userCurrentAddress" name="userCurrentAddress">
+          <p id="location-match-message" class="text-center" style="visibility:hidden">현재 위치가 내 동네 설정과 같습니다.</p>
 
-    <input type="hidden" name="currentAddress">
-    <button type="submit" disabled>동네인증 완료하기</button>
-  </form>
+          <button type="submit" class="btn-location-verify" disabled>동네인증 완료하기</button>
+          </form>
+
+        </section>
+
+</main>
 </body>
 </html>

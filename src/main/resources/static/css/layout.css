@@ -1,0 +1,33 @@
+.location-section{
+    width:870px;
+    height:74px;
+
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+
+}
+
+.location-search-box{
+    display:flex;
+    align-items:center;
+    gap:7px;
+}
+
+.location-main{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:30px;
+    height: 100%;
+}
+
+.map-section{
+    display:flex;
+    flex-direction:column;
+}
+
+.text-center{
+    text-align : center;
+}
