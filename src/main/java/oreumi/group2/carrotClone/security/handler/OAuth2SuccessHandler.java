@@ -3,6 +3,7 @@ package oreumi.group2.carrotClone.security.handler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import oreumi.group2.carrotClone.model.User;
 import oreumi.group2.carrotClone.model.enums.AuthProvider;
@@ -15,9 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-/**
- * OAuth2 로그인 성공 시 사용자 정보 DB 저장 및 리다이렉트 처리
- */
+@Builder
 @Component
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
@@ -36,7 +35,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                     .username(email)
                     .password("") // OAuth는 비밀번호 없음
                     .nickname(oAuth2User.getName())
-                    .role(UserRole.ROLE_USER)
                     .status("ACTIVE")
                     .provider(AuthProvider.GOOGLE)
                     .providerId(oAuth2User.getProviderId())
