@@ -1,11 +1,11 @@
 package oreumi.group2.carrotClone.service;
 
 import oreumi.group2.carrotClone.DTO.PostDTO;
-import oreumi.group2.carrotClone.model.Category;
 import oreumi.group2.carrotClone.model.Post;
 import oreumi.group2.carrotClone.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +20,8 @@ public interface PostService {
     Post createPost (User user, PostDTO postDTO, List<String> images); /* 저장 */
     void deletePost(Long id); // 삭제
     Post updatePost(Long id, PostDTO p); /* 단일 업데이트 */
-    boolean isLikedByUser(Long postId, User user);
-    void increaseViewCount(Long postId);
+    boolean isLikedByUser(Long postId, User user); /* 좋아요 */
+    void increaseViewCount(Long postId); /* 조회수 */
+    Page<Post> findAll(Pageable pageable);
+    Page<Post> searchPosts(String keyword, Long categoryId, Pageable pageable);
 }

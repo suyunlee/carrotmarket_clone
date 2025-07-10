@@ -12,6 +12,9 @@ import oreumi.group2.carrotClone.repository.CategoryRepository;
 import oreumi.group2.carrotClone.repository.UserRepository;
 import oreumi.group2.carrotClone.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -21,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 @Controller
@@ -52,13 +54,47 @@ public class PostController {
 
         session.setAttribute("user", user);
 
-        return "redirect:/posts/new";
+        return "redirect:/posts";
     }
 
     /* 전체 게시글 목록 */
     @GetMapping
-    public String showPost(){
-        return "";
+    public String showPost(@RequestParam(defaultValue = "0") int page,
+                           Model model,
+                           HttpSession session,
+                           @AuthenticationPrincipal OAuth2User oAuth2User){
+        User user = getCurrentUser(session, oAuth2User);
+        model.addAttribute("user", user);
+
+        Pageable pageable = PageRequest.of(page, 12);
+        Page<Post> postPage = postService.findAll(pageable);
+
+        model.addAttribute("page", postPage);
+
+        return "post";
+    }
+
+    /* 검색 게시글 목록 */
+    @GetMapping("/search")
+    public String searchPost(@RequestParam(defaultValue = "0") int page,
+                             @RequestParam(required = false) String keyword,
+                             @RequestParam(required = false) Long category,
+                             Model model,
+                             HttpSession session,
+                             @AuthenticationPrincipal OAuth2User oAuth2User){
+        User user = getCurrentUser(session, oAuth2User);
+        model.addAttribute("user", user);
+
+        Pageable pageable = PageRequest.of(page, 8);
+        Page<Post> postPage = postService.searchPosts(keyword, category, pageable);
+
+        model.addAttribute("page", postPage);
+        model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("hasKeyword", keyword != null && !keyword.isBlank());
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("category", category);
+
+        return "post_search";
     }
 
     /* 게시글 작성 폼 */
@@ -76,11 +112,11 @@ public class PostController {
             redirectAttributes.addFlashAttribute("error", "동네 인증이 필요합니다.");
             return "redirect:/maps";
         }
-        Post post = new Post();
-        post.setLocation(user.getLocation());
+        PostDTO postDTO = new PostDTO();
+        postDTO.setLocation(user.getLocation());
         model.addAttribute("mode", "new");
         model.addAttribute("user", user);
-        model.addAttribute("post", post);
+        model.addAttribute("post", postDTO);
         model.addAttribute("categories", categoryRepository.findAll());
         return "post_form";
     }
@@ -116,6 +152,7 @@ public class PostController {
             redirectAttributes.addFlashAttribute("success", "게시글이 성공적으로 등록되었습니다.");
             return "redirect:/posts/" + post.getId();
         } catch (Exception e) {
+            e.printStackTrace();
             redirectAttributes.addFlashAttribute("error", "게시글 등록 중 오류가 발생했습니다.");
             return "redirect:/posts/new";
         }
