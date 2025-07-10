@@ -1,9 +1,11 @@
 package oreumi.group2.carrotClone.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import oreumi.group2.carrotClone.model.enums.AuthProvider;
 import oreumi.group2.carrotClone.model.enums.UserRole;
+import oreumi.group2.carrotClone.validation.ValidPassword;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -22,11 +24,14 @@ public class User {
     private Long id;
 
     @Column(unique = true, nullable = false, length = 255)
+    @Pattern( regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+              message = "유효한 이메일 주소를 입력하ㅔ요.")
     private String username;
 
     @Column(updatable = true)
     private String email; // 소셜로그인한 이메일
 
+    @ValidPassword
     @Column(nullable = false, length = 255)
     private String password;
 

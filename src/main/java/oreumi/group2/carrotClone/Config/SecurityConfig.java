@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .formLogin(login -> login
                         .loginPage("/users/login")
                         .loginProcessingUrl("/login") /* post */
+                        .failureUrl("/users/login?error")        // 실패 시 이동할 URL
                         .defaultSuccessUrl("/users/signup", true)
                         .permitAll()
                 )
