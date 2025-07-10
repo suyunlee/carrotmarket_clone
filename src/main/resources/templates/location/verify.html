@@ -14,8 +14,8 @@
     <link rel="stylesheet" th:href="@{/css/layout.css}"/>
 </head>
 <body class="bg-yellow-200 font-pretendard">
+<header th:replace="~{fragments/header :: header}"></header>
 <main class="location-main">
-    <div id="loadingElement">지도 로딩 중입니다</div>
         <section class="location-section">
             <p>어디에 살고 계신가요?</p>
             <div class="location-search-box">
@@ -39,9 +39,8 @@
 
           <button type="submit" class="btn-location-verify" disabled>동네인증 완료하기</button>
           </form>
-
         </section>
-
 </main>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>

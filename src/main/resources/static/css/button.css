@@ -35,5 +35,40 @@
     border: none;
     font-size: 18px;
     font-weight: 700;
-    line-height: 100%;
+    line-height: 60px;
 }
+
+.header-btn-longin{
+    width: 98px;
+    height: 39px;
+    border-radius: 6px;
+    border: 1px solid;
+    border-color: #DBDCE2;
+    text-align: center;
+    line-height: 39px;
+    text-decoration: none;
+    color: #111111;
+    font-size: 17px;
+    font-weight: 400;
+}
+
+.header-btn-left{
+    display: flex;
+    height: 100%;
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 43px;
+    text-decoration: none;
+    color: #525359;
+}
+
+.header-btn-longin:hover{
+    border-color:#FF6F0E;
+    color:#FF6F0E;
+}
+
+.header-btn-left:hover{
+    color:#FF6F0E;
+}
+
+

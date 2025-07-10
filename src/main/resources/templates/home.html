@@ -15,21 +15,20 @@
     alert([[${message}]]);
 </script>
 
+<header th:replace="~{fragments/header :: header}"></header>
 <main class="home-main">
     <section class="home-section-banner bg-yellow-200">
         <div class="banner-text-area">
             <p class="banner-main-text" th:utext="'당신 근처의<br/>지역 생활 커뮤니티'">배너 메인텍스트</p>
-            <p class="banner-sub-text" th:utext="'동네라서 가능한 모든 것<br/> 당근에서 가까운 이웃과 함께해요.'">배너 서브텍스트</p>
-            <div class="banner-btn-box">
-                <button class="btn-store">
-                    <img th:src="@{/images/icons/google_icon.svg}" alt="Google Play">
-                    Google Play
-                </button>
-                <button class="btn-store">
-                    <img th:src="@{/images/icons/apple_icon.svg}" alt="App Store">
-                    App Store
-                </button>
-            </div>
+            <p class="banner-sub-text-opacity50" th:utext="'동네라서 가능한 모든 것<br/> 당근에서 가까운 이웃과 함께해요.'">배너 서브텍스트</p>
+            <button class="btn-store">
+                <img th:src="@{/images/icons/google_icon.svg}" alt="Google Play">
+                Google Play
+            </button>
+            <button class="btn-store">
+                <img th:src="@{/images/icons/apple_icon.svg}" alt="App Store">
+                App Store
+            </button>
         </div>
         <div class="banner-image-area">
             <img th:src="@{/images/banners/main_banner1.png}" alt="배너 이미지">
@@ -43,19 +42,31 @@
         <div class="banner-text-area">
             <p class="banner-main-text" th:utext="'우리 동네<br/>중고 직거래 마켓'">배너 메인텍스트</p>
             <p class="banner-sub-text" th:utext="'동네 주민들과 가깝고 따뜻한 거래를 지금 경험해보세요.'">배너 서브텍스트</p>
-            <div class="banner-btn-box">
-                <button>인기매물 보기</button>
-            </div>
+            <a th:href="@{/}" class="banner-btn-box">인기매물 보기</a>
         </div>
     </section>
     <section class="home-section-banner bg-green-200">
         <div class="banner-text-area">
             <p class="banner-main-text" th:utext="'이웃과 함께 하는<br/>동네 생활'">배너 메인텍스트</p>
             <p class="banner-sub-text" th:utext="'우리 동네의 다양한 이야기를 이웃과 함께 나누어요.'">배너 서브텍스트</p>
-            <div class="banner-btn-box">
-                <button>우리 동네질문</button>
-                <button>동네분실센터</button>
-                <button>동네모임</button>
+            <div class="banner-sub-menu">
+                <div>
+                    <img th:src="@{/images/icons/banner_icon3.svg}" alt="아이콘 이미지">
+                    <p th:utext="'우리 동네질문'"></p>
+                    <p th:utext="'궁금한 게 있을 땐 <br/>이웃에게 물어보세요.'"></p>
+                </div>
+
+                <div>
+                    <img th:src="@{/images/icons/banner_icon2.svg}" alt="아이콘 이미지">
+                    <p th:utext="'동네분실센터'"></p>
+                    <p th:utext="'무언가를 잃어버렸을<br/>때, 함께 찾을 수 있어요.'"></p>
+                </div>
+
+                <div>
+                    <img th:src="@{/images/icons/banner_icon1.svg}" alt="아이콘 이미지">
+                    <p th:utext="'동네모임'"></p>
+                    <p th:utext="'관심사가 비슷한 이웃과<br/>온오프라인으로 만나요.'"></p>
+                </div>
             </div>
         </div>
 
@@ -75,7 +86,6 @@
     </section>
     <section class="bg-gray-050">상품 리스트</section>
 </main>
-
-
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>

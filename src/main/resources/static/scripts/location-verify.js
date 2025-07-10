@@ -74,7 +74,6 @@ function initMap() {
               map.setCenter(currentPos);
 
               document.getElementById("verifyForm").style.visibility="visible"
-              document.getElementById("loadingElement").style.visibility="hidden"
             } else {
               document.getElementById("dong-name").textContent = "주소 정보를 찾을 수 없습니다.";
             }

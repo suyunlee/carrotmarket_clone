@@ -26,13 +26,13 @@ public class MapsController {
 
     @GetMapping("/permission")
     public String showPermissionPage(Model model){
-        return "location-permission";
+        return "location/permission";
     }
 
     @GetMapping("/verify")
     public String showMaps(Model model){
         model.addAttribute("googleMapsApiKey", apiKey);
-        return "location-verify";
+        return "location/verify";
     }
 
 //    @PostMapping("/verify")
