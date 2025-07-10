@@ -1,6 +1,7 @@
 package oreumi.group2.carrotClone.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+import oreumi.group2.carrotClone.DTO.ChatRoomDTO;
 import oreumi.group2.carrotClone.model.ChatMessage;
 import oreumi.group2.carrotClone.model.ChatRoom;
 import oreumi.group2.carrotClone.model.Post;
@@ -63,10 +64,28 @@ public class ChatServiceImpl implements ChatRoomService, ChatMessageService {
         m.setRead(true);
     }
 
-    /* 보낸 사람이 아닌 상대 ㅁㅅ지를 모두 읽음 처리 */
+    /* 보낸 사람이 아닌 상대 메세지를 모두 읽음 처리 */
     @Override
     public void markRead(Long roomId, String username) {
         chatMessageRepository.markAllRead(roomId,username);
+    }
+
+    /* 채팅방에서 읽지않는 메세지 개수 */
+    @Override
+    @Transactional(readOnly = true)
+    public List<ChatRoomDTO> getRoomsWithUnread(Long postId, String username) {
+        List<ChatRoom> rooms = chatRoomRepository.findAllByPostId(postId);
+
+        return rooms.stream()
+                .map(room ->{
+                    long unread = chatMessageRepository.countUnread(room.getId(), username);
+
+                    ChatMessage lastMsg = chatMessageRepository
+                            .findTopByChatRoomIdOrderByCreatedAtDesc(room.getId())
+                            .orElse(null);
+                    return ChatRoomDTO.of(room, unread,lastMsg);
+                })
+                .toList();
     }
 
     /* 채팅방 업데이트 */

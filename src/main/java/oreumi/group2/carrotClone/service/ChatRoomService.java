@@ -1,5 +1,6 @@
 package oreumi.group2.carrotClone.service;
 
+import oreumi.group2.carrotClone.DTO.ChatRoomDTO;
 import oreumi.group2.carrotClone.model.ChatRoom;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface ChatRoomService {
     List<ChatRoom> findChatRoomsByUserId(Long userId); /* userId 기준 조회 */
     Optional<ChatRoom> findByPostIdAndUserId(Long postId, Long userId); /* 게시물 페이지 > 채팅하기 때 사용 */
     List<ChatRoom> findChatRoomsByPostId(Long id);
+
+    List<ChatRoomDTO> getRoomsWithUnread(Long postId,String username); /* 채팅방 읽음 처리 */
 }

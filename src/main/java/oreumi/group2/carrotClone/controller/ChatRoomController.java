@@ -23,14 +23,32 @@ public class ChatRoomController {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
+    /* 채팅방 목록 */
     @GetMapping("/{postId}/rooms")
-    public List<ChatRoomDTO> listRooms(@PathVariable Long postId){
-        return chatRoomService.findChatRoomsByPostId(postId)
-                .stream()
-                .map(ChatRoomDTO :: fromEntity)
-                .toList();
+    public List<ChatRoomDTO> listRooms(
+            @PathVariable Long postId,
+            @RequestParam String username){
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "게시물이 존재하지 않습니다."
+                ));
+        String seller = post.getUser().getUsername(); // 판매자
+
+        List<ChatRoomDTO> allRooms = chatRoomService.getRoomsWithUnread(postId,username);
+
+        // 3) 구매자 모드면 → 본인(username) 방만 필터
+        if (!username.equals(seller)) {
+            return allRooms.stream()
+                    .filter(r -> r.getUsername().equals(username))
+                    .toList();
+        }
+
+        // 4) 판매자 모드 → 전체 방 반환
+        return allRooms;
     }
 
+    /* 채팅방 생성 */
     @PostMapping("/{postId}/rooms")
     @ResponseBody
     public ChatRoomDTO createRoom(

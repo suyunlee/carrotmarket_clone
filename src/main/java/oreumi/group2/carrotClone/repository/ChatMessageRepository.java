@@ -8,10 +8,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
     List<ChatMessage> findByChatRoomIdOrderByCreatedAtAsc(Long chatRoomId); /* 날짜 순으로 채팅 메세지 찾기 */
+    Optional<ChatMessage> findTopByChatRoomIdOrderByCreatedAtDesc(Long roomId);
 
     @Query("SELECT count(m) " +
             " FROM ChatMessage m " +

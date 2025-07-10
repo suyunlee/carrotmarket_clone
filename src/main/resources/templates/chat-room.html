@@ -138,7 +138,6 @@
 
             client.subscribe(`/topic/chat/${roomId}/read`, frame => {
                 const { messageIds, readerUsername } = JSON.parse(frame.body);
-                const payload = JSON.parse(frame.body);
 
                 messageIds.forEach(id => {
                     const li = document.querySelector(`#chatArea li[data-id='${id}']`);
@@ -157,8 +156,6 @@
                     }
                 });
             });
-
-
         });
 
         // 4) 메시지 보내기

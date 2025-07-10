@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import oreumi.group2.carrotClone.DTO.ChatMessageDTO;
 import oreumi.group2.carrotClone.DTO.ReadReceiptDTO;
 import oreumi.group2.carrotClone.model.ChatMessage;
+import oreumi.group2.carrotClone.model.ChatRoom;
 import oreumi.group2.carrotClone.service.ChatMessageService;
+import oreumi.group2.carrotClone.service.ChatRoomService;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -23,6 +25,7 @@ public class ChatController {
 
     private final ChatMessageService chatMessageService;
     private final SimpMessagingTemplate template;
+    private final ChatRoomService chatRoomService;
 
     /* 채팅방 입장 */
     @GetMapping
@@ -40,13 +43,21 @@ public class ChatController {
         model.addAttribute("roomId", roomId);
         model.addAttribute("currentUser",username);
 
+        ChatRoom chatRoom = chatRoomService.findChatRoomById(roomId);
+
+        Long postId = chatRoom.getPost().getId();
+        System.out.println(postId);
+        model.addAttribute("post",chatRoom.getPost());
+        model.addAttribute("postId",postId);
+
+
         List<ChatMessageDTO> dtos = chatMessageService.getMessages(roomId)
                         .stream()
                         .map(ChatMessageDTO :: fromEntity)
                         .toList();
 
         model.addAttribute("messages",dtos );
-        return "chat-room";
+        return "ChatMessageRoom";
     }
 
     // 클라이언트가 이 엔드포인트를 구독하면 과거 메시지 전체를 반환

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="'채팅방 ' + ${roomId}">채팅방</title>
+    <link rel="stylesheet" th:href="@{/css/chatMessageRoom.css}"/>
+</head>
+<body>
+<!-- 전역 헤더 -->
+<header class="header"></header>
+
+<!-- 채팅 래퍼 -->
+<div class="chat-wrapper">
+    <div class="container">
+        <!-- 사이드바 -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <span class="my-id" th:text="${currentUser}">내아이디</span>
+                <label class="unread-toggle">
+                    읽지 않은 항목
+                    <input type="checkbox" />
+                </label>
+            </div>
+            <ul class="chat-list" id="chatList">
+                <li class="chat-item active">
+                    <div class="chat-avatar"><img src="" alt="AI 챗봇"/></div>
+                    <div class="chat-info">
+                        <strong>AI 챗봇</strong>
+                        <p>궁금한 내용을 물어보세요!</p>
+                    </div>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- 채팅창 -->
+        <section class="chat-window">
+            <!-- 메시지 리스트 -->
+            <div class="messages" id="chatArea"></div>
+
+            <!-- 입력 폼 -->
+            <form class="chat-input-form" id="chat-form" th:inline="javascript">
+                <div class="input-box">
+                    <input type="text" id="chat-input" placeholder="메시지를 입력해주세요"/>
+                    <button type="submit" class="btn send-btn">전송</button>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+
+<!-- SockJS & STOMP -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2/lib/stomp.min.js"></script>
+
+<!-- 전역 변수 선언 -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+      window.chatConfig = {
+        currentUser: /*[[${currentUser}]]*/ '',
+        roomId:      /*[[${roomId}]]*/ '',
+        postId:      /*[[${postId}]]*/ 0,
+        postOwner:   /*[[${post.user.username}]]*/ ''
+      };
+    /*]]>*/
+</script>
+<script type="text/javascript" th:src="@{/js/chatMessageRoom.js}" defer></script>
+</body>
+</html>
