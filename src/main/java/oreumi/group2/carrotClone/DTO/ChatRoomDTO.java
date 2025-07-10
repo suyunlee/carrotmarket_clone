@@ -5,13 +5,15 @@ import lombok.Data;
 import oreumi.group2.carrotClone.model.ChatMessage;
 import oreumi.group2.carrotClone.model.ChatRoom;
 
-@Data
+import java.time.LocalDateTime;
 
+@Data
 public class ChatRoomDTO {
 
     private Long id, userId, postId;
     private String username, lastMessage;
     private long unreadCount;
+    private LocalDateTime lastMessageAt;
 
 
     public ChatRoomDTO() {}
@@ -24,13 +26,15 @@ public class ChatRoomDTO {
         this.username = username;
     }
 
-    public ChatRoomDTO(Long id, Long userId, Long postId, String username,long unreadCount,String lastMessage){
+    public ChatRoomDTO(Long id, Long userId, Long postId, String username,long unreadCount,String lastMessage,
+                       LocalDateTime lastMessageAt){
         this.id = id;
         this.userId = userId;
         this.postId = postId;
         this.unreadCount = unreadCount;
         this.username = username;
         this.lastMessage = lastMessage;
+        this.lastMessageAt = lastMessageAt;
     }
 
     /* 채팅방 필터링 DTO */
@@ -52,7 +56,8 @@ public class ChatRoomDTO {
                 r.getPost().getId(),
                 r.getUser().getUsername(),
                 unreadCount,
-                lastMsg != null ? lastMsg.getContent() : ""
+                lastMsg != null ? lastMsg.getContent() : "",
+                lastMsg != null ? lastMsg.getCreatedAt() : null
         );
     }
 }

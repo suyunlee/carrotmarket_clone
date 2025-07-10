@@ -174,7 +174,6 @@
            const badge = document.createElement('span');
            badge.className = 'unread-badge';
            badge.textContent = r.unreadCount;
-           badge.style
            info.append(badge);
          }
 
