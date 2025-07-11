@@ -38,11 +38,11 @@ public class PostController {
     /* 테스트 로그인 */
     @GetMapping("/test-login")
     public String testLogin(HttpSession session) {
-        String username = "testuser";
+        String username = "testuser@www.com";
         User user = userRepository.findByUsername(username).orElseGet(() -> {
             User newUser = new User();
             newUser.setUsername(username);
-            newUser.setPassword("testpassword");
+            newUser.setPassword("testpa!@#!22ssword");
             newUser.setNickname("테스트유저");
             newUser.setPhoneNumber("010-0000-0000");
             newUser.setLocation("서울");
