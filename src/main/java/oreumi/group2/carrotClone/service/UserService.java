@@ -1,5 +1,6 @@
 package oreumi.group2.carrotClone.service;
 
+import oreumi.group2.carrotClone.DTO.UserDTO;
 import oreumi.group2.carrotClone.model.User;
 import oreumi.group2.carrotClone.model.enums.AuthProvider;
 
@@ -9,7 +10,7 @@ import java.util.Optional;
 public interface UserService {
 
     /* 회원 가입*/
-    User register(User user);
+    User register(UserDTO userDTO);
     
     /* username 조회*/
     Optional<User> findByUsername(String username);
@@ -25,9 +26,6 @@ public interface UserService {
 
     /* user 정보 삭제 */
     void deleteUser(Long id);
-    
-    /* 휴대폰 전화 중복 확인 */
-    boolean existsByPhoneNumber(String phoneNumber);
 
     /* id 기준 위치 조회 */
     String getLocation(Long id);

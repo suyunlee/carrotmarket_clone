@@ -1,11 +1,14 @@
 package oreumi.group2.carrotClone.service.impl;
 
 import jakarta.persistence.EntityExistsException;
+import oreumi.group2.carrotClone.DTO.UserDTO;
 import oreumi.group2.carrotClone.model.User;
 import oreumi.group2.carrotClone.model.enums.AuthProvider;
+import oreumi.group2.carrotClone.model.enums.UserRole;
 import oreumi.group2.carrotClone.repository.UserRepository;
 import oreumi.group2.carrotClone.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,21 +19,44 @@ import java.util.Optional;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    @Autowired private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     /* user 정보 저장 */
     @Override
-    public User register(User user) {
+    public User register(UserDTO userDTO) {
 
-        if(userRepository.existsByUsername(user.getUsername())){
+        if(userRepository.existsByUsername(userDTO.getUsername())){
             throw new EntityExistsException("이미 사용중인 아이디입니다.");
         }
-        if(userRepository.existsByNickname(user.getNickname())){
+        if(userRepository.existsByNickname(userDTO.getNickname())){
             throw new EntityExistsException("이미 사용중인 닉네임입니다.");
         }
-        if(userRepository.existsByPhoneNumber(user.getPhoneNumber())){
-            throw new EntityExistsException("이미 등록된 전화번호입니다.");
+        if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()){
+            if (userDTO.getPassword().length() <= 2){
+                throw new IllegalArgumentException(("비밀번호는 3자리 이상이어야 합니다."));
+            }
         }
+
+        User user = new User();
+        user.setUsername(userDTO.getUsername());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setNickname(userDTO.getNickname());
+        user.setLocation(userDTO.getLocation());
+        user.setRole(UserRole.USER);
+
+        /* 소셜 로그인할시 */
+        if(userDTO.getProviderId() != null){
+            user.setProvider(userDTO.getProvider());
+            user.setProviderId(userDTO.getProviderId());
+        }
+
         return userRepository.save(user);
     }
 
@@ -60,8 +86,11 @@ public class UserServiceImpl implements UserService {
 
         exiting.setUsername(user.getUsername());
         exiting.setNickname(user.getNickname());
-        exiting.setPhoneNumber(user.getPhoneNumber());
         exiting.setLocation(user.getLocation());
+        exiting.setNeighborhoodVerifiedAt(user.getNeighborhoodVerifiedAt());
+        exiting.setNeighborhoodName(user.getNeighborhoodName());
+        exiting.setNeighborhoodVerifiedAt(user.getNeighborhoodVerifiedAt());
+        exiting.setRole(user.getRole());
 
         return userRepository.save(user);
     }
@@ -69,7 +98,9 @@ public class UserServiceImpl implements UserService {
     /* id 기준 위치 조회 */
     @Override
     public String getLocation(Long id) {
-        return userRepository.findById(id).get().getLocation();
+        return userRepository.findById(id)
+                .orElseThrow(() -> new EntityExistsException("해당 유저는 존재하지 않습니다"))
+                .getLocation();
     }
 
     /* id 기준 유저 삭제 */
@@ -79,12 +110,6 @@ public class UserServiceImpl implements UserService {
             throw new EntityExistsException("해당 유저는 존재하지않습니다.");
         }
         userRepository.deleteById(id);
-    }
-
-    /* 휴대폰 전화번호 중복체크 */
-    @Override
-    public boolean existsByPhoneNumber(String phoneNumber) {
-        return userRepository.existsByPhoneNumber(phoneNumber);
     }
 
     /* 전체 조회 */

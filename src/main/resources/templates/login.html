@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인 | 당근마켓 클론</title>
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <style>
+        .error { color: red; font-size: 12px; margin-top: 4px; }
+    </style>
+</head>
+<body>
+<div class="auth-container">
+    <div class="logo">
+        <img th:src="@{/images/icons/header_icon.svg}" alt="당근마켓 로고" class="logo-icon"/>
+    </div>
+
+    <div th:if="${param.error}" class="error">
+        로그인 정보가 올바르지 않습니다.
+    </div>
+
+    <form id="loginForm" class="auth-form"
+          th:action="@{/login}" method="post" novalidate>
+
+        <!-- EMAIL AS USERNAME -->
+        <div class="form-group">
+            <label for="username">이메일</label>
+            <input type="text" id="username" name="username"
+                   placeholder="이메일 입력" required />
+            <div id="loginUserError" class="error"></div>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="form-group">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password"
+                   placeholder="비밀번호 입력" required />
+            <div id="loginPwError" class="error"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">로그인</button>
+
+        <button type="button" class="btn btn-google"
+                onclick="location.href='/oauth2/authorization/google'">
+            <img th:src="@{/images/icons/google_color_icon.svg}"
+                 alt="Google 로고" class="google-icon"/>
+            Google로 로그인</button>
+        <p class="link-text">
+            당근마켓 회원이 아니신가요?
+            <a th:href="@{/users/signup}">회원가입</a>
+        </p>
+    </form>
+</div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      let valid = true;
+      const emailPat = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+      // 이메일 검증
+      const email = this.username.value.trim();
+      const emailErrEl = document.getElementById('loginUserError');
+      if (!emailPat.test(email)) {
+        emailErrEl.textContent = '유효한 이메일을 입력해주세요.';
+        valid = false;
+      } else {
+        emailErrEl.textContent = '';
+      }
+
+      // 비밀번호 길이 검증
+      const pw = this.password.value;
+      const pwErrEl = document.getElementById('loginPwError');
+      if (pw.length < 8) {
+        pwErrEl.textContent = '비밀번호는 최소 8자 이상이어야 합니다.';
+        valid = false;
+      } else {
+        pwErrEl.textContent = '';
+      }
+
+      if (!valid) e.preventDefault();
+    });
+</script>
+</body>
+</html>
+
+
+
