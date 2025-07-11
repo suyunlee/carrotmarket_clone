@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Controller
@@ -106,7 +107,7 @@ public class PostController {
         User user = getCurrentUser(session, oAuth2User);
         if(user == null) {
             redirectAttributes.addFlashAttribute("error", "로그인이 필요합니다.");
-            return "redirect:/login";
+            return "redirect:/users/login";
         }
         if (!user.isNeighborhoodVerified()) {
             redirectAttributes.addFlashAttribute("error", "동네 인증이 필요합니다.");
@@ -197,11 +198,19 @@ public class PostController {
         Post post = postOpt.get();
 
         User user = getCurrentUser(session, oAuth2User);
-        if (user == null) return "redirect:/login";
+        if (user == null) return "redirect:/users/login";
 
         if(!post.getUser().getId().equals(user.getId())) return "redirect:/posts";
 
-        model.addAttribute("post", post);
+        PostDTO postDTO = new PostDTO();
+        postDTO.setId(post.getId());
+        postDTO.setTitle(post.getTitle());
+        postDTO.setDescription(post.getDescription());
+        postDTO.setLocation(post.getLocation());
+        postDTO.setCategory(post.getCategory());
+        postDTO.setPrice(post.getPrice() != null ? BigDecimal.valueOf(post.getPrice().longValue()) : null);
+
+        model.addAttribute("post", postDTO);
         model.addAttribute("user", user);
         model.addAttribute("mode", "edit");
         model.addAttribute("categories", categoryRepository.findAll());

@@ -29,6 +29,7 @@
         <div th:if="${page != null and !#lists.isEmpty(page.content)}" class="post-grid">
             <div th:each="post : ${page.content}" class="post-card">
                 <a th:href="@{/posts/{id}(id=${post?.id})}" class="post-info-link">
+                    <div class="isSoldBox" th:if="${post.sold}">판매완료</div>
                     <img src="https://placehold.co/210x210" alt="미리보기 이미지" class="preview">
                     <div class="post-info">
                         <div class="post-title" th:text="${post?.title ?: '제목 없음'}">제목</div>

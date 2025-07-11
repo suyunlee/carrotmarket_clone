@@ -74,16 +74,28 @@ h2 {
     align-items: center;
 }
 .post-info-link {
-     text-decoration: none;
-     color: inherit;
-     border-radius: 12px;
-     display: flex;
-     flex-direction: column;
-     gap: 16px;
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 .post-info-link:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+.isSoldBox {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: rgba(0,0,0,0.7);
+    color: white;
+    padding: 4px 8px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    z-index: 10;
 }
 .preview {
      border-radius: 12px;

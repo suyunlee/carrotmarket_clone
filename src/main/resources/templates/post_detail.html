@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="/css/post.css">
 </head>
 <body>
+    <div th:if="${error}"> <script> alert([[${error}]]); </script> </div>
+
     <div id="postDetail" class="container">
         <div id="backBtn">
             <img src="/images/icons/leftarrow_icon.svg" alt="목록보기 화살표" id="arrowImage">
@@ -38,7 +40,7 @@
                 </div>
             </div>
 
-            <div id="descriptionView" th:text="${post != null ? post.description : '글 내용입니다.'}"></div>
+            <pre id="descriptionView" th:text="${post != null ? post.description : '글 내용입니다.'}"></pre>
 
             <div id="locationView">희망 거래장소 | <span th:text="${post != null ? post.location : '부평역 1번출구'}"></span></div>
 
