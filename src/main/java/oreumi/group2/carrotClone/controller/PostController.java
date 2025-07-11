@@ -1,13 +1,11 @@
 package oreumi.group2.carrotClone.controller;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import oreumi.group2.carrotClone.Config.CustomUserPrincipal;
 import oreumi.group2.carrotClone.DTO.PostDTO;
 import oreumi.group2.carrotClone.model.Category;
 import oreumi.group2.carrotClone.model.Post;
 import oreumi.group2.carrotClone.model.User;
-import oreumi.group2.carrotClone.model.enums.AuthProvider;
-import oreumi.group2.carrotClone.model.enums.UserRole;
 import oreumi.group2.carrotClone.repository.CategoryRepository;
 import oreumi.group2.carrotClone.repository.UserRepository;
 import oreumi.group2.carrotClone.service.PostService;
@@ -24,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Controller
@@ -34,34 +33,12 @@ public class PostController {
     @Autowired private UserRepository userRepository;
     @Autowired private CategoryRepository categoryRepository;
 
-    /* 테스트 로그인 */
-    @GetMapping("/test-login")
-    public String testLogin(HttpSession session) {
-        String username = "testuser@www.com";
-        User user = userRepository.findByUsername(username).orElseGet(() -> {
-            User newUser = new User();
-            newUser.setUsername(username);
-            newUser.setPassword("testpa!@#!22ssword");
-            newUser.setNickname("테스트유저");
-            newUser.setLocation("서울");
-            newUser.setRole(UserRole.USER);
-            newUser.setNeighborhoodVerified(true);
-            newUser.setProvider(AuthProvider.LOCAL);
-            return userRepository.save(newUser);
-        });
-
-        session.setAttribute("user", user);
-
-        return "redirect:/posts";
-    }
-
     /* 전체 게시글 목록 */
     @GetMapping
     public String showPost(@RequestParam(defaultValue = "0") int page,
                            Model model,
-                           HttpSession session,
-                           @AuthenticationPrincipal OAuth2User oAuth2User){
-        User user = getCurrentUser(session, oAuth2User);
+                           @AuthenticationPrincipal Object principal){
+        User user = getCurrentUser(principal);
         model.addAttribute("user", user);
 
         Pageable pageable = PageRequest.of(page, 12);
@@ -78,9 +55,8 @@ public class PostController {
                              @RequestParam(required = false) String keyword,
                              @RequestParam(required = false) Long category,
                              Model model,
-                             HttpSession session,
-                             @AuthenticationPrincipal OAuth2User oAuth2User){
-        User user = getCurrentUser(session, oAuth2User);
+                             @AuthenticationPrincipal Object principal){
+        User user = getCurrentUser(principal);
         model.addAttribute("user", user);
 
         Pageable pageable = PageRequest.of(page, 8);
@@ -97,18 +73,17 @@ public class PostController {
 
     /* 게시글 작성 폼 */
     @GetMapping("/new")
-    public String showNewForm(HttpSession session,
-                              @AuthenticationPrincipal OAuth2User oAuth2User,
+    public String showNewForm(@AuthenticationPrincipal Object principal,
                               Model model,
                               RedirectAttributes redirectAttributes){
-        User user = getCurrentUser(session, oAuth2User);
+        User user = getCurrentUser(principal);
         if(user == null) {
             redirectAttributes.addFlashAttribute("error", "로그인이 필요합니다.");
-            return "redirect:/login";
+            return "redirect:/users/login";
         }
         if (!user.isNeighborhoodVerified()) {
             redirectAttributes.addFlashAttribute("error", "동네 인증이 필요합니다.");
-            return "redirect:/maps";
+            return "redirect:/maps/permission";
         }
         PostDTO postDTO = new PostDTO();
         postDTO.setLocation(user.getLocation());
@@ -124,8 +99,7 @@ public class PostController {
     public String registerForm(@RequestParam("files") List<MultipartFile> files,
                                @Valid @ModelAttribute PostDTO postDTO,
                                BindingResult bindingResult,
-                               HttpSession session,
-                               @AuthenticationPrincipal OAuth2User oAuth2User,
+                               @AuthenticationPrincipal Object principal,
                                RedirectAttributes redirectAttributes) {
 
         if(bindingResult.hasErrors()) {
@@ -134,7 +108,7 @@ public class PostController {
             return "redirect:/posts/new";
         }
 
-        User user = getCurrentUser(session, oAuth2User);
+        User user = getCurrentUser(principal);
         Category category = categoryRepository.findById(postDTO.getCategory().getId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
         postDTO.setCategory(category);
@@ -160,15 +134,14 @@ public class PostController {
     @GetMapping("/{id}")
     public String specificFormDetail(@PathVariable Long id,
                                      Model model,
-                                     HttpSession session,
-                                     @AuthenticationPrincipal OAuth2User oAuth2User) {
+                                     @AuthenticationPrincipal Object principal) {
 
         postService.increaseViewCount(id);
         Optional<Post> postOpt = postService.findById(id);
         if(postOpt.isEmpty()) return "redirect:/posts";
 
         Post post = postOpt.get();
-        User user = getCurrentUser(session, oAuth2User);
+        User user = getCurrentUser(principal);
 
         model.addAttribute("post", post);
         model.addAttribute("user", user);
@@ -188,18 +161,25 @@ public class PostController {
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id,
                            Model model,
-                           HttpSession session,
-                           @AuthenticationPrincipal OAuth2User oAuth2User){
+                           @AuthenticationPrincipal Object principal){
         Optional<Post> postOpt = postService.findById(id);
         if(postOpt.isEmpty()) return "redirect:/posts";
         Post post = postOpt.get();
 
-        User user = getCurrentUser(session, oAuth2User);
-        if (user == null) return "redirect:/login";
+        User user = getCurrentUser(principal);
+        if (user == null) return "redirect:/users/login";
 
         if(!post.getUser().getId().equals(user.getId())) return "redirect:/posts";
 
-        model.addAttribute("post", post);
+        PostDTO postDTO = new PostDTO();
+        postDTO.setId(post.getId());
+        postDTO.setTitle(post.getTitle());
+        postDTO.setDescription(post.getDescription());
+        postDTO.setLocation(post.getLocation());
+        postDTO.setCategory(post.getCategory());
+        postDTO.setPrice(post.getPrice() != null ? BigDecimal.valueOf(post.getPrice().longValue()) : null);
+
+        model.addAttribute("post", postDTO);
         model.addAttribute("user", user);
         model.addAttribute("mode", "edit");
         model.addAttribute("categories", categoryRepository.findAll());
@@ -213,8 +193,7 @@ public class PostController {
                                    @RequestParam("files") List<MultipartFile> files,
                                    @Valid @ModelAttribute PostDTO postDTO,
                                    BindingResult bindingResult,
-                                   HttpSession session,
-                                   @AuthenticationPrincipal OAuth2User oAuth2User,
+                                   @AuthenticationPrincipal Object principal,
                                    RedirectAttributes redirectAttributes) {
         if(bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getAllErrors().get(0).getDefaultMessage();
@@ -222,7 +201,7 @@ public class PostController {
             return "redirect:/posts/" + id + "/edit";
         }
 
-        User user = getCurrentUser(session, oAuth2User);
+        User user = getCurrentUser(principal);
         Category category = categoryRepository.findById(postDTO.getCategory().getId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
         postDTO.setCategory(category);
@@ -255,20 +234,23 @@ public class PostController {
     /* 좋아요 취소 */
 
     /* OAuth2 로그인과 기존 세션 로그인을 모두 지원하는 헬퍼 메서드 */
-    private User getCurrentUser(HttpSession session, OAuth2User oauth2User) {
+    private User getCurrentUser(Object principal) {
 
-        if (oauth2User != null) {
-            Map<String, Object> attributes = oauth2User.getAttributes();
-            Object userObj = attributes.get("user");
-            if (userObj instanceof User) {
-                return (User) userObj;
+        if (principal != null) {
+            User user = null;
+
+            if (principal instanceof OAuth2User oauth2User) {
+                Map<String, Object> attributes = oauth2User.getAttributes();
+                user = (User) attributes.get("user");
+                return user;
+            }
+
+            else if (principal instanceof CustomUserPrincipal customUser) {
+                user = customUser.getUser();
+                return user;
             }
         }
-        Object sessionUser = session.getAttribute("user");
-        if (sessionUser instanceof User) {
-            return (User) sessionUser;
-        }
-
         return null;
     }
+
 }

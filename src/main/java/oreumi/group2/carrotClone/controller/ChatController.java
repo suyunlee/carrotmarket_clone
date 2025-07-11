@@ -1,6 +1,7 @@
 package oreumi.group2.carrotClone.controller;
 
 import lombok.RequiredArgsConstructor;
+import oreumi.group2.carrotClone.Config.CustomUserPrincipal;
 import oreumi.group2.carrotClone.DTO.ChatMessageDTO;
 import oreumi.group2.carrotClone.DTO.ReadReceiptDTO;
 import oreumi.group2.carrotClone.model.ChatMessage;
@@ -14,12 +15,15 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -36,11 +40,11 @@ public class ChatController {
     @GetMapping
     public String enterChat(
             @PathVariable Long roomId,
-            Principal principal,
+            @AuthenticationPrincipal Object principal,
             Model model)
     {
-        Optional<User> user = userService.findByUsername(principal.getName());
-        String username = user.get().getUsername();
+        User user = getCurrentUser(principal);
+        String username = user.getUsername();
 
         //입장 전 상대방 메세지 읽음 처리
         chatMessageService.markRead(roomId,username);
@@ -80,11 +84,13 @@ public class ChatController {
             @DestinationVariable Long roomId,
             // @Payload 역직렬화 (JSON -> 객체)
             @Payload ChatMessageDTO payload,
-            Principal principal)
+           Principal principal)
     {
+        String username = principal.getName();
 
-        Optional<User> user = userService.findByUsername(principal.getName());
-        String username = user.get().getUsername();
+        User user = userService.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("로그인 유저를 찾을 수 없습니다." + username));
+
         /* 메세지 저장 (방 ID, 내용, 보낸 사람아름) */
         ChatMessage saved = chatMessageService.saveMessage(
                 roomId,
@@ -112,5 +118,24 @@ public class ChatController {
     public void markRead(@PathVariable Long roomId,
                          @RequestParam String username){
         chatMessageService.markRead(roomId,username);
+    }
+
+    private User getCurrentUser(Object principal) {
+
+        if (principal != null) {
+            User user = null;
+
+            if (principal instanceof OAuth2User oauth2User) {
+                Map<String, Object> attributes = oauth2User.getAttributes();
+                user = (User) attributes.get("user");
+                return user;
+            }
+
+            else if (principal instanceof CustomUserPrincipal customUser) {
+                user = customUser.getUser();
+                return user;
+            }
+        }
+        return null;
     }
 }
