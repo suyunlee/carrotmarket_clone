@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -25,12 +26,20 @@ public class MapsController {
     UserService userService;
 
     @GetMapping("/permission")
-    public String showPermissionPage(Model model){
+    public String showPermissionPage(Principal principal, Model model){
+        Optional<User> user = userService.findByUsername(principal.getName());
+        if (user.isEmpty()) {
+            return "users/login";
+        }
         return "location/permission";
     }
 
     @GetMapping("/verify")
-    public String showMaps(Model model){
+    public String showMaps(Principal principal, Model model){
+        Optional<User> user = userService.findByUsername(principal.getName());
+        if (user.isEmpty()) {
+            return "users/login";
+        }
         model.addAttribute("googleMapsApiKey", apiKey);
         return "location/verify";
     }
@@ -39,10 +48,16 @@ public class MapsController {
 //    주소 명 >
 //    어느 유저 저장할거냐? > 세션(priciple) > authen >>> 저장하기.
     @PostMapping("/verify")
-    public String verifyLocation(@RequestParam String userCurrentAddress, RedirectAttributes redirectAttributes){
+    public String verifyLocation(Principal principal,
+                                 @RequestParam String userCurrentAddress,
+                                 RedirectAttributes redirectAttributes){
+
 
         //임시로 1번 유저에 무조건 위치 저장하도록 (h2-console로 유저 삽입)
-        Optional<User> userOptional = userService.getUserById(1L);
+        Optional<User> userOptional = userService.findByUsername(principal.getName());
+        if (userOptional.isEmpty()) {
+            return "users/login";
+        }
         if(!userOptional.isEmpty()){
             User user = userOptional.get();
             user.setLocation(userCurrentAddress);

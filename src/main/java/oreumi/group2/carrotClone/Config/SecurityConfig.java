@@ -41,13 +41,15 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**").permitAll()
+                        .requestMatchers("/users/login", "/users/signup").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
                         .loginPage("/users/login")
                         .loginProcessingUrl("/login") /* post */
-                        .failureUrl("/users/login?error")        // 실패 시 이동할 URL
+                        .failureUrl("/users/login?error")// 실패 시 이동할 URL
+                        .usernameParameter("username")           // 아이디 필드명 지정
+                        .passwordParameter("password")              // 비번 필드명 지정
                         .defaultSuccessUrl("/", true)
                         .permitAll()
                 )

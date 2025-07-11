@@ -19,12 +19,13 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/")
 public class HomeController {
+
     @Autowired
     UserService userService;
 
     @GetMapping
     public String showHome(@AuthenticationPrincipal Object principal,
-                           Model model){
+                           Model model) {
 
         if (principal != null) {
             User user = null;
@@ -41,10 +42,11 @@ public class HomeController {
             }
 
             if (user != null) {
-                System.out.println("로그인 유저: " + user.getUsername());
+                System.out.println("로그인 유저: " + user.getNickname());
                 model.addAttribute("user", user);
             }
         }
+
         return "home";
     }
 }
