@@ -1,164 +1,53 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"/>
-    <title th:text="${post.title}">게시물 상세</title>
+    <meta charset="UTF-8">
+    <title>중고거래 인기매물</title>
+    <link rel="stylesheet" href="/css/post_list.css">
 </head>
-<style>
-    .unread-count {
-        margin-left: 0.5em;
-        font-weight: bold;
-        color: red;
-    }
-    .hidden{
-        display:none;
-    }
-</style>
 <body>
-<h1 th:text="${post.title}">제목</h1>
-<p th:text="${post.description}">내용</p>
+<header id="headerContainer">
+    <div id="postHeader">
+        <div id="postHeaderInfo">
+            <h1>믿을만한<br>이웃 간 중고거래</h1>
+            <h2>동네 주민들과 가깝고 따뜻한 거래를<br>지금 경험해보세요.</h2>
+        </div>
+        <img src="/images/banners/products_banner.png" id="postBannerImg" alt="포스트 배너 이미지">
+    </div>
+</header>
+<div id="listContainer">
+    <h3 id="listTitle">중고거래 인기매물</h3>
 
-<!-- username 입력 (로그인시 삭제) -->
-<label>
-    당신의 username:
-    <input type="text" id="usernameInput" placeholder="dev, dev2 등"/>
-</label>
-<button type="button" id="checkBtn">확인</button>
-<br/>
+    <div th:if="${page == null || #lists.isEmpty(page.content)}" class="no-post">
+        <p>등록된 중고 매물이 없습니다.</p>
+    </div>
 
-<!-- 구매자용: 방 생성 버튼 -->
-<button type="button" id="createBtn" th:data-post-id="${post.id}" class="hidden">
-    <!-- th:if="${#authentication.name} != ${post.user.username}" 필요 -->
-    채팅하기
-</button>
+    <div th:if="${page != null && !#lists.isEmpty(page.content)}" class="post-grid">
+        <div th:each="post : ${page.content}" class="post-card">
+            <a th:href="@{/posts/{id}(id=${post?.id})}" class="post-info-link">
+                <img src="https://placehold.co/210x210" alt="미리보기 이미지" class="preview">
+                <div class="post-info">
+                    <div class="post-title" th:text="${post?.title ?: '제목 없음'}">제목</div>
+                    <div class="post-price">
+                        <span th:text="${#numbers.formatDecimal(post?.price, 0, 'COMMA', 0, 'POINT') ?: '0'}">가격</span>원</div>
+                    <div class="post-location" th:text="${post?.location ?: '장소 없음'}"></div>
+                    <div class="post-detail">조회 <span th:text="${post?.viewCount ?: '0'}"></span> ·
+                        채팅 <span th:text="${post?.getChatRoomsCount() ?: '0'}"></span></div>
+                </div>
+            </a>
+        </div>
+    </div>
 
-<!-- 판매자용: 방 목록 -->
-<!-- <h3 th:if="${#authentication.name} == ${post.user.username}" > 채팅방 목록</h3>  (로그인시)-->
-<!-- <ul id="roomList" th:if="${#authentication.name} == ${post.user.username}"></ul> -->
-
-<h3>채팅방 목록</h3>
-<ul id="roomList" class="hidden"></ul>
-
-<script th:inline="javascript">
-    /*<![CDATA[*/
-        const usernameInput = document.getElementById('usernameInput'); // 로그인시 삭제
-
-        const checkBtn      = document.getElementById('checkBtn'); // 로그인시 삭제
-        const createBtn     = document.getElementById('createBtn');
-        const roomList      = document.getElementById('roomList');
-
-        const postId    = /*[[${post.id}]]*/ 0; // 게시물 id
-        const postOwner = /*[[${post.user.username}]]*/; // 판매자
-        let currentUser;
-        // const currentUsername = /*[[${#authentication.name}]]*/ 'anonymous'; 로그인된 유저
-
-        // “확인” 버튼 클릭 후 모드 결정
-        checkBtn.addEventListener('click', () => {
-            currentUser = usernameInput.value.trim();
-            if (!currentUser){ return alert('username을 입력하세요.') };
-
-            if (currentUser !== postOwner) {
-                 createBtn.classList.remove('hidden');
-            } else {
-                createBtn.classList.add('hidden');
-            }
-            roomList.style.display = 'block';
-
-            loadRoomList();
-        });
-
-        // 구매자: 방 생성
-        createBtn.addEventListener('click', async () => {
-            const username = usernameInput.value.trim();
-            const res = await fetch(`/chat/post/${postId}/rooms`, {
-                method: 'POST',
-                headers: {'Content-Type':'application/json'},
-                body: JSON.stringify({ username })
-            });
-            if (!res.ok) {
-                alert('채팅방 생성 실패: ' + await res.text());
-                return;
-            }
-            const dto = await res.json();
-            createBtn.classList.add('hidden');
-            location.href = `/chat/room/${dto.id}?username=${encodeURIComponent(currentUser)}`;
-        });
-
-        // 판매자: 방 목록 로드
-        async function loadRoomList() {
-            const res = await fetch(
-                `/chat/post/${postId}/rooms?username=${encodeURIComponent(currentUser)}`
-            );
-
-            if (!res.ok) {
-                alert('방 목록 로드 실패');
-                return;
-            }
-
-            const list = await res.json();
-            roomList.innerHTML = '';
-
-            let hasMyRoom = false;
-            list.forEach(r => {
-                const li = document.createElement('li');
-                const btn = document.createElement('button');
-                btn.className = 'room-btn';
-                btn.textContent = `방 #${r.id} (구매자:${r.username}) `;
-                btn.onclick = () =>
-                    location.href = `/chat/room/${r.id}?username=${encodeURIComponent(currentUser)}`;
-                li.append(btn);
-
-                if (r.unreadCount > 0) {
-                  const badge = document.createElement('span');
-                  badge.className = 'unread-count';
-                  badge.textContent = r.unreadCount;
-                  li.append(badge);
-                }
-                roomList.append(li);
-
-                if(r.id && r.username === currentUser){
-                  hasMyRoom = true;
-                }
-            });
-
-            if(hasMyRoom){
-                createBtn.classList.add('hidden');
-            }
-        }
-
-        // 로그인 할시
-        /*
-            if(createBtn && currentUsername !== postOwner){
-                 checkBtn.addEventListener('click', async () => {
-                    const res = await fetch(`/chat/post/${postId}/rooms`, { method : 'POST' });
-                    if(!res.ok){
-                        alert("채팅방 생성 실패 : ' + await res.text());
-                        return;
-                    }
-                    const dto = await res.json();
-                    location.href=`/chat/room/${dto.id}`;
-                });
-            }
-
-            async function loadRoomList() {
-                 const res = await fetch(`/chat/post/${postId}/rooms`);
-                 const list = await res.json();
-                roomList.innerHTML = '';
-                list.forEach(r => {
-                    const li = document.createElement('li');
-                    const btn = document.createElement('button');
-                    btn.textContent = `방 #${r.id} (구매자:${r.username})`;
-                    btn.onclick = () => location.href = `/chat/room/${r.id}`;
-                    li.append(btn);
-                    roomList.append(li);
-                });
-            }
-            // 현재 유저와 게시물을 올린 유저가 같다면
-            if(roomList && currentUsername === postOwner){
-                loadRoomList();
-            }
-        */
-    /*]]>*/
-</script>
+    <div th:if="${page != null && page.totalPages > 1}" class="pagination">
+        <a th:if="${page.hasPrevious()}" class="arrow-enable"
+           th:href="@{/posts(page=${page.number-1})}">&lt;</a>
+        <span th:unless="${page.hasPrevious()}" class="arrow-disable">&lt;</span>
+        <span class="current" th:text="(${page.number}+1) + ' / ' + ${page.totalPages}">페이지 1 / 1</span>
+        <a th:if="${page.hasNext()}" class="arrow-enable"
+           th:href="@{/posts(page=${page.number+1})}">&gt;</a>
+        <span th:unless="${page.hasNext()}" class="arrow-disable">&gt;</span>
+    </div>
+</div>
+<a th:href="@{/posts/new}" class="floating-btn">거래글 쓰기</a>
 </body>
 </html>

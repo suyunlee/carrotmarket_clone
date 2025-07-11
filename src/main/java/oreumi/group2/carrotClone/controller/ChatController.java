@@ -1,6 +1,5 @@
 package oreumi.group2.carrotClone.controller;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import oreumi.group2.carrotClone.DTO.ChatMessageDTO;
 import oreumi.group2.carrotClone.DTO.ReadReceiptDTO;
@@ -9,6 +8,7 @@ import oreumi.group2.carrotClone.model.ChatRoom;
 import oreumi.group2.carrotClone.model.User;
 import oreumi.group2.carrotClone.service.ChatMessageService;
 import oreumi.group2.carrotClone.service.ChatRoomService;
+import oreumi.group2.carrotClone.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/chat/room/{roomId}")
@@ -29,17 +30,17 @@ public class ChatController {
     private final ChatMessageService chatMessageService;
     private final SimpMessagingTemplate template;
     private final ChatRoomService chatRoomService;
+    private final UserService userService;
 
     /* 채팅방 입장 */
     @GetMapping
     public String enterChat(
             @PathVariable Long roomId,
-            /*Principal principal*/
-            HttpSession session,
+            Principal principal,
             Model model)
     {
-        User user = (User)session.getAttribute("user");
-        String username = user.getUsername();
+        Optional<User> user = userService.findByUsername(principal.getName());
+        String username = user.get().getUsername();
 
         //입장 전 상대방 메세지 읽음 처리
         chatMessageService.markRead(roomId,username);
@@ -78,11 +79,12 @@ public class ChatController {
     public void stompMessage(
             @DestinationVariable Long roomId,
             // @Payload 역직렬화 (JSON -> 객체)
-            @Payload ChatMessageDTO payload
-            /*Principal principal*/)
+            @Payload ChatMessageDTO payload,
+            Principal principal)
     {
 
-        String username = payload.getSenderUsername();
+        Optional<User> user = userService.findByUsername(principal.getName());
+        String username = user.get().getUsername();
         /* 메세지 저장 (방 ID, 내용, 보낸 사람아름) */
         ChatMessage saved = chatMessageService.saveMessage(
                 roomId,

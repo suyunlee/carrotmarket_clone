@@ -1,6 +1,5 @@
 package oreumi.group2.carrotClone.DTO;
 
-
 import lombok.Data;
 import oreumi.group2.carrotClone.model.ChatMessage;
 import oreumi.group2.carrotClone.model.ChatRoom;

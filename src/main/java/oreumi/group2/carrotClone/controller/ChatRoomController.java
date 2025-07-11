@@ -9,12 +9,14 @@ import oreumi.group2.carrotClone.model.User;
 import oreumi.group2.carrotClone.repository.PostRepository;
 import oreumi.group2.carrotClone.repository.UserRepository;
 import oreumi.group2.carrotClone.service.ChatRoomService;
+import oreumi.group2.carrotClone.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,13 +26,17 @@ public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final UserService userService;
 
     /* 채팅방 목록 */
     @GetMapping("/{postId}/rooms")
     public List<ChatRoomDTO> listRooms(
             @PathVariable Long postId,
-            /*Principal principal*/
-            @RequestParam String username){
+            Principal principal)
+    {
+
+        Optional<User> user = userService.findByUsername(principal.getName());
+        String username = user.get().getUsername();
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -55,11 +61,10 @@ public class ChatRoomController {
     @ResponseBody
     public ChatRoomDTO createRoom(
             @PathVariable Long postId,
-            /*Principal principal*/
-            HttpSession session)
+            Principal principal)
     {
-        User user = (User)session.getAttribute("user");
-        String username = user.getUsername();
+        Optional<User> user = userService.findByUsername(principal.getName());
+        String username = user.get().getUsername();
 
         // 사용자 확인
         Long userId = userRepository.findByUsername(username)
