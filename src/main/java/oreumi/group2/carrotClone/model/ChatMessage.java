@@ -37,4 +37,6 @@ public class ChatMessage {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id",nullable = false)
     private User sender; // id 값만
+
+    private boolean isRead = false; // 읽음 여부
 }
