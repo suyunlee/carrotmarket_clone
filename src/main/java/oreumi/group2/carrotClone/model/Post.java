@@ -31,7 +31,7 @@ public class Post {
     private BigDecimal price; /* 가격 */
 
     @Column(nullable = false)
-    private boolean Sold; /* 판매여부 */
+    private boolean sold; /* 판매여부 */
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -67,6 +67,6 @@ public class Post {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category; /* category 정보 */
 
-
-
+    public int getLikeCount() { return likes.size(); }
+    public int getChatRoomsCount() { return chatRooms.size(); }
 }

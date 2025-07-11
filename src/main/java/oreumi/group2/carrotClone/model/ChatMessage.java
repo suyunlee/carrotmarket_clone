@@ -23,7 +23,7 @@ public class ChatMessage {
     private Long id;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "chatRoom_id", nullable = false)
+    @JoinColumn(name = "chatRoom_id")
     @JsonIgnore
     private ChatRoom chatRoom;
 
@@ -37,4 +37,6 @@ public class ChatMessage {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id",nullable = false)
     private User sender; // id 값만
+
+    private boolean isRead = false; // 읽음 여부
 }

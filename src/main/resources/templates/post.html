@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>중고거래 인기매물</title>
+    <link rel="stylesheet" href="/css/post_list.css">
+</head>
+<body>
+<header id="headerContainer">
+    <div id="postHeader">
+        <div id="postHeaderInfo">
+            <h1>믿을만한<br>이웃 간 중고거래</h1>
+            <h2>동네 주민들과 가깝고 따뜻한 거래를<br>지금 경험해보세요.</h2>
+        </div>
+        <img src="/images/banners/products_banner.png" id="postBannerImg" alt="포스트 배너 이미지">
+    </div>
+</header>
+<div id="listContainer">
+    <h3 id="listTitle">중고거래 인기매물</h3>
+
+    <div th:if="${page == null || #lists.isEmpty(page.content)}" class="no-post">
+        <p>등록된 중고 매물이 없습니다.</p>
+    </div>
+
+    <div th:if="${page != null && !#lists.isEmpty(page.content)}" class="post-grid">
+        <div th:each="post : ${page.content}" class="post-card">
+            <a th:href="@{/posts/{id}(id=${post?.id})}" class="post-info-link">
+                <img src="https://placehold.co/210x210" alt="미리보기 이미지" class="preview">
+                <div class="post-info">
+                    <div class="post-title" th:text="${post?.title ?: '제목 없음'}">제목</div>
+                    <div class="post-price">
+                        <span th:text="${#numbers.formatDecimal(post?.price, 0, 'COMMA', 0, 'POINT') ?: '0'}">가격</span>원</div>
+                    <div class="post-location" th:text="${post?.location ?: '장소 없음'}"></div>
+                    <div class="post-detail">조회 <span th:text="${post?.viewCount ?: '0'}"></span> ·
+                        채팅 <span th:text="${post?.getChatRoomsCount() ?: '0'}"></span></div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div th:if="${page != null && page.totalPages > 1}" class="pagination">
+        <a th:if="${page.hasPrevious()}" class="arrow-enable"
+           th:href="@{/posts(page=${page.number-1})}">&lt;</a>
+        <span th:unless="${page.hasPrevious()}" class="arrow-disable">&lt;</span>
+        <span class="current" th:text="(${page.number}+1) + ' / ' + ${page.totalPages}">페이지 1 / 1</span>
+        <a th:if="${page.hasNext()}" class="arrow-enable"
+           th:href="@{/posts(page=${page.number+1})}">&gt;</a>
+        <span th:unless="${page.hasNext()}" class="arrow-disable">&gt;</span>
+    </div>
+</div>
+<a href="/posts/new" class="floating-btn">거래글 쓰기</a>
+</body>
+</html>

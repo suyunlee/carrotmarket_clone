@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>거래 매물 검색</title>
+    <link rel="stylesheet" href="/css/post_list.css">
+</head>
+<body>
+    <div class="search-section">
+        <form th:action="@{/posts/search}" method="get" class="search-form">
+            <input type="text" name="keyword" placeholder="물품이나 동네를 검색해보세요"
+                   th:value="${keyword ?: ''}" class="search-input" />
+            <select name="category" class="search-select">
+                    <option value="">카테고리 선택</option>
+                    <option th:each="cate : ${categories}"
+                            th:value="${cate.id}"
+                            th:text="${cate.name}"
+                            th:selected="${category} == ${cate.id}">
+                    </option>
+            </select>
+            <button type="submit" class="btn btn-primary">검색</button>
+        </form>
+    </div>
+    <div id="searchContainer">
+        <div th:if="${hasKeyword and (page == null or #lists.isEmpty(page.content))}" class="no-post">
+            <p>검색 결과가 없습니다.</p>
+        </div>
+
+        <div th:if="${page != null and !#lists.isEmpty(page.content)}" class="post-grid">
+            <div th:each="post : ${page.content}" class="post-card">
+                <a th:href="@{/posts/{id}(id=${post?.id})}" class="post-info-link">
+                    <img src="https://placehold.co/210x210" alt="미리보기 이미지" class="preview">
+                    <div class="post-info">
+                        <div class="post-title" th:text="${post?.title ?: '제목 없음'}">제목</div>
+                        <div class="post-price">
+                            <span th:text="${#numbers.formatDecimal(post?.price, 0, 'COMMA', 0, 'POINT') ?: '0'}">가격</span>원</div>
+                        <div class="post-location" th:text="${post?.location ?: '장소 없음'}"></div>
+                        <div class="post-detail">조회 <span th:text="${post?.viewCount ?: '0'}"></span> ·
+                            채팅 <span th:text="${post?.getChatRoomsCount() ?: '0'}"></span></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div th:if="${page != null && page.totalPages > 1}" class="pagination">
+            <a th:if="${page.hasPrevious()}" class="arrow-enable"
+               th:href="@{/posts/search(page=${page.number-1}, keyword=${keyword}, category=${category})}">&lt;</a>
+            <span th:unless="${page.hasPrevious()}" class="arrow-disable">&lt;</span>
+            <span class="current" th:text="(${page.number}+1) + ' / ' + ${page.totalPages}">1 / 1</span>
+            <a th:if="${page.hasNext()}" class="arrow-enable"
+               th:href="@{/posts/search(page=${page.number+1}, keyword=${keyword}, category=${category})}">&gt;</a>
+            <span th:unless="${page.hasNext()}" class="arrow-disable">&gt;</span>
+        </div>
+    </div>
+</body>
+</html>

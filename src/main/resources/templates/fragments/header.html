@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>헤더 페이지</title>
+    <link rel="stylesheet" th:href="@{/css/background.css}"/>
+    <link rel="stylesheet" th:href="@{/css/font.css}"/>
+    <link rel="stylesheet" th:href="@{/css/input.css}"/>
+    <link rel="stylesheet" th:href="@{/css/button.css}"/>
+    <link rel="stylesheet" th:href="@{/css/layout.css}"/>
+</head>
+<body class="font-pretendard">
+<header th:fragment="header" class="header-area bg-gray-000">
+    <div class="header-left">
+        <a th:href="@{/}">
+            <img th:src="@{/images/icons/header_icon.svg}" alt="메인으로 돌아가기">
+        </a>
+        <div class="header-left-menu">
+            <a class="header-btn-left" th:href="@{/}">중고거래</a>
+            <a class="header-btn-left" th:if="${user != null}" th:href="@{/maps/permission}">동네인증</a>
+        </div>
+    </div>
+
+    <div class="header-right">
+        <form th:action="@{/}" method="get">
+            <label for="header-search-form" class="label-hidden">게시물 검색</label>
+            <input type="text" id="header-search-form" class="header-search-form" name="keyword" placeholder="물품이나 동네를 검색해보세요">
+        </form>
+
+        <a class="header-btn-longin" th:if="${user != null}" th:href="@{/}">채팅하기</a>
+        <a class="header-btn-longin" th:if="${user != null}" th:href="@{/}">로그아웃</a>
+        <a class="header-btn-longin" th:if="${user == null}" th:href="@{/login}">로그인</a>
+    </div>
+</header>
+
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>푸터 페이지</title>
+    <link rel="stylesheet" th:href="@{/css/background.css}"/>
+    <link rel="stylesheet" th:href="@{/css/font.css}"/>
+    <link rel="stylesheet" th:href="@{/css/input.css}"/>
+    <link rel="stylesheet" th:href="@{/css/button.css}"/>
+    <link rel="stylesheet" th:href="@{/css/layout.css}"/>
+</head>
+<body class="font-pretendard">
+<footer th:fragment="footer" class="footer-area bg-orange-600">
+    <div class="footer-area-box">
+        <div class="footer-left-box">
+            <a class="footer-text" th:href="@{/}">중고거래</a>
+            <a class="footer-text" th:href="@{/}">채팅하기</a>
+        </div>
+
+        <div class="footer-right-box">
+            <p class="footer-store-text" th:utext="'당근 앱 다운로드'"></p>
+            <div class="footer-store-area">
+                <a class="footer-btn-store" th:href="@{/}">App Store</a>
+                <a class="footer-btn-store" th:href="@{/}">Google Play</a>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
