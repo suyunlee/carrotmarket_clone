@@ -67,6 +67,6 @@ public class Post {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category; /* category 정보 */
 
-
-
+    public int getLikeCount() { return likes.size(); }
+    public int getChatRoomsCount() { return chatRooms.size(); }
 }

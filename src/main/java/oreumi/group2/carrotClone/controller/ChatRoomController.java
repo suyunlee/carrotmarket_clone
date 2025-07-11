@@ -1,10 +1,11 @@
 package oreumi.group2.carrotClone.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import oreumi.group2.carrotClone.DTO.ChatRoomDTO;
-import oreumi.group2.carrotClone.DTO.CreateRoomRequest;
 import oreumi.group2.carrotClone.model.ChatRoom;
 import oreumi.group2.carrotClone.model.Post;
+import oreumi.group2.carrotClone.model.User;
 import oreumi.group2.carrotClone.repository.PostRepository;
 import oreumi.group2.carrotClone.repository.UserRepository;
 import oreumi.group2.carrotClone.service.ChatRoomService;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -27,6 +29,7 @@ public class ChatRoomController {
     @GetMapping("/{postId}/rooms")
     public List<ChatRoomDTO> listRooms(
             @PathVariable Long postId,
+            /*Principal principal*/
             @RequestParam String username){
 
         Post post = postRepository.findById(postId)
@@ -43,7 +46,6 @@ public class ChatRoomController {
                     .filter(r -> r.getUsername().equals(username))
                     .toList();
         }
-
         // 4) 판매자 모드 → 전체 방 반환
         return allRooms;
     }
@@ -53,13 +55,14 @@ public class ChatRoomController {
     @ResponseBody
     public ChatRoomDTO createRoom(
             @PathVariable Long postId,
-            @RequestBody CreateRoomRequest req // 로그인시 삭제
-            /* Principal principal <- 로그인시 필요 */ )
+            /*Principal principal*/
+            HttpSession session)
     {
-        // String username = principal.getName();
+        User user = (User)session.getAttribute("user");
+        String username = user.getUsername();
 
         // 사용자 확인
-        Long userId = userRepository.findByUsername(req.getUsername())
+        Long userId = userRepository.findByUsername(username)
                 .orElseThrow(() ->
                         new ResponseStatusException(
                             HttpStatus.BAD_REQUEST,

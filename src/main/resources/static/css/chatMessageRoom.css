@@ -78,16 +78,36 @@ body {
 }
 
 .chat-info {
-    margin-left:10px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25em;
 }
 
-.chat-info strong {
-    display:block; margin-bottom:5px;
- }
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+} }
 
-.chat-info p {
-    color:#666;
-    font-size:14px;
+.chat-header strong {
+  font-size: 1em;
+}
+
+.chat-time {
+  font-size: 0.8em;
+  color: #999;
+  margin-left: 0.5em;
+}
+
+.chat-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.chat-footer p {
+  margin: 0;
+  flex: 1;
 }
 
 /* ── 5. 채팅창 (884px) ── */

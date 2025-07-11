@@ -27,7 +27,6 @@ public class PostServiceImpl implements PostService {
     /* DI */
     @Autowired LikeRepository likeRepository;
 
-
     /* ID 기반 게시물 찾기 */
     @Override
     @Transactional(readOnly = true)

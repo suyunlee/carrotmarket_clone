@@ -129,6 +129,22 @@
     input.value = '';
   });
 
+  const unreadToggle = document.querySelector('.unread-toggle input[type="checkbox"]');
+
+  unreadToggle.addEventListener('change', ()=>{
+    const showUnreadOnly = unreadToggle.checked;
+    document.querySelectorAll('.chat-list .chat-item')
+    .forEach(li => {
+        const isUnread = li.dataset.unread === 'true';
+        if(showUnreadOnly && !isUnread){
+            li.style.display = 'none';
+        }
+        else{
+            li.style.display = '';
+        }
+    });
+  });
+
  // “다른 채팅방” 목록 로드 (AI 챗봇 밑에 li로 추가)
    async function loadOtherRooms() {
      const res = await fetch(
@@ -154,30 +170,41 @@
          const li = document.createElement('li');
          li.className = 'chat-item';
 
-         // avatar
-         const ava = document.createElement('div');
-         ava.className = 'chat-avatar';
-         ava.innerHTML = `<img src="" alt="${r.username}"/>`;
+         li.dataset.unread = r.unreadCount > 0 ? 'true' : 'false';
 
          // info
          const info = document.createElement('div');
          info.className = 'chat-info';
+
+         // 이름 + 시간 표기
+         const header = document.createElement('div');
+         header.className = 'chat-header';
+
          const who = document.createElement('strong');
+         const lastMessageTime = document.createElement('span');
+         lastMessageTime.className='chat-time'
+
          who.textContent = r.username;
-         const p = document.createElement('p');
-          p.textContent = r.lastMessage || '';
+         lastMessageTime.textContent = r.lastMessageAt // 마지막 메세지 시간
+                    ? new Date(r.lastMessageAt)
+                    .toLocaleTimeString([],{hour: '2-digit', minute: '2-digit'}) : '';
+         header.append(who, lastMessageTime);
 
-         info.append(who, p);
-
+         const footer = document.createElement("div");
+         footer.className = 'chat-footer';
          // unread badge
          if (r.unreadCount > 0) {
            const badge = document.createElement('span');
            badge.className = 'unread-badge';
            badge.textContent = r.unreadCount;
-           info.append(badge);
+           footer.append(badge);
          }
+         const lastMessage = document.createElement('p');
+         lastMessage.textContent = r.lastMessage || ''; // 마지막 메세지
+         footer.append(lastMessage);
 
-         li.append(ava, info);
+         info.append(header,footer);
+         li.append(info);
          // 클릭 시 해당 방으로 이동
          li.addEventListener('click', () => {
            location.href = `/chat/room/${r.id}?username=${encodeURIComponent(currentUser)}`;

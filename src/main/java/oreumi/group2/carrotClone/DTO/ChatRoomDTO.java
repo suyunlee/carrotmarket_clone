@@ -15,7 +15,6 @@ public class ChatRoomDTO {
     private long unreadCount;
     private LocalDateTime lastMessageAt;
 
-
     public ChatRoomDTO() {}
 
     public ChatRoomDTO(Long id, Long userId, Long postId, String username,long unreadCount){

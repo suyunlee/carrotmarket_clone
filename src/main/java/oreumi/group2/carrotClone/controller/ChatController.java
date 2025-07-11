@@ -1,10 +1,12 @@
 package oreumi.group2.carrotClone.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import oreumi.group2.carrotClone.DTO.ChatMessageDTO;
 import oreumi.group2.carrotClone.DTO.ReadReceiptDTO;
 import oreumi.group2.carrotClone.model.ChatMessage;
 import oreumi.group2.carrotClone.model.ChatRoom;
+import oreumi.group2.carrotClone.model.User;
 import oreumi.group2.carrotClone.service.ChatMessageService;
 import oreumi.group2.carrotClone.service.ChatRoomService;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -31,11 +34,12 @@ public class ChatController {
     @GetMapping
     public String enterChat(
             @PathVariable Long roomId,
-            @RequestParam String username,
-            /* Principal principal <- 로그인시 필요 */
+            /*Principal principal*/
+            HttpSession session,
             Model model)
     {
-        // String username = principal.getName();
+        User user = (User)session.getAttribute("user");
+        String username = user.getUsername();
 
         //입장 전 상대방 메세지 읽음 처리
         chatMessageService.markRead(roomId,username);
@@ -75,15 +79,15 @@ public class ChatController {
             @DestinationVariable Long roomId,
             // @Payload 역직렬화 (JSON -> 객체)
             @Payload ChatMessageDTO payload
-            /* Principal principal <- 로그인시 필요 */ )
+            /*Principal principal*/)
     {
-        // String username = principal.getName(); 로그인된 유저
+
+        String username = payload.getSenderUsername();
         /* 메세지 저장 (방 ID, 내용, 보낸 사람아름) */
         ChatMessage saved = chatMessageService.saveMessage(
                 roomId,
                 payload.getContent(),
-                payload.getSenderUsername()
-                // username
+                username
         );
         // DTO 로 변환 (필터링)
         ChatMessageDTO dto = ChatMessageDTO.fromEntity(saved);
