@@ -38,9 +38,6 @@ public class UserServiceImpl implements UserService {
         if(userRepository.existsByNickname(userDTO.getNickname())){
             throw new EntityExistsException("이미 사용중인 닉네임입니다.");
         }
-        if(userRepository.existsByPhoneNumber(userDTO.getPhoneNumber())){
-            throw new EntityExistsException("이미 등록된 전화번호입니다.");
-        }
         if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()){
             if (userDTO.getPassword().length() <= 2){
                 throw new IllegalArgumentException(("비밀번호는 3자리 이상이어야 합니다."));
@@ -51,7 +48,6 @@ public class UserServiceImpl implements UserService {
         user.setUsername(userDTO.getUsername());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setNickname(userDTO.getNickname());
-        user.setPhoneNumber(userDTO.getPhoneNumber());
         user.setLocation(userDTO.getLocation());
         user.setRole(UserRole.USER);
 
@@ -90,7 +86,6 @@ public class UserServiceImpl implements UserService {
 
         exiting.setUsername(user.getUsername());
         exiting.setNickname(user.getNickname());
-        exiting.setPhoneNumber(user.getPhoneNumber());
         exiting.setLocation(user.getLocation());
         exiting.setNeighborhoodVerifiedAt(user.getNeighborhoodVerifiedAt());
         exiting.setNeighborhoodName(user.getNeighborhoodName());
@@ -115,12 +110,6 @@ public class UserServiceImpl implements UserService {
             throw new EntityExistsException("해당 유저는 존재하지않습니다.");
         }
         userRepository.deleteById(id);
-    }
-
-    /* 휴대폰 전화번호 중복체크 */
-    @Override
-    public boolean existsByPhoneNumber(String phoneNumber) {
-        return userRepository.existsByPhoneNumber(phoneNumber);
     }
 
     /* 전체 조회 */

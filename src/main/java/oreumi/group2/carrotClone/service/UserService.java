@@ -26,9 +26,6 @@ public interface UserService {
 
     /* user 정보 삭제 */
     void deleteUser(Long id);
-    
-    /* 휴대폰 전화 중복 확인 */
-    boolean existsByPhoneNumber(String phoneNumber);
 
     /* id 기준 위치 조회 */
     String getLocation(Long id);

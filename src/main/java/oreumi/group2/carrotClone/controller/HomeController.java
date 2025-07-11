@@ -1,10 +1,7 @@
 package oreumi.group2.carrotClone.controller;
 
 import oreumi.group2.carrotClone.model.User;
-import oreumi.group2.carrotClone.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import oreumi.group2.carrotClone.repository.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,23 +13,21 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/")
 public class HomeController {
-    @Autowired
-    UserService userService;
+
+    private final UserRepository userRepository;
+
+    public HomeController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @GetMapping
-    public String showHome(Principal principal, Model model){
-        if(principal==null){
-            return "home";
-        }
+    public String showHome( Principal principal,
+                           Model model){
 
-        //principle > username 가져옴(아이디)
-        String username = principal.getName();
-        Optional<User> user = userService.findByUsername(username);
+        Optional<User> user = userRepository.findByUsername(principal.getName());
+        System.out.println(user);
 
-        if(!user.isEmpty()){
-            model.addAttribute("user", user.get());
-        }
-
+        model.addAttribute("user",user);
         return "home";
     }
 }
