@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/login", "/users/signup").permitAll()
+                        .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
@@ -52,6 +52,10 @@ public class SecurityConfig {
                         .passwordParameter("password")              // 비번 필드명 지정
                         .defaultSuccessUrl("/", true)
                         .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/")
+                        .deleteCookies("JSESSIONID")
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/users/login")
