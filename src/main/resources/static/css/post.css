@@ -90,6 +90,8 @@ body {
 #description {
     height: 220px;
     resize: none;
+    font-family: inherit;
+    white-space: pre-wrap;
 }
 
 input:focus, textarea:focus {
@@ -187,6 +189,11 @@ textarea::-webkit-scrollbar-thumb {
     text-align: right;
     opacity: 0.5;
     font-size: 14px;
+}
+
+#descriptionView {
+    font-family: inherit;
+    white-space: pre-wrap;
 }
 
 #locationView{
