@@ -34,7 +34,6 @@ public class PostController {
     @Autowired private UserRepository userRepository;
     @Autowired private CategoryRepository categoryRepository;
 
-
     /* 테스트 로그인 */
     @GetMapping("/test-login")
     public String testLogin(HttpSession session) {
@@ -44,7 +43,6 @@ public class PostController {
             newUser.setUsername(username);
             newUser.setPassword("testpa!@#!22ssword");
             newUser.setNickname("테스트유저");
-            newUser.setPhoneNumber("010-0000-0000");
             newUser.setLocation("서울");
             newUser.setRole(UserRole.USER);
             newUser.setNeighborhoodVerified(true);

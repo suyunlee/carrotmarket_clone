@@ -29,10 +29,8 @@ public class UserDTO implements Serializable {
     private String password;    //비밀번호
 
     private String nickname;    // 사용자 닉네임
-    private String phoneNumber; // 전화번호
     private String location;   // 위치
     private String role;    // 역할
-    private String status;  // 회원 상태
     private Boolean NeighborhoodVerified;   //동네 인증 여부
     private String NeighborhoodName;    // 동네 이름
     private AuthProvider provider;  // 로그인 방식 구분 로칼 or google
