@@ -29,7 +29,7 @@
         </form>
 
         <a class="header-btn-longin" th:if="${user != null}" th:href="@{/}">채팅하기</a>
-        <a class="header-btn-longin" th:if="${user != null}" th:href="@{/}">로그아웃</a>
+        <a class="header-btn-longin" th:if="${user != null}" th:href="@{/logout}">로그아웃</a>
         <a class="header-btn-longin" th:if="${user == null}" th:href="@{/users/login}">로그인</a>
     </div>
 </header>
