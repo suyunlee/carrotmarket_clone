@@ -7,7 +7,6 @@ import oreumi.group2.carrotClone.model.Post;
 import oreumi.group2.carrotClone.model.User;
 import oreumi.group2.carrotClone.repository.CategoryRepository;
 import oreumi.group2.carrotClone.repository.UserRepository;
-import oreumi.group2.carrotClone.security.PrincipalDetails;
 import oreumi.group2.carrotClone.service.PostService;
 import oreumi.group2.carrotClone.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public class PostController {
     @GetMapping
     public String showPost(@RequestParam(defaultValue = "0") int page,
                            Model model,
-                           @AuthenticationPrincipal PrincipalDetails principal){
+                           @AuthenticationPrincipal Principal principal){
         Optional<User> user = userService.findByUsername(principal.getName());
 
         System.out.println(user.get());

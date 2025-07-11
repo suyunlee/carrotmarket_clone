@@ -1,33 +1,46 @@
 package oreumi.group2.carrotClone.controller;
 
+import oreumi.group2.carrotClone.Config.CustomUserPrincipal;
 import oreumi.group2.carrotClone.model.User;
 import oreumi.group2.carrotClone.repository.UserRepository;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
-import java.util.Optional;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/")
 public class HomeController {
 
-    private final UserRepository userRepository;
-
-    public HomeController(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
     @GetMapping
-    public String showHome( Principal principal,
+    public String showHome(Principal principal,
                            Model model){
 
-        Optional<User> user = userRepository.findByUsername(principal.getName());
-        System.out.println(user);
+        if (principal != null) {
+            User user = null;
 
-        model.addAttribute("user",user);
+            // OAuth2 로그인
+            if (principal instanceof OAuth2User oauth2User) {
+                Map<String, Object> attributes = oauth2User.getAttributes();
+                user = (User) attributes.get("user");
+            }
+
+            // Form 로그인
+            else if (principal instanceof CustomUserPrincipal customUser) {
+                user = customUser.getUser();
+            }
+
+            if (user != null) {
+                System.out.println("로그인 유저: " + user.getNickname());
+                System.out.println(user.getUsername());
+                model.addAttribute("user", user);
+            }
+        }
+
         return "home";
     }
 }

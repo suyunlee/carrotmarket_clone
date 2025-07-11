@@ -48,6 +48,8 @@ public class SecurityConfig {
                         .loginPage("/users/login")
                         .loginProcessingUrl("/login") /* post */
                         .failureUrl("/users/login?error")        // 실패 시 이동할 URL
+                        .usernameParameter("username")           // 아이디 필드명 지정
+                        .passwordParameter("password")
                         .defaultSuccessUrl("/", true)
                         .permitAll()
                 )
