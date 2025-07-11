@@ -54,7 +54,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
 
         // 이미 가입된 사용자인지 판단
-        Optional<User> userOptional = userRepository.findByEmail(email);
+        Optional<User> userOptional = userRepository.findByUsername(email);
         User user;
 
         if (userOptional.isPresent()) {
@@ -73,9 +73,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             user = new User();
             user.setUsername(email);
             user.setPassword("qweqweqwe@#!@#!1231");
-            user.setPhoneNumber("123123");
             user.setRole(UserRole.USER);
-            user.setEmail(email);
             user.setProvider(AuthProvider.valueOf(registrationId.toUpperCase()));
             user.setProviderId(id);
             user.setNickname(name);

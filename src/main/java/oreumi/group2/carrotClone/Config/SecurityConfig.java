@@ -41,13 +41,14 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                        .requestMatchers("/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
                         .loginPage("/users/login")
                         .loginProcessingUrl("/login") /* post */
                         .failureUrl("/users/login?error")        // 실패 시 이동할 URL
-                        .defaultSuccessUrl("/users/signup", true)
+                        .defaultSuccessUrl("/", true)
                         .permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
@@ -55,7 +56,7 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
-                        .defaultSuccessUrl("/users/signup",true)
+                        .defaultSuccessUrl("/",true)
                         .failureUrl("/login?error=oauth2_error")
                 );
         return http.build();

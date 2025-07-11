@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>회원가입 | 당근마켓 클론</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/css/styles.css">
     <style>
         .error { color: red; font-size: 12px; margin-top: 4px; }
     </style>
@@ -51,14 +51,6 @@
             <input type="text" id="nickname" th:field="*{nickname}"
                    placeholder="닉네임 입력" required />
             <div id="nicknameError" class="error"></div>
-        </div>
-
-        <!-- PHONE NUMBER -->
-        <div class="form-group">
-            <label for="phoneNumber">전화번호</label>
-            <input type="text" id="phoneNumber" th:field="*{phoneNumber}"
-                   placeholder="숫자만 입력" required />
-            <div id="phoneError" class="error"></div>
         </div>
 
         <button type="submit" class="btn btn-primary">회원가입</button>
