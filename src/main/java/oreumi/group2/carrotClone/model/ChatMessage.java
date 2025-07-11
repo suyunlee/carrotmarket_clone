@@ -23,7 +23,7 @@ public class ChatMessage {
     private Long id;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "chatRoom_id", nullable = false)
+    @JoinColumn(name = "chatRoom_id")
     @JsonIgnore
     private ChatRoom chatRoom;
 

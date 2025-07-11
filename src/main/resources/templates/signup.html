@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입 | 당근마켓 클론</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .error { color: red; font-size: 12px; margin-top: 4px; }
+    </style>
+</head>
+<body>
+<div class="auth-container">
+    <div class="logo">
+        <img th:src="@{/images/icons/header_icon.svg}" alt="당근마켓 로고" class="logo-icon"/>
+    </div>
+
+    <form th:action="@{/users/signup}" th:object="${user}"
+          method="post" id="signupForm" class="auth-form" novalidate>
+
+        <!-- EMAIL AS USERNAME -->
+        <div class="form-group">
+            <label for="username">이메일</label>
+            <input type="text" id="username" th:field="*{username}"
+                   placeholder="예: user@naver.com" required />
+            <div th:if="${#fields.hasErrors('username')}"
+                 th:errors="*{username}" class="error"></div>
+            <div id="usernameError" class="error"></div>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="form-group">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" th:field="*{password}"
+                   placeholder="영문·숫자·특수문자 포함 8자 이상" required />
+            <div th:if="${#fields.hasErrors('password')}"
+                 th:errors="*{password}" class="error"></div>
+            <div id="passwordError" class="error"></div>
+        </div>
+
+        <!-- CONFIRM PASSWORD -->
+        <div class="form-group">
+            <label for="confirmPassword">비밀번호 확인</label>
+            <input type="password" id="confirmPassword" name="confirmPassword"
+                   placeholder="비밀번호 재입력" required />
+            <div id="confirmError" class="error"></div>
+        </div>
+
+        <!-- NICKNAME -->
+        <div class="form-group">
+            <label for="nickname">닉네임</label>
+            <input type="text" id="nickname" th:field="*{nickname}"
+                   placeholder="닉네임 입력" required />
+            <div id="nicknameError" class="error"></div>
+        </div>
+
+        <!-- PHONE NUMBER -->
+        <div class="form-group">
+            <label for="phoneNumber">전화번호</label>
+            <input type="text" id="phoneNumber" th:field="*{phoneNumber}"
+                   placeholder="숫자만 입력" required />
+            <div id="phoneError" class="error"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">회원가입</button>
+        <div th:if="${usernameError}" class="error" th:text="${usernameError}"></div>
+
+        <p class="link-text">
+            이미 계정이 있으신가요?
+            <a th:href="@{/users/login}">로그인</a>
+        </p>
+    </form>
+</div>
+
+<script>
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+      let valid = true;
+      const emailPat = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+      const passPat  = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/;
+
+      // 이메일 검증
+      const email = this.username.value.trim();
+      const emailErrEl = document.getElementById('usernameError');
+      if (!emailPat.test(email)) {
+        emailErrEl.textContent = '유효한 이메일 형식을 입력해주세요.';
+        valid = false;
+      } else {
+        emailErrEl.textContent = '';
+      }
+
+      // 비밀번호 검증
+      const pw = this.password.value;
+      const pwErrEl = document.getElementById('passwordError');
+      if (!passPat.test(pw)) {
+        pwErrEl.textContent = '비밀번호는 영문·숫자·특수문자 포함 8자 이상이어야 합니다.';
+        valid = false;
+      } else {
+        pwErrEl.textContent = '';
+      }
+
+      // 비밀번호 확인
+      const cpw = document.getElementById('confirmPassword').value;
+      const cpwErrEl = document.getElementById('confirmError');
+      if (cpw !== pw) {
+        cpwErrEl.textContent = '비밀번호가 일치하지 않습니다.';
+        valid = false;
+      } else {
+        cpwErrEl.textContent = '';
+      }
+
+      // 닉네임 검증
+      const nn = this.nickname.value.trim();
+      const nnErrEl = document.getElementById('nicknameError');
+      if (!nn) {
+        nnErrEl.textContent = '닉네임을 입력해주세요.';
+        valid = false;
+      } else {
+        nnErrEl.textContent = '';
+      }
+
+      // 전화번호 검증
+      const ph = this.phoneNumber.value.trim();
+      const phErrEl = document.getElementById('phoneError');
+      if (!/^[0-9]+$/.test(ph)) {
+        phErrEl.textContent = '전화번호는 숫자만 입력해야 합니다.';
+        valid = false;
+      } else {
+        phErrEl.textContent = '';
+      }
+
+      if (!valid) e.preventDefault();
+    });
+</script>
+</body>
+</html>
