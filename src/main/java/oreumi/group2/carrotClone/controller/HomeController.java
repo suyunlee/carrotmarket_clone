@@ -42,7 +42,7 @@ public class HomeController {
             }
 
             if (user != null) {
-                System.out.println("로그인 유저: " + user.getNickname());
+                System.out.println("로그인 유저: " + user.getUsername());
                 model.addAttribute("user", user);
             }
         }
