@@ -66,4 +66,7 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category; /* category 정보 */
+
+
+
 }
