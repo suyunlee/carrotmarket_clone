@@ -65,9 +65,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         "이미 " + user.getProvider() + " 계정으로 가입된 이메일입니다."
                 );
             }
-            // 기존 사용자 정보 업데이트
-            user.setUsername(name);
-            user = userRepository.save(user);
         } else {
             // 새 사용자 생성
             user = new User();

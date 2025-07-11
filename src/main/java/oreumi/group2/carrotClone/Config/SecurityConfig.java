@@ -51,6 +51,10 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/", true)
                         .permitAll()
                 )
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/")
+                        .deleteCookies("JSESSIONID")
+                )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/users/login")
                         .userInfoEndpoint(userInfo -> userInfo
