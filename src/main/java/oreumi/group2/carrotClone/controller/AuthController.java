@@ -2,7 +2,7 @@ package oreumi.group2.carrotClone.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import oreumi.group2.carrotClone.DTO.UserDTO;
+import oreumi.group2.carrotClone.dto.UserDTO;
 import oreumi.group2.carrotClone.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;

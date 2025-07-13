@@ -1,7 +1,7 @@
 package oreumi.group2.carrotClone.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
-import oreumi.group2.carrotClone.DTO.ChatRoomDTO;
+import oreumi.group2.carrotClone.dto.ChatRoomDTO;
 import oreumi.group2.carrotClone.model.ChatMessage;
 import oreumi.group2.carrotClone.model.ChatRoom;
 import oreumi.group2.carrotClone.model.Post;

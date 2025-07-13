@@ -1,5 +1,4 @@
-package oreumi.group2.carrotClone.Config;
-
+package oreumi.group2.carrotClone.security;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

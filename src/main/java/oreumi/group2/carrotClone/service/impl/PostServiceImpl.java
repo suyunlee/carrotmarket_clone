@@ -2,7 +2,7 @@ package oreumi.group2.carrotClone.service.impl;
 
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
-import oreumi.group2.carrotClone.DTO.PostDTO;
+import oreumi.group2.carrotClone.dto.PostDTO;
 import oreumi.group2.carrotClone.model.*;
 import oreumi.group2.carrotClone.repository.LikeRepository;
 import oreumi.group2.carrotClone.repository.PostRepository;

@@ -1,6 +1,6 @@
 package oreumi.group2.carrotClone.service;
 
-import oreumi.group2.carrotClone.DTO.UserDTO;
+import oreumi.group2.carrotClone.dto.UserDTO;
 import oreumi.group2.carrotClone.model.User;
 import oreumi.group2.carrotClone.model.enums.AuthProvider;
 

@@ -1,26 +1,19 @@
 package oreumi.group2.carrotClone.controller;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import oreumi.group2.carrotClone.Config.CustomUserPrincipal;
-import oreumi.group2.carrotClone.DTO.ChatRoomDTO;
+import oreumi.group2.carrotClone.security.CustomUserPrincipal;
+import oreumi.group2.carrotClone.dto.ChatRoomDTO;
 import oreumi.group2.carrotClone.model.ChatRoom;
 import oreumi.group2.carrotClone.model.Post;
-import oreumi.group2.carrotClone.model.User;
 import oreumi.group2.carrotClone.repository.PostRepository;
 import oreumi.group2.carrotClone.repository.UserRepository;
 import oreumi.group2.carrotClone.service.ChatRoomService;
-import oreumi.group2.carrotClone.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.security.Principal;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,11 +28,9 @@ public class ChatRoomController {
     @GetMapping("/{postId}/rooms")
     public List<ChatRoomDTO> listRooms(
             @PathVariable Long postId,
-            @AuthenticationPrincipal Object principal)
+            @AuthenticationPrincipal CustomUserPrincipal principal)
     {
-
-        User user = getCurrentUser(principal);
-        String username = user.getUsername();
+        String username = principal.getUsername();
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -64,10 +55,9 @@ public class ChatRoomController {
     @ResponseBody
     public ChatRoomDTO createRoom(
             @PathVariable Long postId,
-            @AuthenticationPrincipal Object principal)
+            @AuthenticationPrincipal CustomUserPrincipal principal)
     {
-        User user = getCurrentUser(principal);
-        String username = user.getUsername();
+        String username = principal.getUsername();
 
         // 사용자 확인
         Long userId = userRepository.findByUsername(username)
@@ -108,24 +98,5 @@ public class ChatRoomController {
         }
         /* DTO 반환 후 리턴 */
         return ChatRoomDTO.fromEntity(room);
-    }
-
-    private User getCurrentUser(Object principal) {
-
-        if (principal != null) {
-            User user = null;
-
-            if (principal instanceof OAuth2User oauth2User) {
-                Map<String, Object> attributes = oauth2User.getAttributes();
-                user = (User) attributes.get("user");
-                return user;
-            }
-
-            else if (principal instanceof CustomUserPrincipal customUser) {
-                user = customUser.getUser();
-                return user;
-            }
-        }
-        return null;
     }
 }

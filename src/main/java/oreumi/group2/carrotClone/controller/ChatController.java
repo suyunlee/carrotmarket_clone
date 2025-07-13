@@ -1,9 +1,9 @@
 package oreumi.group2.carrotClone.controller;
 
 import lombok.RequiredArgsConstructor;
-import oreumi.group2.carrotClone.Config.CustomUserPrincipal;
-import oreumi.group2.carrotClone.DTO.ChatMessageDTO;
-import oreumi.group2.carrotClone.DTO.ReadReceiptDTO;
+import oreumi.group2.carrotClone.security.CustomUserPrincipal;
+import oreumi.group2.carrotClone.dto.ChatMessageDTO;
+import oreumi.group2.carrotClone.dto.ReadReceiptDTO;
 import oreumi.group2.carrotClone.model.ChatMessage;
 import oreumi.group2.carrotClone.model.ChatRoom;
 import oreumi.group2.carrotClone.model.User;
@@ -16,15 +16,12 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/chat/room/{roomId}")
@@ -40,25 +37,21 @@ public class ChatController {
     @GetMapping
     public String enterChat(
             @PathVariable Long roomId,
-            @AuthenticationPrincipal Object principal,
+            @AuthenticationPrincipal CustomUserPrincipal principal,
             Model model)
     {
-        User user = getCurrentUser(principal);
-        String username = user.getUsername();
+        String username = principal.getUsername();
 
         //입장 전 상대방 메세지 읽음 처리
         chatMessageService.markRead(roomId,username);
+        ChatRoom chatRoom = chatRoomService.findChatRoomById(roomId);
+        Long postId = chatRoom.getPost().getId();
         
         model.addAttribute("roomId", roomId);
         model.addAttribute("currentUser",username);
-
-        ChatRoom chatRoom = chatRoomService.findChatRoomById(roomId);
-
-        Long postId = chatRoom.getPost().getId();
-        System.out.println(postId);
+        model.addAttribute("user",principal.getUser());
         model.addAttribute("post",chatRoom.getPost());
         model.addAttribute("postId",postId);
-
 
         List<ChatMessageDTO> dtos = chatMessageService.getMessages(roomId)
                         .stream()
@@ -118,24 +111,5 @@ public class ChatController {
     public void markRead(@PathVariable Long roomId,
                          @RequestParam String username){
         chatMessageService.markRead(roomId,username);
-    }
-
-    private User getCurrentUser(Object principal) {
-
-        if (principal != null) {
-            User user = null;
-
-            if (principal instanceof OAuth2User oauth2User) {
-                Map<String, Object> attributes = oauth2User.getAttributes();
-                user = (User) attributes.get("user");
-                return user;
-            }
-
-            else if (principal instanceof CustomUserPrincipal customUser) {
-                user = customUser.getUser();
-                return user;
-            }
-        }
-        return null;
     }
 }

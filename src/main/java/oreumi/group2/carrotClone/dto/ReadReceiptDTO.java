@@ -1,4 +1,4 @@
-package oreumi.group2.carrotClone.DTO;
+package oreumi.group2.carrotClone.dto;
 
 import lombok.Data;
 
