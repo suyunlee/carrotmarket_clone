@@ -108,7 +108,6 @@ public class PostServiceImpl implements PostService {
                 existingPost -> {
                     existingPost.setTitle(p.getTitle());
                     existingPost.setPrice(p.getPrice());
-                    existingPost.setSold(p.isSold());
                     existingPost.setLocation(p.getLocation());
                     existingPost.setDescription(p.getDescription());
                     existingPost.setCategory(p.getCategory());

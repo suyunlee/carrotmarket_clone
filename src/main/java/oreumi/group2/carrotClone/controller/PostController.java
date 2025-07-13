@@ -36,27 +36,6 @@ public class PostController {
     @Autowired private UserRepository userRepository;
     @Autowired private CategoryRepository categoryRepository;
 
-    /* 테스트 로그인 */
-    @GetMapping("/test-login")
-    public String testLogin(HttpSession session) {
-        String username = "testuser@www.com";
-        User user = userRepository.findByUsername(username).orElseGet(() -> {
-            User newUser = new User();
-            newUser.setUsername(username);
-            newUser.setPassword("testpa!@#!22ssword");
-            newUser.setNickname("테스트유저");
-            newUser.setLocation("서울");
-            newUser.setRole(UserRole.USER);
-            newUser.setNeighborhoodVerified(true);
-            newUser.setProvider(AuthProvider.LOCAL);
-            return userRepository.save(newUser);
-        });
-
-        session.setAttribute("user", user);
-
-        return "redirect:/posts";
-    }
-
     /* 전체 게시글 목록 */
     @GetMapping
     public String showPost(@RequestParam(defaultValue = "0") int page,
@@ -238,7 +217,6 @@ public class PostController {
 //      }
 //        postDTO.setImages(images);
         try {
-            postDTO.setSold(true); //예시
             Post post = postService.updatePost(id, postDTO);
             redirectAttributes.addFlashAttribute("success", "게시글이 성공적으로 수정되었습니다.");
             return "redirect:/posts/" + post.getId();
@@ -276,5 +254,4 @@ public class PostController {
         }
         return null;
     }
-
 }

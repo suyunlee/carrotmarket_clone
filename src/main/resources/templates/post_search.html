@@ -4,8 +4,14 @@
     <meta charset="UTF-8">
     <title>거래 매물 검색</title>
     <link rel="stylesheet" href="/css/post_list.css">
+    <link rel="stylesheet" th:href="@{/css/background.css}"/>
+    <link rel="stylesheet" th:href="@{/css/font.css}"/>
+    <link rel="stylesheet" th:href="@{/css/input.css}"/>
+    <link rel="stylesheet" th:href="@{/css/button.css}"/>
+    <link rel="stylesheet" th:href="@{/css/layout.css}"/>
 </head>
-<body>
+<body class="font-pretendard">
+    <header th:replace="~{fragments/header :: header}"></header>
     <div class="search-section">
         <form th:action="@{/posts/search}" method="get" class="search-form">
             <input type="text" name="keyword" placeholder="물품이나 동네를 검색해보세요"

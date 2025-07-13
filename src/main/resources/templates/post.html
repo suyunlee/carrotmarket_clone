@@ -4,9 +4,15 @@
     <meta charset="UTF-8">
     <title>중고거래 인기매물</title>
     <link rel="stylesheet" href="/css/post_list.css">
+    <link rel="stylesheet" th:href="@{/css/background.css}"/>
+    <link rel="stylesheet" th:href="@{/css/font.css}"/>
+    <link rel="stylesheet" th:href="@{/css/input.css}"/>
+    <link rel="stylesheet" th:href="@{/css/button.css}"/>
+    <link rel="stylesheet" th:href="@{/css/layout.css}"/>
 </head>
-<body>
-<header id="headerContainer">
+<body class="font-pretendard">
+<header th:replace="~{fragments/header :: header}"></header>
+<div id="headerContainer">
     <div id="postHeader">
         <div id="postHeaderInfo">
             <h1>믿을만한<br>이웃 간 중고거래</h1>
@@ -14,7 +20,7 @@
         </div>
         <img src="/images/banners/products_banner.png" id="postBannerImg" alt="포스트 배너 이미지">
     </div>
-</header>
+</div>
 <div id="listContainer">
     <h3 id="listTitle">중고거래 인기매물</h3>
 
