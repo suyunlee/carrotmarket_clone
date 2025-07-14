@@ -30,7 +30,8 @@
                     <div id="userNickname" th:text="${post != null and post.user != null ? post.user.nickname : '아이디' }"></div>
                     <div id="userLocation" th:text="${post != null and post.user != null ? post.user.location : '부평 1동'}"></div>
                 </div>
-                <button class="c-btn" id="chatButton" th:data-post-id="${post.id}" >채팅하기</button>
+                <button class="c-btn" id="chatButton" th:data-post-id="${post.id}"
+                        th:attr="disabled=${user == null or post.sold}">채팅하기</button>
             </div>
 
             <hr id="horizon">
@@ -64,7 +65,7 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
           // 1) 세션에서 넘어온 user.username
-          const currentUser = /*[[${user.username}]]*/ 'anonymous';
+          const currentUser = /*[[${user != null ? user.username : 'anonymous'}]]*/ 'anonymous';
           // 2) 포스트 작성자(username)
           const postOwner   = /*[[${post.user.username}]]*/ '';
           const postId      = /*[[${post.id}]]*/ 0;
@@ -104,6 +105,6 @@
           });
         /*]]>*/
     </script>
-
+    <script src="/js/header.js"></script>
 </body>
 </html>
