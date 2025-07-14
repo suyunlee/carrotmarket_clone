@@ -1,6 +1,8 @@
 package oreumi.group2.carrotClone.controller;
 
 import lombok.RequiredArgsConstructor;
+import oreumi.group2.carrotClone.dto.ChatRoomDTO;
+import oreumi.group2.carrotClone.model.Post;
 import oreumi.group2.carrotClone.security.CustomUserPrincipal;
 import oreumi.group2.carrotClone.dto.ChatMessageDTO;
 import oreumi.group2.carrotClone.dto.ReadReceiptDTO;
@@ -42,16 +44,25 @@ public class ChatController {
     {
         String username = principal.getUsername();
 
-        //입장 전 상대방 메세지 읽음 처리
+        List<ChatRoomDTO> myRooms = chatRoomService.getRoomsForUser(username);
+        model.addAttribute("chatRooms",myRooms);
         chatMessageService.markRead(roomId,username);
+
         ChatRoom chatRoom = chatRoomService.findChatRoomById(roomId);
-        Long postId = chatRoom.getPost().getId();
-        
         model.addAttribute("roomId", roomId);
         model.addAttribute("currentUser",username);
         model.addAttribute("user",principal.getUser());
-        model.addAttribute("post",chatRoom.getPost());
-        model.addAttribute("postId",postId);
+
+        Post post = chatRoom.getPost();
+        if(post == null){
+            model.addAttribute("post", null);
+            model.addAttribute("postId", 0);
+            model.addAttribute("postOwner","");
+        }else{
+            model.addAttribute("postId", post.getId());
+            model.addAttribute("post",post);
+            model.addAttribute("postOwner",post.getUser().getUsername());
+        }
 
         List<ChatMessageDTO> dtos = chatMessageService.getMessages(roomId)
                         .stream()
