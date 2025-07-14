@@ -54,8 +54,8 @@ public class User {
     @Column(nullable = false, length = 20)
     private UserRole role;
 
-    @Column(name = "neighborhood_verified")
-    private boolean neighborhoodVerified;
+    @Column(name = "neighborhood_verified", nullable = false)
+    private boolean neighborhoodVerified = false;
 
     @Column(name = "neighborhood_name", length = 100)
     private String neighborhoodName;

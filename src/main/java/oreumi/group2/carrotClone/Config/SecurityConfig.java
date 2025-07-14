@@ -3,6 +3,7 @@ package oreumi.group2.carrotClone.Config;
 import lombok.RequiredArgsConstructor;
 import oreumi.group2.carrotClone.security.CustomOAuth2UserService;
 import oreumi.group2.carrotClone.security.CustomUserDetailService;
+import oreumi.group2.carrotClone.security.NeighborhoodAccessFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -11,6 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -19,6 +22,7 @@ public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomUserDetailService customUserDetailService;
+    private final NeighborhoodAccessFilter neighborhoodAccessFilter;
 
     // 비밀번호 암호화 처리
     @Bean
@@ -39,13 +43,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .authenticationProvider(authenticationProvider())
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**").permitAll()
+                        .requestMatchers("/", "/posts", "/posts/*", "/users/signup", "/users",
+                                "/login", "/maps/permission", "/maps/verify").permitAll()
                         .anyRequest().authenticated()
                 )
+                .addFilterAfter(neighborhoodAccessFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin(login -> login
                         .loginPage("/users/login")
                         .loginProcessingUrl("/login") /* post */
