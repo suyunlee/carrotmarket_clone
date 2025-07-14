@@ -1,14 +1,11 @@
 package oreumi.group2.carrotClone.controller;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import oreumi.group2.carrotClone.Config.CustomUserPrincipal;
-import oreumi.group2.carrotClone.DTO.PostDTO;
+import oreumi.group2.carrotClone.security.CustomUserPrincipal;
+import oreumi.group2.carrotClone.dto.PostDTO;
 import oreumi.group2.carrotClone.model.Category;
 import oreumi.group2.carrotClone.model.Post;
 import oreumi.group2.carrotClone.model.User;
-import oreumi.group2.carrotClone.model.enums.AuthProvider;
-import oreumi.group2.carrotClone.model.enums.UserRole;
 import oreumi.group2.carrotClone.repository.CategoryRepository;
 import oreumi.group2.carrotClone.repository.UserRepository;
 import oreumi.group2.carrotClone.service.PostService;
@@ -17,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,8 +36,8 @@ public class PostController {
     @GetMapping
     public String showPost(@RequestParam(defaultValue = "0") int page,
                            Model model,
-                           @AuthenticationPrincipal Object principal){
-        User user = getCurrentUser(principal);
+                           @AuthenticationPrincipal CustomUserPrincipal principal){
+        User user = principal.getUser();
         model.addAttribute("user", user);
 
         Pageable pageable = PageRequest.of(page, 12);
@@ -58,8 +54,8 @@ public class PostController {
                              @RequestParam(required = false) String keyword,
                              @RequestParam(required = false) Long category,
                              Model model,
-                             @AuthenticationPrincipal Object principal){
-        User user = getCurrentUser(principal);
+                             @AuthenticationPrincipal CustomUserPrincipal principal){
+        User user = principal.getUser();
         model.addAttribute("user", user);
 
         Pageable pageable = PageRequest.of(page, 8);
@@ -76,10 +72,10 @@ public class PostController {
 
     /* 게시글 작성 폼 */
     @GetMapping("/new")
-    public String showNewForm(@AuthenticationPrincipal Object principal,
+    public String showNewForm(@AuthenticationPrincipal CustomUserPrincipal principal,
                               Model model,
                               RedirectAttributes redirectAttributes){
-        User user = getCurrentUser(principal);
+        User user = principal.getUser();
         if(user == null) {
             redirectAttributes.addFlashAttribute("error", "로그인이 필요합니다.");
             return "redirect:/users/login";
@@ -102,7 +98,7 @@ public class PostController {
     public String registerForm(@RequestParam("files") List<MultipartFile> files,
                                @Valid @ModelAttribute PostDTO postDTO,
                                BindingResult bindingResult,
-                               @AuthenticationPrincipal Object principal,
+                               @AuthenticationPrincipal CustomUserPrincipal principal,
                                RedirectAttributes redirectAttributes) {
 
         if(bindingResult.hasErrors()) {
@@ -111,7 +107,7 @@ public class PostController {
             return "redirect:/posts/new";
         }
 
-        User user = getCurrentUser(principal);
+        User user = principal.getUser();
         Category category = categoryRepository.findById(postDTO.getCategory().getId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
         postDTO.setCategory(category);
@@ -137,14 +133,14 @@ public class PostController {
     @GetMapping("/{id}")
     public String specificFormDetail(@PathVariable Long id,
                                      Model model,
-                                     @AuthenticationPrincipal Object principal) {
+                                     @AuthenticationPrincipal CustomUserPrincipal principal) {
 
         postService.increaseViewCount(id);
         Optional<Post> postOpt = postService.findById(id);
         if(postOpt.isEmpty()) return "redirect:/posts";
 
         Post post = postOpt.get();
-        User user = getCurrentUser(principal);
+        User user = principal.getUser();
 
         model.addAttribute("post", post);
         model.addAttribute("user", user);
@@ -164,12 +160,12 @@ public class PostController {
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id,
                            Model model,
-                           @AuthenticationPrincipal Object principal){
+                           @AuthenticationPrincipal CustomUserPrincipal principal){
         Optional<Post> postOpt = postService.findById(id);
         if(postOpt.isEmpty()) return "redirect:/posts";
         Post post = postOpt.get();
 
-        User user = getCurrentUser(principal);
+        User user = principal.getUser();
         if (user == null) return "redirect:/users/login";
 
         if(!post.getUser().getId().equals(user.getId())) return "redirect:/posts";
@@ -196,7 +192,7 @@ public class PostController {
                                    @RequestParam("files") List<MultipartFile> files,
                                    @Valid @ModelAttribute PostDTO postDTO,
                                    BindingResult bindingResult,
-                                   @AuthenticationPrincipal Object principal,
+                                   @AuthenticationPrincipal CustomUserPrincipal principal,
                                    RedirectAttributes redirectAttributes) {
         if(bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getAllErrors().get(0).getDefaultMessage();
@@ -204,7 +200,7 @@ public class PostController {
             return "redirect:/posts/" + id + "/edit";
         }
 
-        User user = getCurrentUser(principal);
+        User user = principal.getUser();
         Category category = categoryRepository.findById(postDTO.getCategory().getId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
         postDTO.setCategory(category);
@@ -234,24 +230,4 @@ public class PostController {
     }
     /* 게시글 좋아요 추가 */
     /* 좋아요 취소 */
-
-    /* OAuth2 로그인과 기존 세션 로그인을 모두 지원하는 헬퍼 메서드 */
-    private User getCurrentUser(Object principal) {
-
-        if (principal != null) {
-            User user = null;
-
-            if (principal instanceof OAuth2User oauth2User) {
-                Map<String, Object> attributes = oauth2User.getAttributes();
-                user = (User) attributes.get("user");
-                return user;
-            }
-
-            else if (principal instanceof CustomUserPrincipal customUser) {
-                user = customUser.getUser();
-                return user;
-            }
-        }
-        return null;
-    }
 }

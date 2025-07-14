@@ -31,7 +31,7 @@ public class Post {
     private BigDecimal price; /* 가격 */
 
     @Column(nullable = false)
-    private boolean sold; /* 판매여부 */
+    private boolean Sold; /* 판매여부 */
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

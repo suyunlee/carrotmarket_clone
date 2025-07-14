@@ -55,6 +55,6 @@
         <span th:unless="${page.hasNext()}" class="arrow-disable">&gt;</span>
     </div>
 </div>
-<a href="/posts/new" class="floating-btn">거래글 쓰기</a>
+<a th:href="@{/posts/new}" class="floating-btn">거래글 쓰기</a>
 </body>
 </html>

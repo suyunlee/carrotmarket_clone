@@ -2,6 +2,7 @@ package oreumi.group2.carrotClone.Config;
 
 import lombok.RequiredArgsConstructor;
 import oreumi.group2.carrotClone.security.CustomOAuth2UserService;
+import oreumi.group2.carrotClone.security.CustomUserDetailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -13,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor // 생성자 기반 의존성 주입 활성화
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
@@ -25,6 +26,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // 사용자 정보 검증
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider p = new DaoAuthenticationProvider();
@@ -47,9 +49,9 @@ public class SecurityConfig {
                 .formLogin(login -> login
                         .loginPage("/users/login")
                         .loginProcessingUrl("/login") /* post */
-                        .failureUrl("/users/login?error")// 실패 시 이동할 URL
+                        .failureUrl("/users/login?error")        // 실패 시 이동할 URL
                         .usernameParameter("username")           // 아이디 필드명 지정
-                        .passwordParameter("password")              // 비번 필드명 지정
+                        .passwordParameter("password")
                         .defaultSuccessUrl("/", true)
                         .permitAll()
                 )

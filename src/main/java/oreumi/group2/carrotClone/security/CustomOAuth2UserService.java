@@ -4,22 +4,17 @@ import oreumi.group2.carrotClone.model.User;
 import oreumi.group2.carrotClone.model.enums.AuthProvider;
 import oreumi.group2.carrotClone.model.enums.UserRole;
 import oreumi.group2.carrotClone.repository.UserRepository;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
-
     private final UserRepository userRepository;
 
     public CustomOAuth2UserService(UserRepository userRepository) {
@@ -74,19 +69,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             user.setProvider(AuthProvider.valueOf(registrationId.toUpperCase()));
             user.setProviderId(id);
             user.setNickname(name);
-            user = userRepository.save(user);
+            userRepository.save(user);
         }
-
-        // 사용자 정보를 attributes에 추가
-        Map<String, Object> modifiedAttributes = new HashMap<>(attributes);
-        modifiedAttributes.put("user", user);
-
-        // OAuth2User 객체 반환 (권한과 함께)
-        return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
-                modifiedAttributes,
-                "sub" // nameAttributeKey
-        );
+        // CustomUserPrincipal 로 통합
+        return new CustomUserPrincipal(user, attributes);
     }
 }
-

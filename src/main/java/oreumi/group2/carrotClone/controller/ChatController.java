@@ -1,21 +1,26 @@
 package oreumi.group2.carrotClone.controller;
 
 import lombok.RequiredArgsConstructor;
-import oreumi.group2.carrotClone.DTO.ChatMessageDTO;
-import oreumi.group2.carrotClone.DTO.ReadReceiptDTO;
+import oreumi.group2.carrotClone.security.CustomUserPrincipal;
+import oreumi.group2.carrotClone.dto.ChatMessageDTO;
+import oreumi.group2.carrotClone.dto.ReadReceiptDTO;
 import oreumi.group2.carrotClone.model.ChatMessage;
 import oreumi.group2.carrotClone.model.ChatRoom;
+import oreumi.group2.carrotClone.model.User;
 import oreumi.group2.carrotClone.service.ChatMessageService;
 import oreumi.group2.carrotClone.service.ChatRoomService;
+import oreumi.group2.carrotClone.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -26,30 +31,27 @@ public class ChatController {
     private final ChatMessageService chatMessageService;
     private final SimpMessagingTemplate template;
     private final ChatRoomService chatRoomService;
+    private final UserService userService;
 
     /* 채팅방 입장 */
     @GetMapping
     public String enterChat(
             @PathVariable Long roomId,
-            @RequestParam String username,
-            /* Principal principal <- 로그인시 필요 */
+            @AuthenticationPrincipal CustomUserPrincipal principal,
             Model model)
     {
-        // String username = principal.getName();
+        String username = principal.getUsername();
 
         //입장 전 상대방 메세지 읽음 처리
         chatMessageService.markRead(roomId,username);
+        ChatRoom chatRoom = chatRoomService.findChatRoomById(roomId);
+        Long postId = chatRoom.getPost().getId();
         
         model.addAttribute("roomId", roomId);
         model.addAttribute("currentUser",username);
-
-        ChatRoom chatRoom = chatRoomService.findChatRoomById(roomId);
-
-        Long postId = chatRoom.getPost().getId();
-        System.out.println(postId);
+        model.addAttribute("user",principal.getUser());
         model.addAttribute("post",chatRoom.getPost());
         model.addAttribute("postId",postId);
-
 
         List<ChatMessageDTO> dtos = chatMessageService.getMessages(roomId)
                         .stream()
@@ -74,16 +76,19 @@ public class ChatController {
     public void stompMessage(
             @DestinationVariable Long roomId,
             // @Payload 역직렬화 (JSON -> 객체)
-            @Payload ChatMessageDTO payload
-            /* Principal principal <- 로그인시 필요 */ )
+            @Payload ChatMessageDTO payload,
+           Principal principal)
     {
-        // String username = principal.getName(); 로그인된 유저
+        String username = principal.getName();
+
+        User user = userService.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("로그인 유저를 찾을 수 없습니다." + username));
+
         /* 메세지 저장 (방 ID, 내용, 보낸 사람아름) */
         ChatMessage saved = chatMessageService.saveMessage(
                 roomId,
                 payload.getContent(),
-                payload.getSenderUsername()
-                // username
+                username
         );
         // DTO 로 변환 (필터링)
         ChatMessageDTO dto = ChatMessageDTO.fromEntity(saved);

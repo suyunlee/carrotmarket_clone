@@ -1,6 +1,6 @@
 package oreumi.group2.carrotClone.service;
 
-import oreumi.group2.carrotClone.DTO.PostDTO;
+import oreumi.group2.carrotClone.dto.PostDTO;
 import oreumi.group2.carrotClone.model.Post;
 import oreumi.group2.carrotClone.model.User;
 import org.springframework.data.domain.Page;

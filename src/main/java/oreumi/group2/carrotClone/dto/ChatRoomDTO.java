@@ -1,5 +1,4 @@
-package oreumi.group2.carrotClone.DTO;
-
+package oreumi.group2.carrotClone.dto;
 
 import lombok.Data;
 import oreumi.group2.carrotClone.model.ChatMessage;
@@ -14,7 +13,6 @@ public class ChatRoomDTO {
     private String username, lastMessage;
     private long unreadCount;
     private LocalDateTime lastMessageAt;
-
 
     public ChatRoomDTO() {}
 

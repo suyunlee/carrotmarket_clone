@@ -1,14 +1,15 @@
 package oreumi.group2.carrotClone.controller;
 
 import lombok.RequiredArgsConstructor;
-import oreumi.group2.carrotClone.DTO.ChatRoomDTO;
-import oreumi.group2.carrotClone.DTO.CreateRoomRequest;
+import oreumi.group2.carrotClone.security.CustomUserPrincipal;
+import oreumi.group2.carrotClone.dto.ChatRoomDTO;
 import oreumi.group2.carrotClone.model.ChatRoom;
 import oreumi.group2.carrotClone.model.Post;
 import oreumi.group2.carrotClone.repository.PostRepository;
 import oreumi.group2.carrotClone.repository.UserRepository;
 import oreumi.group2.carrotClone.service.ChatRoomService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -27,7 +28,9 @@ public class ChatRoomController {
     @GetMapping("/{postId}/rooms")
     public List<ChatRoomDTO> listRooms(
             @PathVariable Long postId,
-            @RequestParam String username){
+            @AuthenticationPrincipal CustomUserPrincipal principal)
+    {
+        String username = principal.getUsername();
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -43,7 +46,6 @@ public class ChatRoomController {
                     .filter(r -> r.getUsername().equals(username))
                     .toList();
         }
-
         // 4) 판매자 모드 → 전체 방 반환
         return allRooms;
     }
@@ -53,13 +55,12 @@ public class ChatRoomController {
     @ResponseBody
     public ChatRoomDTO createRoom(
             @PathVariable Long postId,
-            @RequestBody CreateRoomRequest req // 로그인시 삭제
-            /* Principal principal <- 로그인시 필요 */ )
+            @AuthenticationPrincipal CustomUserPrincipal principal)
     {
-        // String username = principal.getName();
+        String username = principal.getUsername();
 
         // 사용자 확인
-        Long userId = userRepository.findByUsername(req.getUsername())
+        Long userId = userRepository.findByUsername(username)
                 .orElseThrow(() ->
                         new ResponseStatusException(
                             HttpStatus.BAD_REQUEST,

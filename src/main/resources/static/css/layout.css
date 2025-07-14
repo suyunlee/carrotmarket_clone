@@ -1,16 +1,19 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
 html, body{
     width:100%;
-    margin:0;
 }
 
 .location-section{
     width:870px;
     height:74px;
-
     display:flex;
     flex-direction:column;
     gap:8px;
-
 }
 
 .location-search-box{
