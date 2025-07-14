@@ -17,4 +17,7 @@ public interface ChatRoomService {
     List<ChatRoom> findChatRoomsByPostId(Long id);
 
     List<ChatRoomDTO> getRoomsWithUnread(Long postId,String username); /* 채팅방 읽음 처리 */
+    void confirmPost(Long postId, String username); // 거래완료 처리
+    ChatRoom getOrCreateAIBotRoom(String username);
+    List<ChatRoomDTO> getRoomsForUser(String username);
 }
