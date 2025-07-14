@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const {currentUser, roomId, postId, postOwner} = window.chatConfig;
   const chatArea   = document.getElementById('chatArea');
   const chatList   = document.getElementById('chatList');
+  const confirmBtn = document.getElementById('confirm-btn');
   const renderIds  = new Set();
   const renderedRooms = new Set();
 
@@ -10,24 +11,52 @@ document.addEventListener('DOMContentLoaded', () => {
     .forEach(el => renderIds.add(+el.dataset.id));
 
   // 읽음 처리 함수
-  function sendReadReceipt() {
-    const toMark = Array.from(chatArea.children)
-      .filter(el =>
-        el.dataset.sender !== currentUser &&
-        !el.classList.contains('read')
-      )
-      .map(el => +el.dataset.id);
+    function sendReadReceipt() {
+        const toMark = Array.from(chatArea.children)
+        .filter(el =>
+            el.dataset.sender !== currentUser &&
+            !el.classList.contains('read')
+        )
+        .map(el => +el.dataset.id);
 
-    if (!toMark.length) return;
+        if (!toMark.length) return;
 
-    client.send(
-      `/app/room/${roomId}/read`,
-      {'content-type':'application/json'},
-      JSON.stringify({
-        readerUsername: currentUser,
-        messageIds: toMark
-      })
-    );
+        client.send(
+            `/app/room/${roomId}/read`,
+            {'content-type':'application/json'},
+            JSON.stringify({
+                readerUsername: currentUser,
+                messageIds: toMark
+            })
+        );
+    }
+
+    // 거래 확정
+    if(confirmBtn){
+        confirmBtn.addEventListener('click', ()=>{
+            if(confirmBtn.disabled) return;
+
+            fetch(`/chat/post/${window.chatConfig.postId}/confirm`, {
+                method : 'POST',
+                headers : {
+                    'Content-Type' : 'application/json'
+                     // [window.chatConfig.csrfHeader]: window.chatConfig.csrfToken
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('거래확정에 실패했습니다.');
+                }
+                // UI 업데이트
+                confirmBtn.textContent = '거래 완료';
+                confirmBtn.disabled = true;
+                confirmBtn.classList.add('chat-room__button--completed');
+            })
+            .catch(err => {
+                console.error(err);
+                alert('거래확정 중 오류가 발생했습니다.');
+            });
+      });
   }
 
   // 메시지 렌더링
@@ -143,17 +172,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 다른 채팅방 목록 로드
   async function loadOtherRooms() {
-    const res = await fetch(
-      `/chat/post/${postId}/rooms?username=${encodeURIComponent(currentUser)}`
-    );
+    const endpoint = postId
+      ? `/chat/post/${postId}/rooms?username=${encodeURIComponent(currentUser)}&full=true`
+      : `/chat/post/rooms?username=${encodeURIComponent(currentUser)}&full=true`;
+    const res = await fetch(endpoint);
+
     if (!res.ok) {
       console.error('방 목록 로드 실패');
       return;
     }
     const list = await res.json();
-    const roomsToShow = (currentUser === postOwner)
-      ? list
-      : list.filter(r => r.username === currentUser);
+     const roomsToShow = postId
+          ? ((currentUser === postOwner)
+              ? list
+              : list.filter(r => r.username === currentUser))
+          : list;
 
     roomsToShow
       .filter(r => r.id !== +roomId)
