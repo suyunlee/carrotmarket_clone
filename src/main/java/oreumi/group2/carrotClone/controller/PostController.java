@@ -213,7 +213,6 @@ public class PostController {
 //      }
 //        postDTO.setImages(images);
         try {
-            postDTO.setSold(true); //예시
             Post post = postService.updatePost(id, postDTO);
             redirectAttributes.addFlashAttribute("success", "게시글이 성공적으로 수정되었습니다.");
             return "redirect:/posts/" + post.getId();
