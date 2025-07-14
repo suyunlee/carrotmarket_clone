@@ -6,6 +6,10 @@ body {
     align-items: center;
 }
 
+#searchBody {
+    background-color: #F2F3F6;
+}
+
 #headerContainer {
     width: 100%;
     height: 360px;
@@ -49,6 +53,11 @@ h2 {
 #listContainer, #searchContainer{
     width: 90%;
     max-width: 1000px;
+}
+
+#searchContainer{
+    position: absolute;
+    top: 100px;
 }
 #listTitle {
     font-size: 30px;
@@ -99,6 +108,9 @@ h2 {
 }
 .preview {
      border-radius: 12px;
+     width: 210px;
+     height: 210px;
+     object-fit: cover;
 }
 .post-title {
     font-size: 17px;

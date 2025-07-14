@@ -4,9 +4,15 @@
     <meta charset="UTF-8">
     <title>중고거래 인기매물</title>
     <link rel="stylesheet" href="/css/post_list.css">
+    <link rel="stylesheet" th:href="@{/css/background.css}"/>
+    <link rel="stylesheet" th:href="@{/css/font.css}"/>
+    <link rel="stylesheet" th:href="@{/css/input.css}"/>
+    <link rel="stylesheet" th:href="@{/css/button.css}"/>
+    <link rel="stylesheet" th:href="@{/css/layout.css}"/>
 </head>
-<body>
-<header id="headerContainer">
+<body class="font-pretendard">
+<header th:replace="~{fragments/header :: header}"></header>
+<div id="headerContainer">
     <div id="postHeader">
         <div id="postHeaderInfo">
             <h1>믿을만한<br>이웃 간 중고거래</h1>
@@ -14,7 +20,7 @@
         </div>
         <img src="/images/banners/products_banner.png" id="postBannerImg" alt="포스트 배너 이미지">
     </div>
-</header>
+</div>
 <div id="listContainer">
     <h3 id="listTitle">중고거래 인기매물</h3>
 
@@ -26,7 +32,8 @@
         <div th:each="post : ${page.content}" class="post-card">
             <a th:href="@{/posts/{id}(id=${post?.id})}" class="post-info-link">
                 <div class="isSoldBox" th:if="${post.sold}">판매완료</div>
-                <img src="https://placehold.co/210x210" alt="미리보기 이미지" class="preview">
+                <img class="preview" th:if="${post.images != null and post.images.size() > 0}" th:src="@{${post.images[0].imageUrl}}" alt="첫번째 이미지">
+                <img class="preview" th:if="${post.images == null or post.images.size() == 0}" src="/images/placeholder.png" alt="이미지 없음">
                 <div class="post-info">
                     <div class="post-title" th:text="${post?.title ?: '제목 없음'}">제목</div>
                     <div class="post-price">
@@ -50,5 +57,8 @@
     </div>
 </div>
 <a th:href="@{/posts/new}" class="floating-btn">거래글 쓰기</a>
+
+<script src="/js/header.js"></script>
+
 </body>
 </html>

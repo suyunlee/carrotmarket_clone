@@ -7,9 +7,9 @@ html, body {
 body {
     background-color: #F2F3F6;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
-
 .container {
     position: relative;
     background-color: white;
@@ -17,7 +17,7 @@ body {
     margin: 0px 120px 0 120px;
     max-width: 1200px;
     padding: 56px;
-    top: 100px;
+    top: 40px;
     border-radius: 10px;
     container-type: inline-size;
     display: block;
@@ -29,6 +29,11 @@ body {
     height: 50px;
     border: none;
     border-radius: 6px;
+    cursor: pointer;
+}
+.c-btn:disabled {
+    background: #AAABB4;
+    cursor: default;
 }
 
 /* post_form css */
@@ -48,10 +53,10 @@ body {
     gap: 40px;
 }
 
-#previewImage {
+.previewImage {
     width: 210px;
     height: 210px;
-    object-fit: contain;
+    object-fit: cover;
     border: 1px solid #ccc;
     margin: 5px;
     border-radius: 10px;
@@ -146,8 +151,12 @@ textarea::-webkit-scrollbar-thumb {
 #imageView {
     width: 100%;
     height: 380px;
-    object-fit: contain;
     background-color: #DBDCE2;
+}
+#imageView img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 #userView {

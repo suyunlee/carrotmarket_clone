@@ -4,15 +4,24 @@
     <meta charset="UTF-8">
     <title>새 게시물 등록</title>
     <link rel="stylesheet" href="/css/post.css">
+    <link rel="stylesheet" th:href="@{/css/background.css}"/>
+    <link rel="stylesheet" th:href="@{/css/font.css}"/>
+    <link rel="stylesheet" th:href="@{/css/input.css}"/>
+    <link rel="stylesheet" th:href="@{/css/button.css}"/>
+    <link rel="stylesheet" th:href="@{/css/layout.css}"/>
 </head>
-<body>
+<body class="font-pretendard">
+    <header th:replace="~{fragments/header :: header}"></header>
     <div class="container">
         <form th:action="${mode} == 'new' ? @{/posts} : @{/posts/{id}/edit(id=${post.id})}"
               method="post" id="postForm" enctype="multipart/form-data"  th:object="${post}">
             <div class="product-info-section">
-                <img id="previewImage" src="https://placehold.co/210x210"
-                     alt="image upload">
-                <input hidden type="file" id="fileInput" name="files" accept="image/*" multiple>
+                <img class="previewImage" th:if="${post.images != null and post.images.size() > 0}"
+                     th:src="${post.images[0].imageUrl}" alt="이미지 업로드"/>
+                <img class="previewImage"
+                     th:if="${post.images == null or post.images.size() == 0}"
+                     src="https://placehold.co/210x210" alt="기본 이미지">
+            <input hidden type="file" id="fileInput" name="files" accept="image/*" multiple>
                 <div class="product-group">
                     <label>글 제목</label>
                     <input type="text" id="title" th:field="*{title}" required
@@ -41,6 +50,8 @@
         </form>
     </div>
 
-    <script src="/js/post.js"></script>
+<script src="/js/post.js"></script>
+<script src="/js/header.js"></script>
+
 </body>
 </html>
