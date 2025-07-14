@@ -13,11 +13,13 @@ import oreumi.group2.carrotClone.repository.UserRepository;
 import oreumi.group2.carrotClone.service.ChatMessageService;
 import oreumi.group2.carrotClone.service.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -178,5 +180,51 @@ public class ChatServiceImpl implements ChatRoomService, ChatMessageService {
     public List<ChatMessage> getMessages(Long chatRoomId) {
         List<ChatMessage> messages = chatMessageRepository.findByChatRoomIdOrderByCreatedAtAsc(chatRoomId);
         return messages;
+    }
+    @Override
+    public void confirmPost(Long postId, String username){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다."));
+
+        if(!post.getUser().getUsername().equals(username)){
+            throw new AccessDeniedException("작성자만 거래 확정할 수 있습니다.");
+        }
+
+        post.setSold(true);
+        postRepository.save(post);
+    }
+
+    @Override
+    public ChatRoom getOrCreateAIBotRoom(String username) {
+        return chatRoomRepository.findByUser_UsernameAndPostIsNull(username)
+                .orElseGet(() -> {
+                    User user = userRepository.findByUsername(username)
+                            .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+                    ChatRoom aiRoom = ChatRoom.builder()
+                            .user(user)
+                            .post(null)
+                            .build();
+                    return chatRoomRepository.save(aiRoom);
+                });
+    }
+
+    @Override
+    public List<ChatRoomDTO> getRoomsForUser(String username) {
+        List<ChatRoom> byUser = chatRoomRepository.findAllByUser_Username(username);
+
+        // 2) seller 로서 post.user 인 방들
+        List<ChatRoom> byPostOwner = chatRoomRepository.findAllByPost_User_Username(username);
+
+        // 3) 둘 합치고 중복 제거
+        return Stream.concat(byUser.stream(), byPostOwner.stream())
+                .distinct()
+                .map(room -> {
+                    long unread = chatMessageRepository.countUnread(room.getId(), username);
+                    ChatMessage last = chatMessageRepository
+                            .findTopByChatRoomIdOrderByCreatedAtDesc(room.getId())
+                            .orElse(null);
+                    return ChatRoomDTO.of(room, unread, last);
+                })
+                .toList();
     }
 }
