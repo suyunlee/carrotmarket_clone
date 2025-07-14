@@ -122,13 +122,13 @@ public class PostController {
         postDTO.setCategory(category);
 
 //      private final S3Uploader s3Uploader;
-        List<String> images = new ArrayList<>();
+//        List<String> images = new ArrayList<>();
 //      for(MultipartFile file : files) {
 //            String image = s3Uploader.upload(file, "folder-name");
 //            images.add(image);
 //      }
         try {
-            Post post = postService.createPost(user, postDTO, images);
+            Post post = postService.createPost(user, postDTO, files);
             redirectAttributes.addFlashAttribute("success", "게시글이 성공적으로 등록되었습니다.");
             return "redirect:/posts/" + post.getId();
         } catch (Exception e) {
@@ -186,6 +186,7 @@ public class PostController {
         postDTO.setDescription(post.getDescription());
         postDTO.setLocation(post.getLocation());
         postDTO.setCategory(post.getCategory());
+        postDTO.setImages(post.getImages());
         postDTO.setPrice(post.getPrice() != null ? BigDecimal.valueOf(post.getPrice().longValue()) : null);
 
         model.addAttribute("post", postDTO);

@@ -2,6 +2,7 @@ package oreumi.group2.carrotClone.service.impl;
 
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import oreumi.group2.carrotClone.dto.PostDTO;
 import oreumi.group2.carrotClone.model.*;
 import oreumi.group2.carrotClone.repository.LikeRepository;
@@ -11,12 +12,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +33,7 @@ public class PostServiceImpl implements PostService {
     @Autowired PostRepository postRepository;
     /* DI */
     @Autowired LikeRepository likeRepository;
+    private final String FILESTORE_PATH = "C:/uploads/";
 
     /* ID 기반 게시물 찾기 */
     @Override
@@ -70,7 +78,7 @@ public class PostServiceImpl implements PostService {
 
     // 게시물 등록
     @Override
-    public Post createPost(User user, PostDTO postDTO, List<String> images) {
+    public Post createPost(User user, PostDTO postDTO, List<MultipartFile> files) {
         Post p = new Post();
         p.setUser(user);
         p.setTitle(postDTO.getTitle());
@@ -79,12 +87,13 @@ public class PostServiceImpl implements PostService {
         p.setLocation(postDTO.getLocation());
         p.setCategory(postDTO.getCategory());
         List<Image> imageList = new ArrayList<>();
-        for(String s : images){
-            Image i = new Image();
-            i.setImageUrl(s);
-            i.setPost(p);
+        for(MultipartFile file : files){
+            String fileurl = storeAndGetFileUrl(file);
+            Image image = new Image();
+            image.setImageUrl(fileurl);
+            image.setPost(p);
 
-            imageList.add(i);
+            imageList.add(image);
         }
         p.setImages(imageList);
         return postRepository.save(p);
@@ -112,6 +121,45 @@ public class PostServiceImpl implements PostService {
                     existingPost.setCategory(p.getCategory());
                     return postRepository.save(existingPost);
                 }).orElseThrow(() -> new EntityExistsException("존재하지않는 게시물입니다."));
+    }
+
+    /* 이미지 확장자 리턴 메소드 */
+    private String getFileType(MultipartFile multipartFile) {
+        String contentType = multipartFile.getContentType();
+        if (contentType != null) {
+            MediaType mediaType = MediaType.parseMediaType(contentType);
+            switch (mediaType.toString()) {
+                case MediaType.IMAGE_JPEG_VALUE -> { return ".jpeg"; }
+                case MediaType.IMAGE_PNG_VALUE -> { return ".png"; }
+            }
+        }
+        return "";
+    }
+
+    /* 이미지 저장 */
+    @SneakyThrows
+    public String storeAndGetFileUrl(MultipartFile multipartFile) {
+        if(getFileType(multipartFile).contentEquals("")) {
+            throw new IllegalArgumentException("허용되지 않은 이미지 파일 타입입니다.");
+        }
+
+        String originalFilename = multipartFile.getOriginalFilename();
+        String storeFilename = UUID.randomUUID() + "_" + originalFilename;
+        File file = new File(FILESTORE_PATH + storeFilename);
+        File parentDir = file.getParentFile();
+        if (!parentDir.exists()) {
+            if (!parentDir.mkdirs()) {
+                throw new IOException("폴더 만들기 실패");
+            }
+        }
+
+        try {
+            multipartFile.transferTo(file);
+        } catch (IOException e) {
+            throw new RuntimeException("파일 저장 실패", e);
+        }
+
+        return "/uploads/" + storeFilename;
     }
 
     /* 좋아요 */

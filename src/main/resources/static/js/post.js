@@ -1,4 +1,5 @@
-const previewImage = document.getElementById('previewImage');
+//const previewImage = document.getElementById('previewImage');
+const previewImage = document.querySelector('.previewImage');
 const fileInput = document.getElementById('fileInput');
 
 previewImage.addEventListener('click', () => { fileInput.click(); });

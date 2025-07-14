@@ -22,7 +22,8 @@
         <div id="postContent">
 
             <div id="imageView">
-                <img src="/images/placeholder.png">
+                <img th:if="${post.images != null and post.images.size() > 0}" th:src="@{${post.images[0].imageUrl}}" alt="첫번째 이미지">
+                <img th:if="${post.images == null or post.images.size() == 0}" src="/images/placeholder.png" alt="이미지 없음">
             </div>
 
             <div id="userView">
