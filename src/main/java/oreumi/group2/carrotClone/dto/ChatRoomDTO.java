@@ -48,14 +48,14 @@ public class ChatRoomDTO {
 
     /* 채팅방 메세지 수 DTO */
     public static ChatRoomDTO of(ChatRoom r, long unreadCount,ChatMessage lastMsg){
-        return new ChatRoomDTO(
-                r.getId(),
-                r.getUser().getId(),
-                r.getPost().getId(),
-                r.getUser().getUsername(),
-                unreadCount,
-                lastMsg != null ? lastMsg.getContent() : "",
-                lastMsg != null ? lastMsg.getCreatedAt() : null
-        );
+        ChatRoomDTO dto = new ChatRoomDTO();
+        dto.id = r.getId();
+        dto.userId = r.getUser().getId();
+        dto.postId = (r.getPost() != null ? r.getPost().getId() : 0L);
+        dto.username = r.getUser().getUsername();
+        dto.unreadCount = unreadCount;
+        dto.lastMessage = (lastMsg != null ? lastMsg.getContent() : "");
+        dto.lastMessageAt = (lastMsg != null ? lastMsg.getCreatedAt() : null);
+        return dto;
     }
 }
