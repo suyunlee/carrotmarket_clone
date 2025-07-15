@@ -20,7 +20,7 @@ public interface PostService {
     Post getPostById (Long id); /* Id 기반 조회 */
     Post createPost (User user, PostDTO postDTO, List<MultipartFile> images); /* 저장 */
     void deletePost(Long id); // 삭제
-    Post updatePost(Long id, PostDTO p); /* 단일 업데이트 */
+    Post updatePost(Long id, PostDTO p,  List<MultipartFile> files); /* 단일 업데이트 */
     boolean isLikedByUser(Long postId, User user); /* 좋아요 */
     void increaseViewCount(Long postId); /* 조회수 */
     Page<Post> findAll(Pageable pageable);

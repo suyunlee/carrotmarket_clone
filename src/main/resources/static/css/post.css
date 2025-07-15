@@ -73,6 +73,12 @@ body {
     box-sizing: border-box;
 }
 
+#price::-webkit-inner-spin-button,
+#price::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 @container (max-width: 582px) {
     .product-info-section {
         flex-direction: column;

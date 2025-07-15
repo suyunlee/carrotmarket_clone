@@ -11,7 +11,7 @@
     <link rel="stylesheet" th:href="@{/css/layout.css}"/>
 </head>
 <body class="font-pretendard">
-    <div th:if="${error}"> <script> alert([[${error}]]); </script> </div>
+<div th:if="${error}"> <script> alert('[[${error}]]'); </script> </div>
 
     <header th:replace="~{fragments/header :: header}"></header>
     <div id="postDetail" class="container">
