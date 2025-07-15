@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
         exiting.setLocation(user.getLocation());
         exiting.setNeighborhoodVerifiedAt(user.getNeighborhoodVerifiedAt());
         exiting.setNeighborhoodName(user.getNeighborhoodName());
-        exiting.setNeighborhoodVerifiedAt(user.getNeighborhoodVerifiedAt());
+        exiting.setNeighborhoodVerified(user.isNeighborhoodVerified());
         exiting.setRole(user.getRole());
 
         return userRepository.save(user);

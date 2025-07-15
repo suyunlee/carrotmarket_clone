@@ -43,10 +43,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .ignoringRequestMatchers("/chat/**", "/ws-chat/**"))
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/images/**","/css/**","/js/**","/scripts/**","/", "/posts", "/posts/*", "/users/signup", "/users",
+                        .requestMatchers("/images/**","/css/**","/js/**","/scripts/**","/", "/posts", "/posts/**", "/users/signup", "/users",
                                 "/login", "/maps/permission", "/maps/verify").permitAll()
                         .anyRequest().authenticated()
                 )
