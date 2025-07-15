@@ -341,27 +341,28 @@ com.projectname
 
 ## 📌 URL 명세표 - 중고거래 프로젝트
 
-| 기능 구분        | HTTP 메서드 | URL                 | 설명        |
-|--------------|----------|---------------------|-----------|
-| 🔐 회원가입      | GET      | /users/signup       | 회원가입 폼 페이지 |
-|              | POST     | /users/signup              | 회원 등록 처리  |
-| 🔐 로그인       | GET      | /login              | 로그인 페이지   |
-|              | POST     | /login              | 로그인 요청    |
-| 🧑 유저페이지     | GET      | /users/{id}         | 프로필 정보 보기 |
-| 📦 게시글 목록    | GET      | /posts              | 전체 게시글 목록 |
-| 📦 게시글 등록    | GET      | /posts/new          | 게시글 작성 폼  |
-|              | POST     | /posts              | 게시글 등록 처리 |
-| 📄 게시글 상세    | GET      | /posts/{id}         | 특정 게시글 상세 보기 |
-| ✏ 게시글 수정     | GET      | /posts/{id}/edit    | 게시글 수정 폼  |
-|              | POST     | /posts/{id}/edit         | 게시글 수정 처리 |
-| ❌ 게시글 삭제     | DELETE   | /posts/{id}         | 게시글 삭제 처리 |
-| 💬 채팅방 입장    | GET      | /chat/post/{roomId}      | 채팅방 페이지 진입 |
-| 💬 채팅방 리스트(유저)    | GET      | /chat/post/rooms      | 특정 유저의 모든 채팅방 리스트 반환 |
-| 💬 채팅방 리스트(게시물)    | GET      | /chat/post/{postId}/rooms      | 특정 게시물의 채팅방 리스트 반환 |
-| 💬 채팅방 생성   | POST     | /chat/post/{postId}/rooms | 채팅방 생성  |
-| 💬 거래완료 처리   | POST     | /chat/post/{postId}/confirm | 거래 완료 처리  |
-| 💬 챗봇 대화  | GET     | /chat/post/ai | ai 챗봇 대화 진입/생성  |
-| 📍 위치 권한 페이지 | GET      | /maps/permission    | 위치 권한 설정  |
-| 📍 위치 인증 페이지 | GET      | /maps/verify        | 위치 인증 페이지 진입 |
-|              | POST     | /maps/verify        | 위치 인증 전송  |
+| 기능 구분             | HTTP 메서드 | URL                                  | 설명                            | 접근 권한            |
+|----------------------|-------------|--------------------------------------|----------------------------------|-----------------------|
+| 📝 회원가입           | GET         | /users/signup                        | 회원가입 폼 페이지               | 🔓 모두 가능          |
+|                      | POST        | /users/signup                        | 회원 등록 처리                   | 🔓 모두 가능          |
+| 🔐 로그인             | GET         | /login                               | 로그인 페이지                     | 🔓 모두 가능          |
+|                      | POST        | /login                               | 로그인 요청                       | 🔓 모두 가능          |
+| 🙋 유저페이지         | GET         | /users/{id}                          | 프로필 정보 보기                 | 🔐 로그인 필요        |
+| 📋 게시글 목록        | GET         | /posts                               | 전체 게시글 목록                 | 🔓 모두 가능          |
+| ✍️ 게시글 등록        | GET         | /posts/new                           | 게시글 작성 폼                   | 🔐🔐 위치 인증 필요    |
+|                      | POST        | /posts                               | 게시글 등록 처리                 | 🔐🔐 위치 인증 필요    |
+| 📄 게시글 상세        | GET         | /posts/{id}                          | 특정 게시글 상세 보기            | 🔓 모두 가능          |
+| 🖋️ 게시글 수정        | GET         | /posts/{id}/edit                     | 게시글 수정 폼                   | 🔐🔐 위치 인증 필요    |
+|                      | POST        | /posts/{id}/edit                     | 게시글 수정 처리                 | 🔐🔐 위치 인증 필요    |
+| 🗑️ 게시글 삭제        | DELETE      | /posts/{id}                          | 게시글 삭제 처리                 | 🔐🔐 위치 인증 필요    |
+| 💬 채팅방 입장        | GET         | /chat/post/{roomId}                 | 채팅방 페이지 진입               | 🔐🔐 위치 인증 필요    |
+|  채팅방 리스트 (유저) | GET       | /chat/post/rooms                    | 특정 유저의 모든 채팅방 리스트   | 🔐🔐 위치 인증 필요        |
+|  채팅방 리스트 (게시물) | GET    | /chat/post/{postId}/rooms           | 특정 게시물의 채팅방 리스트      | 🔐🔐 위치 인증 필요        |
+|          | POST        | /chat/post/{postId}/rooms           | 채팅방 생성(게시물 기준으로 생성)                      | 🔐🔐 위치 인증 필요    |
+| 💸 거래 완료 처리      | POST        | /chat/post/{postId}/confirm         | 거래 완료 처리                   | 🔐🔐 위치 인증 필요    |
+| 🤖 챗봇 대화           | GET         | /chat/post/ai                        | AI 챗봇 대화 진입/생성           | 🔐🔐 위치 인증 필요    |
+| 📍 위치 권한 페이지    | GET         | /maps/permission                    | 위치 권한 설정                   | 🔐 로그인 필요        |
+| 🧭 위치 인증 페이지 | GET        | /maps/verify                        | 위치 인증 페이지 진입            | 🔐 로그인 필요        |
+|    | POST        | /maps/verify                        | 위치 인증 전송                   | 🔐 로그인 필요        |
+
 
