@@ -1,3 +1,9 @@
+@import url("/css/shared/background.css");
+@import url("/css/shared/font.css");
+@import url("/css/shared/input.css");
+@import url("/css/shared/button.css");
+@import url("/css/shared/layout/css");
+
 body {
     background-color: #FFFFFF;
     color: #111111;

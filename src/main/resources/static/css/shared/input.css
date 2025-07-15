@@ -1,4 +1,4 @@
-.input-location-search{
+.input--location-search{
     width: 720px;
     height: 47px;
     border-radius: 10px;
@@ -8,12 +8,12 @@
     font-weight: 400;
 }
 
-.input-location-search:focus{
+.input--location-search:focus{
     border: 2px solid #ff6b0e;
     outline: none;
 }
 
-.label-hidden {
+.label--hidden {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -25,7 +25,7 @@
   border: 0;
 }
 
-.header-search-form{
+.header__search-input {
     width: 288px;
     height: 39px;
     border-radius: 6px;
