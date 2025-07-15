@@ -30,12 +30,12 @@
                         <p>궁금한 내용을 물어보세요!</p>
                     </div>
                 </li>
-                <!-- …추가 방 목록… -->
             </ul>
         </aside>
 
         <section class="chat-room__window">
-            <div class="chat-room__product-header">
+            <div class="chat-room__product-header"
+                th:if="${post != null}">
                 <div class="chat-room__product-header-top">
                     <span class="chat-room__partner-name" th:text="${post.user.username}">상대방아이디</span>
                     <span class="chat-room__temperature">36.9℃</span>
@@ -48,28 +48,28 @@
                             <div class="chat-room__product-price" th:text="${post.price} + '원'">150,000원</div>
                         </div>
                     </div>
-
-                    <button class="chat-room__button chat-room__button--complete">거래완료</button>
-
-                    <ul class="chat-room__list chat-room__list--inline" id="chatListInline">
-                        <li class="chat-room__item chat-room__item--active">
-                            <div class="chat-room__avatar"><img src="" alt="AI 챗봇"/></div>
-                            <div class="chat-room__info">
-                                <strong>AI 챗봇</strong>
-                                <p>궁금한 내용을 물어보세요!</p>
-                            </div>
-                        </li>
-                        <!-- …추가 방 목록 복제… -->
-                    </ul>
+                    <button id="confirm-btn"
+                            class="chat-room__button--complete"
+                            th:text="${post.sold} ? '거래완료' : '거래확정하기'"
+                            th:disabled="${post.sold}"
+                            th:classappend="${post.sold} ? 'chat-room__button-completed'">
+                        거래확정하기
+                    </button>
                 </div>
+            </div>
+
+            <div class="chat-room__product-header"
+                 th:if="${post == null}">
+                <h2>AI 챗봇과 대화하기</h2>
+                <p>무엇이든 물어보세요!</p>
             </div>
 
             <div class="chat-room__messages" id="chatArea"></div>
 
             <form class="chat-room__input-form" id="chat-form" th:inline="javascript">
                 <div class="chat-room__input-box">
-                    <input type="text" id="chat-input" class="chat-room__input" placeholder="메시지를 입력해주세요"/>
-                    <button type="submit" class="chat-room__button chat-room__button--send">전송</button>
+                    <input type="text" id="chat-input" class="chat-room__input" placeholder="메시지를 입력해주세요" maxlength="400"/>
+                    <button type="submit" class="chat-room__button--send">전송</button>
                 </div>
             </form>
         </section>
@@ -84,7 +84,7 @@
         currentUser: /*[[${currentUser}]]*/ '',
         roomId:      /*[[${roomId}]]*/ '',
         postId:      /*[[${postId}]]*/ 0,
-        postOwner:   /*[[${post.user.username}]]*/ ''
+        postOwner:   /*[[${postOwner}]]*/ ''
       };
     /*]]>*/
 </script>

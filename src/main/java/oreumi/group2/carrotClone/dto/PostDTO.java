@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import oreumi.group2.carrotClone.model.Category;
+import oreumi.group2.carrotClone.model.Image;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -35,6 +36,6 @@ public class PostDTO  implements Serializable {
     private String location;    // 글 등록 위치
     private Integer viewCount;  // 조회수
     private Long userId;    // 게시글 작성 유저 아이디
-    private List<String> images;
+    private List<Image> images;
     private Category category;
 }

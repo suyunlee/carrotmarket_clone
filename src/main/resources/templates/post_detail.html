@@ -22,7 +22,8 @@
         <div id="postContent">
 
             <div id="imageView">
-                <img src="/images/placeholder.png">
+                <img th:if="${post.images != null and post.images.size() > 0}" th:src="@{${post.images[0].imageUrl}}" alt="첫번째 이미지">
+                <img th:if="${post.images == null or post.images.size() == 0}" src="/images/placeholder.png" alt="이미지 없음">
             </div>
 
             <div id="userView">
@@ -64,47 +65,15 @@
     </div>
     <script th:inline="javascript">
         /*<![CDATA[*/
-          // 1) 세션에서 넘어온 user.username
-          const currentUser = /*[[${user != null ? user.username : 'anonymous'}]]*/ 'anonymous';
-          // 2) 포스트 작성자(username)
-          const postOwner   = /*[[${post.user.username}]]*/ '';
-          const postId      = /*[[${post.id}]]*/ 0;
-          const chatBtn     = document.getElementById('chatButton');
-
-          chatBtn.addEventListener('click', async () => {
-            if (currentUser === postOwner) {
-              // 판매자 모드 → 이미 있는 방이 있으면 입장, 없으면 안내
-              const res = await fetch(
-                `/chat/post/${postId}/rooms?username=${encodeURIComponent(currentUser)}`
-              );
-              if (!res.ok) {
-                return alert('채팅방 목록 조회 실패: ' + await res.text());
-              }
-              const rooms = await res.json();
-              if (rooms.length === 0) {
-                return alert('아직 구매자가 채팅을 신청하지 않았습니다.');
-              }
-              // 첫 번째 방으로 입장
-              location.href = `/chat/room/${rooms[0].id}?username=${encodeURIComponent(currentUser)}`;
-            } else {
-              // 구매자 모드 → 방 생성 or 기존 방 입장
-              const res = await fetch(
-                `/chat/post/${postId}/rooms?username=${encodeURIComponent(currentUser)}`,
-                {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ username: currentUser })
-                }
-              );
-              if (!res.ok) {
-                return alert('채팅방 생성 실패: ' + await res.text());
-              }
-              const dto = await res.json();
-              location.href = `/chat/room/${dto.id}?username=${encodeURIComponent(currentUser)}`;
-            }
-          });
+           window.chatConfig = {
+              currentUser : /*[[${user.username}]]*/ 'anonymous',
+              postOwner   : /*[[${post.user.username}]]*/ '',
+              postId      : /*[[${post.id}]]*/ 0
+          };
         /*]]>*/
     </script>
     <script src="/js/header.js"></script>
+    <script src="/js/post.js"></script>
+
 </body>
 </html>

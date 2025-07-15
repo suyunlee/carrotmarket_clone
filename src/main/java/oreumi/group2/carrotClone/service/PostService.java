@@ -5,6 +5,7 @@ import oreumi.group2.carrotClone.model.Post;
 import oreumi.group2.carrotClone.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +18,7 @@ public interface PostService {
     List<Post> getPostsSortedByNewest (); /* 최신순  */
     List<Post> getPostsSortedByPrice (boolean ascending); /* 가격순 */
     Post getPostById (Long id); /* Id 기반 조회 */
-    Post createPost (User user, PostDTO postDTO, List<String> images); /* 저장 */
+    Post createPost (User user, PostDTO postDTO, List<MultipartFile> images); /* 저장 */
     void deletePost(Long id); // 삭제
     Post updatePost(Long id, PostDTO p); /* 단일 업데이트 */
     boolean isLikedByUser(Long postId, User user); /* 좋아요 */

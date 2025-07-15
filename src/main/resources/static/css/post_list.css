@@ -108,6 +108,9 @@ h2 {
 }
 .preview {
      border-radius: 12px;
+     width: 210px;
+     height: 210px;
+     object-fit: cover;
 }
 .post-title {
     font-size: 17px;

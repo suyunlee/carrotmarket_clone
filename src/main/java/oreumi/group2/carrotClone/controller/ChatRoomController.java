@@ -1,6 +1,7 @@
 package oreumi.group2.carrotClone.controller;
 
 import lombok.RequiredArgsConstructor;
+import oreumi.group2.carrotClone.model.User;
 import oreumi.group2.carrotClone.security.CustomUserPrincipal;
 import oreumi.group2.carrotClone.dto.ChatRoomDTO;
 import oreumi.group2.carrotClone.model.ChatRoom;
@@ -9,7 +10,9 @@ import oreumi.group2.carrotClone.repository.PostRepository;
 import oreumi.group2.carrotClone.repository.UserRepository;
 import oreumi.group2.carrotClone.service.ChatRoomService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -28,9 +31,14 @@ public class ChatRoomController {
     @GetMapping("/{postId}/rooms")
     public List<ChatRoomDTO> listRooms(
             @PathVariable Long postId,
-            @AuthenticationPrincipal CustomUserPrincipal principal)
+            @AuthenticationPrincipal CustomUserPrincipal principal,
+            @RequestParam(required = false, defaultValue = "false") boolean full)
     {
         String username = principal.getUsername();
+
+        if(full){
+            return chatRoomService.getRoomsForUser(username);
+        }
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -99,4 +107,29 @@ public class ChatRoomController {
         /* DTO 반환 후 리턴 */
         return ChatRoomDTO.fromEntity(room);
     }
+
+    @PostMapping("/{postId}/confirm")
+    @Transactional
+    public ResponseEntity<Void> confirmPost(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal CustomUserPrincipal principal)
+    {
+
+        User user = userRepository.findByUsername(principal.getUsername())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "사용자를 찾을 수 없습니다."
+                ));
+
+        chatRoomService.confirmPost(postId, principal.getUsername());
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/rooms")
+    public ResponseEntity<List<ChatRoomDTO>> getAllRoomsByUser(
+            @AuthenticationPrincipal  CustomUserPrincipal principal ) {
+        List<ChatRoomDTO> rooms = chatRoomService.getRoomsForUser(principal.getUsername());
+        return ResponseEntity.ok(rooms);
+    }
+
+
 }
