@@ -38,7 +38,7 @@ public class PostServiceImpl implements PostService {
 
     /* ID 기반 게시물 찾기 */
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public Optional<Post> findById(Long id) { return postRepository.findById(id); }
 
     /* 전체 조회 */
@@ -87,16 +87,16 @@ public class PostServiceImpl implements PostService {
         p.setPrice(postDTO.getPrice());
         p.setLocation(postDTO.getLocation());
         p.setCategory(postDTO.getCategory());
-//        List<Image> imageList = new ArrayList<>();
-//        for(MultipartFile file : files){
-//            String fileurl = storeAndGetFileUrl(file);
-//            Image image = new Image();
-//            image.setImageUrl(fileurl);
-//            image.setPost(p);
-//
-//            imageList.add(image);
-//        }
-//        p.setImages(imageList);
+        List<Image> imageList = new ArrayList<>();
+        for(MultipartFile file : files){
+            String fileurl = storeAndGetFileUrl(file);
+            Image image = new Image();
+            image.setImageUrl(fileurl);
+            image.setPost(p);
+
+            imageList.add(image);
+        }
+        p.setImages(imageList);
         return postRepository.save(p);
     }
 
