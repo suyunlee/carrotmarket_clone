@@ -48,7 +48,7 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/images/**","/css/**","/js/**","/scripts/**","/", "/posts", "/posts/**", "/users/signup", "/users",
-                                "/login", "/maps/permission", "/maps/verify", "/chat/**", "/ws-chat/**").permitAll()
+                                "/login", "/maps/permission", "/maps/verify").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterAfter(neighborhoodAccessFilter, UsernamePasswordAuthenticationFilter.class)
