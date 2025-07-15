@@ -64,7 +64,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             // 새 사용자 생성
             user = new User();
             user.setUsername(email);
-            user.setPassword("qweqweqwe@#!@#!1231");
+            user.setPassword("qwe123@!#q");
             user.setRole(UserRole.USER);
             user.setProvider(AuthProvider.valueOf(registrationId.toUpperCase()));
             user.setProviderId(id);

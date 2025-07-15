@@ -6,6 +6,7 @@ import oreumi.group2.carrotClone.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -31,7 +33,12 @@ public class MapsController {
         if (principal == null || principal.toString().equals("anonymousUser") ) {
             return "redirect:/users/login";
         }
-        System.out.println(principal);
+
+        if(principal != null) {
+            User user = principal.getUser();
+            model.addAttribute("user", user);
+        }
+
         return "location/permission";
     }
 
@@ -40,26 +47,29 @@ public class MapsController {
         if (principal == null) {
             return "redirect:/users/login";
         }
+
+        if(principal != null) {
+            User user = principal.getUser();
+            model.addAttribute("user", user);
+        }
         model.addAttribute("googleMapsApiKey", apiKey);
         return "location/verify";
     }
 
-//    @PostMapping("/verify")
-//    주소 명 >
-//    어느 유저 저장할거냐? > 세션(priciple) > authen >>> 저장하기.
     @PostMapping("/verify")
     public String verifyLocation(@AuthenticationPrincipal CustomUserPrincipal principal,
                                  @RequestParam String userCurrentAddress,
                                  RedirectAttributes redirectAttributes){
 
-        User user = principal.getUser();
+        User user = null;
+        if(principal != null) {
+            user = principal.getUser();
+        }
 
-        //임시로 1번 유저에 무조건 위치 저장하도록 (h2-console로 유저 삽입)
-        Optional<User> userOptional = userService.findByUsername(user.getUsername());
-        if (userOptional.isEmpty()) {
+        if (user == null) {
             return "redirect:/users/login";
         }
-        if(!userOptional.isEmpty()){
+        if(user != null){
             user.setLocation(userCurrentAddress);
             user.setNeighborhoodName(userCurrentAddress);
             user.setNeighborhoodVerified(true);

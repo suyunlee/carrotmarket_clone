@@ -37,8 +37,10 @@ public class PostController {
     public String showPost(@RequestParam(defaultValue = "0") int page,
                            Model model,
                            @AuthenticationPrincipal CustomUserPrincipal principal){
-        User user = principal.getUser();
-        model.addAttribute("user", user);
+        if(principal != null) {
+            User user = principal.getUser();
+            model.addAttribute("user", user);
+        }
 
         Pageable pageable = PageRequest.of(page, 12);
         Page<Post> postPage = postService.findAll(pageable);
@@ -55,8 +57,10 @@ public class PostController {
                              @RequestParam(required = false) Long category,
                              Model model,
                              @AuthenticationPrincipal CustomUserPrincipal principal){
-        User user = principal.getUser();
-        model.addAttribute("user", user);
+        if(principal != null) {
+            User user = principal.getUser();
+            model.addAttribute("user", user);
+        }
 
         Pageable pageable = PageRequest.of(page, 8);
         Page<Post> postPage = postService.searchPosts(keyword, category, pageable);
@@ -75,7 +79,10 @@ public class PostController {
     public String showNewForm(@AuthenticationPrincipal CustomUserPrincipal principal,
                               Model model,
                               RedirectAttributes redirectAttributes){
-        User user = principal.getUser();
+        User user = null;
+        if(principal != null) {
+            user = principal.getUser();
+        }
         if(user == null) {
             redirectAttributes.addFlashAttribute("error", "로그인이 필요합니다.");
             return "redirect:/users/login";

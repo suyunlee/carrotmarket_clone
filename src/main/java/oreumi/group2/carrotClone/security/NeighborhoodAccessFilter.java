@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.io.IOException;
  * 로그인, 동네인증 상태검사 후 각각 회원가입, 동네인증 페이지로 리다이렉트
  */
 
+@Component
 public class NeighborhoodAccessFilter extends OncePerRequestFilter {
 
     @Override
@@ -39,7 +41,7 @@ public class NeighborhoodAccessFilter extends OncePerRequestFilter {
             // 1) 로그인 안 됨 → 회원가입으로 리다이렉트
             if (auth == null || !auth.isAuthenticated() ||
                     "anonymousUser".equals(auth.getPrincipal())) {
-                res.sendRedirect("/users/signup");
+                res.sendRedirect("/users/login");
                 return;
             }
 

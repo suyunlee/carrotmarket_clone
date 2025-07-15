@@ -38,7 +38,7 @@
     line-height: 60px;
 }
 
-.header-btn-longin{
+.header-btn-login{
     width: 98px;
     height: 39px;
     border-radius: 6px;
@@ -50,6 +50,7 @@
     color: #111111;
     font-size: 17px;
     font-weight: 400;
+    background-color : #fff;
 }
 
 .header-btn-left{

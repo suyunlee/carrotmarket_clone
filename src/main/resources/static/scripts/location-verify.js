@@ -19,7 +19,7 @@ window.onload = function () {
 function extractAddress(components) {
   let simplifyAddress = "";
 
-  components.slice(1,-2).forEach((component)=>{
+  components.slice(1,-1).forEach((component)=>{
     simplifyAddress = component.long_name + " " + simplifyAddress;
   });
 
@@ -124,16 +124,16 @@ function setUserAddress() {
       );
 
       if (distance <= circle.getRadius()) {
-        document.querySelector("button[type='submit']").disabled = false;
+        document.getElementById("setAddressButton").disabled = false;
         document.getElementById("location-match-message").style.visibility = "visible";
       } else {
         alert("검색한 위치가 인증 반경 밖입니다.");
-        document.querySelector("button[type='submit']").disabled = true;
+        document.getElementById("setAddressButton").disabled = true;
         document.getElementById("location-match-message").style.visibility = "hidden";
       }
     } else {
       alert("주소를 찾을 수 없습니다. 다시 입력해주세요.");
-      document.querySelector("button[type='submit']").disabled = false;
+      document.getElementById("setAddressButton").disabled = true;
       document.getElementById("location-match-message").style.visibility = "hidden";
     }
   });
