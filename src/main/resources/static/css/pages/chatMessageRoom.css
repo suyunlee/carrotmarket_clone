@@ -1,8 +1,8 @@
-@import url("/css/common/background.css");
-@import url("/css/common/font.css");
-@import url("/css/common/input.css");
-@import url("/css/common/button.css");
-@import url("/css/common/layout.css");
+@import url("/css/shared/background.css");
+@import url("/css/shared/font.css");
+@import url("/css/shared/input.css");
+@import url("/css/shared/button.css");
+@import url("/css/shared/layout.css");
 
 body {
   font-family: sans-serif;

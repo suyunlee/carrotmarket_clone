@@ -3,62 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <title>회원가입 | 당근마켓 클론</title>
-    <link rel="stylesheet" th:href="@{/css/pages/auth.css}" />
-    <style>
-        .error { color: red; font-size: 12px; margin-top: 4px; }
-    </style>
+    <link rel="stylesheet" href="/css/pages/auth.css" />
 </head>
-<body>
-<div class="auth-container">
-    <div class="logo">
-        <img th:src="@{/images/icons/header_icon.svg}" alt="당근마켓 로고" class="logo-icon"/>
+<body class="font-pretendard">
+<div class="auth-page__container">
+    <div class="auth-page__logo">
+        <img th:src="@{/images/icons/header_icon.svg}"
+             alt="당근마켓 로고"
+             class="auth-page__logo-icon" />
     </div>
 
-    <form th:action="@{/users/signup}" th:object="${user}"
-          method="post" id="signupForm" class="auth-form" novalidate>
-
+    <form th:action="@{/users/signup}"
+          th:object="${user}"
+          method="post"
+          id="signupForm"
+          class="auth-page__form"
+          novalidate>
         <!-- EMAIL AS USERNAME -->
-        <div class="form-group">
-            <label for="username">이메일</label>
-            <input type="text" id="username" th:field="*{username}"
-                   placeholder="예: user@naver.com" required />
+        <div class="auth-page__form-group">
+            <label for="username"
+                   class="auth-page__form-group-label">
+                이메일
+            </label>
+            <input type="text"
+                   id="username"
+                   th:field="*{username}"
+                   placeholder="예: user@naver.com"
+                   required
+                   class="auth-page__form-group-input" />
             <div th:if="${#fields.hasErrors('username')}"
-                 th:errors="*{username}" class="error"></div>
-            <div id="usernameError" class="error"></div>
+                 th:errors="*{username}"
+                 class="auth-page__error"></div>
+            <div id="usernameError"
+                 class="auth-page__error"></div>
         </div>
 
         <!-- PASSWORD -->
-        <div class="form-group">
-            <label for="password">비밀번호</label>
-            <input type="password" id="password" th:field="*{password}"
-                   placeholder="영문·숫자·특수문자 포함 8자 이상" required />
+        <div class="auth-page__form-group">
+            <label for="password"
+                   class="auth-page__form-group-label">
+                비밀번호
+            </label>
+            <input type="password"
+                   id="password"
+                   th:field="*{password}"
+                   placeholder="영문·숫자·특수문자 포함 8자 이상"
+                   required
+                   class="auth-page__form-group-input" />
             <div th:if="${#fields.hasErrors('password')}"
-                 th:errors="*{password}" class="error"></div>
-            <div id="passwordError" class="error"></div>
+                 th:errors="*{password}"
+                 class="auth-page__error"></div>
+            <div id="passwordError"
+                 class="auth-page__error"></div>
         </div>
 
         <!-- CONFIRM PASSWORD -->
-        <div class="form-group">
-            <label for="confirmPassword">비밀번호 확인</label>
-            <input type="password" id="confirmPassword" name="confirmPassword"
-                   placeholder="비밀번호 재입력" required />
-            <div id="confirmError" class="error"></div>
+        <div class="auth-page__form-group">
+            <label for="confirmPassword"
+                   class="auth-page__form-group-label">
+                비밀번호 확인
+            </label>
+            <input type="password"
+                   id="confirmPassword"
+                   name="confirmPassword"
+                   placeholder="비밀번호 재입력"
+                   required
+                   class="auth-page__form-group-input" />
+            <div id="confirmError"
+                 class="auth-page__error"></div>
         </div>
 
         <!-- NICKNAME -->
-        <div class="form-group">
-            <label for="nickname">닉네임</label>
-            <input type="text" id="nickname" th:field="*{nickname}"
-                   placeholder="닉네임 입력" required />
-            <div id="nicknameError" class="error"></div>
+        <div class="auth-page__form-group">
+            <label for="nickname"
+                   class="auth-page__form-group-label">
+                닉네임
+            </label>
+            <input type="text"
+                   id="nickname"
+                   th:field="*{nickname}"
+                   placeholder="닉네임 입력"
+                   required
+                   class="auth-page__form-group-input" />
+            <div id="nicknameError"
+                 class="auth-page__error"></div>
         </div>
 
-        <button type="submit" class="btn btn-primary">회원가입</button>
-        <div th:if="${usernameError}" class="error" th:text="${usernameError}"></div>
+        <button type="submit"
+                class="auth-page__button auth-page__button--primary">
+            회원가입
+        </button>
 
-        <p class="link-text">
+        <div th:if="${usernameError}"
+             class="auth-page__error"
+             th:text="${usernameError}">
+        </div>
+
+        <p class="auth-page__link">
             이미 계정이 있으신가요?
-            <a th:href="@{/users/login}">로그인</a>
+            <a th:href="@{/users/login}"
+               class="auth-page__link-anchor">
+                로그인
+            </a>
         </p>
     </form>
 </div>
@@ -109,19 +155,11 @@
         nnErrEl.textContent = '';
       }
 
-      // 전화번호 검증
-      const ph = this.phoneNumber.value.trim();
-      const phErrEl = document.getElementById('phoneError');
-      if (!/^[0-9]+$/.test(ph)) {
-        phErrEl.textContent = '전화번호는 숫자만 입력해야 합니다.';
-        valid = false;
-      } else {
-        phErrEl.textContent = '';
-      }
-
       if (!valid) e.preventDefault();
     });
 </script>
+
 <script src="/js/header.js"></script>
 </body>
 </html>
+
