@@ -66,9 +66,9 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
            window.chatConfig = {
-              currentUser : /*[[${user.username}]]*/ 'anonymous',
-              postOwner   : /*[[${post.user.username}]]*/ '',
-              postId      : /*[[${post.id}]]*/ 0
+              currentUser : /*[[${user != null ? user.username : 'anonymous'}]]*/,
+              postOwner   : /*[[${post != null && post.user != null ? post.user.username : ''}]]*/,
+              postId      : /*[[${post != null ? post.id : 0}]]*/
           };
         /*]]>*/
     </script>
