@@ -62,6 +62,12 @@ public class ChatController {
             model.addAttribute("postId", post.getId());
             model.addAttribute("post",post);
             model.addAttribute("postOwner",post.getUser().getUsername());
+
+            if(post.getImages().size() > 0){
+                model.addAttribute("postImage", post.getImages().get(0));
+                System.out.println(post.getImages().get(0));
+            }
+
         }
 
         List<ChatMessageDTO> dtos = chatMessageService.getMessages(roomId)
