@@ -3,12 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>새 게시물 등록</title>
-    <link rel="stylesheet" href="/css/post.css">
-    <link rel="stylesheet" th:href="@{/css/background.css}"/>
-    <link rel="stylesheet" th:href="@{/css/font.css}"/>
-    <link rel="stylesheet" th:href="@{/css/input.css}"/>
-    <link rel="stylesheet" th:href="@{/css/button.css}"/>
-    <link rel="stylesheet" th:href="@{/css/layout.css}"/>
+    <link rel="stylesheet" th:href="@{/css/pages/post-form.css}" />
 </head>
 <body class="font-pretendard">
     <div th:if="${error}"> <script> alert('[[${error}]]'); </script> </div>

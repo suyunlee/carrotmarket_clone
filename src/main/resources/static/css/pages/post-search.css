@@ -1,0 +1,11 @@
+@import url("/css/common/background.css");
+@import url("/css/common/font.css");
+@import url("/css/common/input.css");
+@import url("/css/common/button.css");
+@import url("/css/common/layout.css");
+
+.search-section { padding: 2rem; display: flex; justify-content: center; }
+.search-form { display: flex; gap: .5rem; }
+.search-input { flex:1; }
+.search-select { flex:0; }
+.btn-primary { }
