@@ -1,20 +1,26 @@
+@import url("/css/shared/font.css");
+@import url("/css/shared/background.css");
+@import url("/css/shared/input.css");
+@import url("/css/shared/button.css");
+@import url("/css/shared/layout.css");
+
 html, body {
     height: auto;
     min-height: 100%;
     margin: 0;
 }
-
 body {
     background-color: #F2F3F6;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-.container {
+
+.post-form__container {
     position: relative;
     background-color: white;
     width: calc(100% - 240px);
-    margin: 0px 120px 0 120px;
+    margin: 0 120px;
     max-width: 1200px;
     padding: 56px;
     top: 40px;
@@ -23,7 +29,7 @@ body {
     display: block;
 }
 
-.c-btn {
+.button--primary {
     background: #FF6F0E;
     color: white;
     height: 50px;
@@ -31,29 +37,28 @@ body {
     border-radius: 6px;
     cursor: pointer;
 }
-.c-btn:disabled {
+.button--primary:disabled {
     background: #AAABB4;
     cursor: default;
 }
 
-/* post_form css */
-.product-info-section {
+.post-form__product-info {
     display: flex;
     gap: 40px;
 }
-.product-group {
+.post-form__product-group {
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
-#postForm {
+.post-form {
     display: flex;
     flex-direction: column;
     gap: 40px;
 }
 
-.previewImage {
+.post-form__image-preview {
     width: 210px;
     height: 210px;
     object-fit: cover;
@@ -62,7 +67,8 @@ body {
     border-radius: 10px;
 }
 
-#title, #price {
+.post-form__field--title,
+.post-form__field--price {
     background-color: #F8F9FA;
     border: none;
     width: 320px;
@@ -73,22 +79,25 @@ body {
     box-sizing: border-box;
 }
 
-#price::-webkit-inner-spin-button,
-#price::-webkit-outer-spin-button {
+.post-form__field--price::-webkit-inner-spin-button,
+.post-form__field--price::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
 @container (max-width: 582px) {
-    .product-info-section {
+    .post-form__product-info {
         flex-direction: column;
     }
-    #title, #price {
+    .post-form__field--title,
+    .post-form__field--price {
         width: 100%;
     }
 }
 
-#description, #location, #category {
+.post-form__field--description,
+.post-form__field--location,
+.post-form__field--category {
     background-color: #F8F9FA;
     border: none;
     height: 47px;
@@ -97,29 +106,31 @@ body {
     padding: 14px 18px;
     box-sizing: border-box;
 }
-
-#description {
+.post-form__field--description {
     height: 220px;
     resize: none;
     font-family: inherit;
     white-space: pre-wrap;
 }
 
-input:focus, textarea:focus {
+.post-form__field--title:focus,
+.post-form__field--price:focus,
+.post-form__field--description:focus,
+.post-form__field--location:focus,
+.post-form__field--category:focus {
     outline: none;
 }
 
+
 textarea::-webkit-scrollbar {
-  width: 4px;
+    width: 4px;
 }
 textarea::-webkit-scrollbar-thumb {
-  background: #D0D1DA;
-  border-radius: 4px;
+    background: #D0D1DA;
+    border-radius: 4px;
 }
 
-/* post_detail css */
-
-#postDetail {
+.post-detail {
     background: none;
     padding: 0;
     gap: 20px;
@@ -129,23 +140,23 @@ textarea::-webkit-scrollbar-thumb {
     font-size: 16px;
 }
 
-#backBtn {
+.post-detail__back {
     display: flex;
     gap: 8px;
     height: 20px;
     align-items: center;
 }
-#arrowImage {
+.post-detail__back-icon {
     height: 18px;
     width: 10px;
 }
-.back-btn {
+.post-detail__back-link {
     text-decoration: none;
     color: #AAABB4;
     font-size: 17px;
 }
 
-#postContent {
+.post-detail__content {
     background-color: white;
     display: flex;
     flex-direction: column;
@@ -154,74 +165,72 @@ textarea::-webkit-scrollbar-thumb {
     border-radius: 10px;
 }
 
-#imageView {
+.post-detail__image-view {
     width: 100%;
     height: 380px;
     background-color: #DBDCE2;
 }
-#imageView img {
+.post-detail__image-view img {
     width: 100%;
     height: 100%;
     object-fit: contain;
 }
 
-#userView {
+.post-detail__user {
     display: flex;
     justify-content: space-between;
 }
-#userInfo {
+.post-detail__user-info {
     display: flex;
     flex-direction: column;
 }
-#userLocation {
+.post-detail__user-location {
     opacity: 0.3;
     font-size: 14px;
 }
-#chatButton {
+.post-detail__chat-button {
     width: 162px;
     height: 44px;
 }
 
-#horizon {
-  border: 0.5px solid #DBDCE2;
-  width: 100%;
-  border-width: 1px 0px 0px 0px;
-  height: 1px;
+.post-detail__divider {
+    border: 0.5px solid #DBDCE2;
+    width: 100%;
+    border-width: 1px 0 0 0;
+    height: 1px;
 }
 
-#postInfoView {
+.post-detail__info {
     display: flex;
     flex-direction: column;
 }
-#titleView {
+.post-detail__info-header {
     display: flex;
     justify-content: space-between;
 }
-#titleContent {
+.post-detail__info-title {
     font-size: 20px;
 }
-#countView {
+.post-detail__info-count {
     text-align: right;
     opacity: 0.5;
     font-size: 14px;
 }
-
-#descriptionView {
+.post-detail__info-description {
     font-family: inherit;
     white-space: pre-wrap;
 }
-
-#locationView{
+.post-detail__info-location {
     opacity: 0.5;
 }
 
-#editContainer {
+.post-detail__actions {
     height: 44px;
     width: 100%;
     color: #898A93;
     position: relative;
 }
-#editButton {
+.post-detail__actions-button {
     position: absolute;
     right: 0;
     bottom: 0;
@@ -229,7 +238,8 @@ textarea::-webkit-scrollbar-thumb {
     align-items: center;
     gap: 2px;
 }
-#deleteBt, #updateBt {
+.post-detail__action-btn--delete,
+.post-detail__action-btn--update {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -242,7 +252,8 @@ textarea::-webkit-scrollbar-thumb {
     text-decoration: none;
     padding: 0 6px;
 }
-#deleteBt:hover, #updateBt:hover {
+.post-detail__action-btn--delete:hover,
+.post-detail__action-btn--update:hover {
     background: #F2F3F6;
     border-radius: 5px;
     border: none;
