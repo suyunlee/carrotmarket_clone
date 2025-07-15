@@ -37,14 +37,12 @@ public class PostController {
     public String showPost(@RequestParam(defaultValue = "0") int page,
                            Model model,
                            @AuthenticationPrincipal CustomUserPrincipal principal){
-        if(principal != null) {
-            User user = principal.getUser();
-            model.addAttribute("user", user);
-        }
+        User user = null;
+        if (principal != null) { user = principal.getUser(); }
+        model.addAttribute("user", user);
 
         Pageable pageable = PageRequest.of(page, 12);
         Page<Post> postPage = postService.findAll(pageable);
-
         model.addAttribute("page", postPage);
 
         return "post";
@@ -57,17 +55,23 @@ public class PostController {
                              @RequestParam(required = false) Long category,
                              Model model,
                              @AuthenticationPrincipal CustomUserPrincipal principal){
-        if(principal != null) {
-            User user = principal.getUser();
-            model.addAttribute("user", user);
-        }
+        User user = null;
+        if (principal != null) { user = principal.getUser(); }
+        model.addAttribute("user", user);
 
         Pageable pageable = PageRequest.of(page, 8);
-        Page<Post> postPage = postService.searchPosts(keyword, category, pageable);
+        Page<Post> postPage;
 
+        if(keyword != null && !keyword.isBlank() && keyword.trim().length() < 2) {
+            model.addAttribute("error", "검색어는 두 글자 이상 입력해주세요.");
+            postPage = Page.empty(pageable);
+            model.addAttribute("hasKeyword", false);
+        } else {
+            postPage = postService.searchPosts(keyword, category, pageable);
+            model.addAttribute("hasKeyword", keyword != null && !keyword.isBlank());
+        }
         model.addAttribute("page", postPage);
         model.addAttribute("categories", categoryRepository.findAll());
-        model.addAttribute("hasKeyword", keyword != null && !keyword.isBlank());
         model.addAttribute("keyword", keyword);
         model.addAttribute("category", category);
 
@@ -80,9 +84,7 @@ public class PostController {
                               Model model,
                               RedirectAttributes redirectAttributes){
         User user = null;
-        if(principal != null) {
-            user = principal.getUser();
-        }
+        if (principal != null) { user = principal.getUser(); }
         if(user == null) {
             redirectAttributes.addFlashAttribute("error", "로그인이 필요합니다.");
             return "redirect:/users/login";
@@ -147,7 +149,8 @@ public class PostController {
         if(postOpt.isEmpty()) return "redirect:/posts";
 
         Post post = postOpt.get();
-        User user = principal.getUser();
+        User user = null;
+        if (principal != null) { user = principal.getUser(); }
 
         model.addAttribute("post", post);
         model.addAttribute("user", user);

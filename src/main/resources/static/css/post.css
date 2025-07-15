@@ -29,6 +29,11 @@ body {
     height: 50px;
     border: none;
     border-radius: 6px;
+    cursor: pointer;
+}
+.c-btn:disabled {
+    background: #AAABB4;
+    cursor: default;
 }
 
 /* post_form css */
