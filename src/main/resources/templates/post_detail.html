@@ -31,8 +31,11 @@
                     <div id="userNickname" th:text="${post != null and post.user != null ? post.user.nickname : '아이디' }"></div>
                     <div id="userLocation" th:text="${post != null and post.user != null ? post.user.location : '부평 1동'}"></div>
                 </div>
-                <button class="c-btn" id="chatButton" th:data-post-id="${post.id}"
-                        th:attr="disabled=${user == null or post.sold}">채팅하기</button>
+                <button class="c-btn"
+                        id="chatButton"
+                        th:data-post-id="${post.id}"
+                        th:attr="disabled=${user == null or post.sold or !user.neighborhoodVerified}">
+                    채팅하기</button>
             </div>
 
             <hr id="horizon">
@@ -68,7 +71,7 @@
            window.chatConfig = {
               currentUser : /*[[${user != null ? user.username : 'anonymous'}]]*/,
               postOwner   : /*[[${post != null && post.user != null ? post.user.username : ''}]]*/,
-              postId      : /*[[${post != null ? post.id : 0}]]*/
+              postId      : /*[[${post != null ? post.id : 0}]]*/,
           };
         /*]]>*/
     </script>
