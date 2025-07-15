@@ -1,4 +1,3 @@
-//const previewImage = document.getElementById('previewImage');
 const previewImage = document.querySelector('.previewImage');
 const fileInput = document.getElementById('fileInput');
 
