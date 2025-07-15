@@ -14,11 +14,11 @@ body {
 }
 
 
-.post-list-page__search {
+.post-list__search {
     background-color: #F2F3F6;
 }
 
-.post-list-page__header-container {
+.post-list__header-container {
     width: 100%;
     height: 360px;
     background-color: #FFFAE0;
@@ -26,7 +26,7 @@ body {
     justify-content: center;
 }
 
-.post-list-page__header {
+.post-list__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -34,7 +34,7 @@ body {
     max-width: 1200px;
 }
 
-.post-list-page__header-info {
+.post-list__header-info {
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -42,60 +42,60 @@ body {
     min-width: 360px;
 }
 
-.post-list-page__heading-main {
+.post-list__heading-main {
     font-size: 40px;
     font-weight: 700;
     margin: 0;
 }
 
-.post-list-page__heading-sub {
+.post-list__heading-sub {
     font-size: 15px;
     font-weight: 400;
     opacity: 0.5;
     margin: 0;
 }
 
-.post-list-page__banner-image {
+.post-list__banner-image {
     width: 476px;
     height: 360px;
 }
 
-.post-list-page__container,
-.post-list-page__container--search {
+.post-list__container,
+.post-list__container--search {
     width: 90%;
     max-width: 1000px;
 }
-.post-list-page__container--search {
+.post-list__container--search {
     position: absolute;
     top: 100px;
 }
 
-.post-list-page__title {
+.post-list__title {
     font-size: 30px;
     text-align: center;
     padding: 30px;
 }
 
-.post-list-page__empty {
+.post-list__empty {
     text-align: center;
     color: #8D8D8D;
     font-size: 20px;
 }
 
-.post-list-page__grid {
+.post-list__grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(210px, 1fr));
     gap: 53px;
     margin-bottom: 40px;
 }
 
-.post-list-page__card {
+.post-list__card {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.post-list-page__card-link {
+.post-list__card-link {
     position: relative;
     text-decoration: none;
     color: inherit;
@@ -104,12 +104,12 @@ body {
     flex-direction: column;
     gap: 16px;
 }
-.post-list-page__card-link:hover {
+.post-list__card-link:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 25px rgba(0,0,0,0.15);
 }
 
-.post-list-page__card-badge {
+.post-list__card-badge {
     position: absolute;
     top: 8px;
     right: 8px;
@@ -121,45 +121,45 @@ body {
     z-index: 10;
 }
 
-.post-list-page__card-image {
+.post-list__card-image {
     border-radius: 12px;
     width: 210px;
     height: 210px;
     object-fit: cover;
 }
 
-.post-list-page__card-title {
+.post-list__card-title {
     font-size: 17px;
 }
-.post-list-page__card-price {
+.post-list__card-price {
     font-size: 14px;
     font-weight: 700;
 }
-.post-list-page__card-location,
-.post-list-page__card-detail {
+.post-list__card-location,
+.post-list__card-detail {
     font-size: 14px;
     color: #898A93;
 }
-.post-list-page__card-detail span {
+.post-list__card-detail span {
     font-size: 12px;
 }
 
-.post-list-page__pagination {
+.post-list__pagination {
     padding: 20px;
     text-align: center;
     color: #686971;
     font-weight: 600;
     font-size: 17px;
 }
-.post-list-page__pagination-link {
+.post-list__pagination-link {
     text-decoration: none;
     color: inherit;
 }
-.post-list-page__pagination-link--disabled {
+.post-list__pagination-link--disabled {
     color: #AAABB4;
 }
 
-.post-list-page__fab {
+.post-list__fab {
     position: fixed;
     right: 50px;
     bottom: 50%;
@@ -178,7 +178,7 @@ body {
     transition: background-color 0.3s ease, transform 0.3s ease;
     z-index: 999;
 }
-.post-list-page__fab:hover {
+.post-list__fab:hover {
     background-color: #df5901;
     transform: translateY(50%) scale(1.05);
 }
