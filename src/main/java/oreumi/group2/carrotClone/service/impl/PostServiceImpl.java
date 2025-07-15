@@ -87,16 +87,19 @@ public class PostServiceImpl implements PostService {
         p.setPrice(postDTO.getPrice());
         p.setLocation(postDTO.getLocation());
         p.setCategory(postDTO.getCategory());
-        List<Image> imageList = new ArrayList<>();
-        for(MultipartFile file : files){
-            String fileurl = storeAndGetFileUrl(file);
-            Image image = new Image();
-            image.setImageUrl(fileurl);
-            image.setPost(p);
+        if (files != null &&
+                files.stream().anyMatch(file -> !file.isEmpty())) {
+            List<Image> imageList = new ArrayList<>();
+            for (MultipartFile file : files) {
+                String fileurl = storeAndGetFileUrl(file);
+                Image image = new Image();
+                image.setImageUrl(fileurl);
+                image.setPost(p);
 
-            imageList.add(image);
+                imageList.add(image);
+            }
+            p.setImages(imageList);
         }
-        p.setImages(imageList);
         return postRepository.save(p);
     }
 
