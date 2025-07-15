@@ -3,48 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <title>새 게시물 등록</title>
-    <link rel="stylesheet" th:href="@{/css/pages/post.css}" />
+    <link rel="stylesheet" href="/css/post.css">
+    <link rel="stylesheet" th:href="@{/css/background.css}"/>
+    <link rel="stylesheet" th:href="@{/css/font.css}"/>
+    <link rel="stylesheet" th:href="@{/css/input.css}"/>
+    <link rel="stylesheet" th:href="@{/css/button.css}"/>
+    <link rel="stylesheet" th:href="@{/css/layout.css}"/>
 </head>
 <body class="font-pretendard">
-    <div th:if="${error}"> <script> alert('[[${error}]]'); </script> </div>
-    <header th:replace="~{fragments/header :: header}"></header>
-    <div class="container">
-        <form th:action="${mode} == 'new' ? @{/posts} : @{/posts/{id}/edit(id=${post.id})}"
-              method="post" id="postForm" enctype="multipart/form-data"  th:object="${post}">
-            <div class="product-info-section">
-                <img class="previewImage" th:if="${post.images != null and post.images.size() > 0}"
-                     th:src="${post.images[0].imageUrl}" alt="이미지 업로드"/>
-                <img class="previewImage"
-                     th:if="${post.images == null or post.images.size() == 0}"
-                     src="https://placehold.co/210x210" alt="기본 이미지">
+<div th:if="${error}"> <script> alert('[[${error}]]'); </script> </div>
+<header th:replace="~{fragments/header :: header}"></header>
+<div class="container">
+    <form th:action="${mode} == 'new' ? @{/posts} : @{/posts/{id}/edit(id=${post.id})}"
+          method="post" id="postForm" enctype="multipart/form-data"  th:object="${post}">
+        <div class="product-info-section">
+            <img class="previewImage" th:if="${post.images != null and post.images.size() > 0}"
+                 th:src="${post.images[0].imageUrl}" alt="이미지 업로드"/>
+            <img class="previewImage"
+                 th:if="${post.images == null or post.images.size() == 0}"
+                 src="https://placehold.co/210x210" alt="기본 이미지">
             <input hidden type="file" id="fileInput" name="files" accept="image/*" multiple>
-                <div class="product-group">
-                    <label>글 제목</label>
-                    <input type="text" id="title" th:field="*{title}" required
-                           placeholder="글 제목" maxlength="100" />
-                    <label>가격</label>
-                    <input type="number" id="price" th:field="*{price}" required placeholder="가격" max="9999999999999" />
-                </div>
-            </div>
             <div class="product-group">
-                <label>물품 설명</label>
-                <textarea id="description" th:field="*{description}" required
-                       placeholder="게시글 내용을 작성해주세요." maxlength="5000"></textarea>
-                <label>카테 고리</label>
-                <select id="category" th:field="*{category.id}" required>
-                    <option value="">카테고리 선택</option>
-                    <option th:each="cate : ${categories}"
-                            th:value="${cate.id}"
-                            th:text="${cate.name}">
-                    </option>
-                </select>
-                <label>거래 희망 장소</label>
-                <input type="text" id="location" th:field="*{location}" required
-                       placeholder="거래를 희망하는 장소" maxlength="100" />
+                <label>글 제목</label>
+                <input type="text" id="title" th:field="*{title}" required
+                       placeholder="글 제목" maxlength="100" />
+                <label>가격</label>
+                <input type="number" id="price" th:field="*{price}" required placeholder="가격" max="9999999999999" />
             </div>
-            <button class="c-btn" type="submit">완료</button>
-        </form>
-    </div>
+        </div>
+        <div class="product-group">
+            <label>물품 설명</label>
+            <textarea id="description" th:field="*{description}" required
+                      placeholder="게시글 내용을 작성해주세요." maxlength="5000"></textarea>
+            <label>카테 고리</label>
+            <select id="category" th:field="*{category.id}" required>
+                <option value="">카테고리 선택</option>
+                <option th:each="cate : ${categories}"
+                        th:value="${cate.id}"
+                        th:text="${cate.name}">
+                </option>
+            </select>
+            <label>거래 희망 장소</label>
+            <input type="text" id="location" th:field="*{location}" required
+                   placeholder="거래를 희망하는 장소" maxlength="100" />
+        </div>
+        <button class="c-btn" type="submit">완료</button>
+    </form>
+</div>
 
 <script src="/js/post.js"></script>
 <script src="/js/header.js"></script>

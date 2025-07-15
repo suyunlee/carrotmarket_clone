@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>거래 매물 검색</title>
-    <link rel="stylesheet" th:href="@{/css/pages/post-list.css}" />
+    <link rel="stylesheet" href="/css/post_list.css">
+    <link rel="stylesheet" th:href="@{/css/background.css}"/>
+    <link rel="stylesheet" th:href="@{/css/font.css}"/>
+    <link rel="stylesheet" th:href="@{/css/input.css}"/>
+    <link rel="stylesheet" th:href="@{/css/button.css}"/>
+    <link rel="stylesheet" th:href="@{/css/layout.css}"/>
 </head>
 <body class="font-pretendard" id="searchBody">
-    <header th:replace="~{fragments/header :: header}"></header>
+<header th:replace="~{fragments/header :: header}"></header>
 <!--    <div class="search-section">-->
 <!--        <form th:action="@{/posts/search}" method="get" class="search-form">-->
 <!--            <input type="text" name="keyword" placeholder="물품이나 동네를 검색해보세요"-->
@@ -22,41 +27,41 @@
 <!--            <button type="submit" class="btn btn-primary">검색</button>-->
 <!--        </form>-->
 <!--    </div>-->
-    <div id="searchContainer">
-        <div th:if="${hasKeyword and (page == null or #lists.isEmpty(page.content))}" class="no-post">
-            <p>검색 결과가 없습니다.</p>
-        </div>
+<div id="searchContainer">
+    <div th:if="${hasKeyword and (page == null or #lists.isEmpty(page.content))}" class="no-post">
+        <p>검색 결과가 없습니다.</p>
+    </div>
 
-        <div th:if="${page != null and !#lists.isEmpty(page.content)}" class="post-grid">
-            <div th:each="post : ${page.content}" class="post-card">
-                <a th:href="@{/posts/{id}(id=${post?.id})}" class="post-info-link">
-                    <div class="isSoldBox" th:if="${post.sold}">판매완료</div>
-                    <img class="preview" th:if="${post.images != null and post.images.size() > 0}" th:src="@{${post.images[0].imageUrl}}" alt="첫번째 이미지">
-                    <img class="preview" th:if="${post.images == null or post.images.size() == 0}" src="https://placehold.co/210x210" alt="이미지 없음">
-                    <div class="post-info">
-                        <div class="post-title" th:text="${post?.title ?: '제목 없음'}">제목</div>
-                        <div class="post-price">
-                            <span th:text="${#numbers.formatDecimal(post?.price, 0, 'COMMA', 0, 'POINT') ?: '0'}">가격</span>원</div>
-                        <div class="post-location" th:text="${post?.location ?: '장소 없음'}"></div>
-                        <div class="post-detail">조회 <span th:text="${post?.viewCount ?: '0'}"></span> ·
-                            채팅 <span th:text="${post?.getChatRoomsCount() ?: '0'}"></span></div>
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <div th:if="${page != null && page.totalPages > 1}" class="pagination">
-            <a th:if="${page.hasPrevious()}" class="arrow-enable"
-               th:href="@{/posts/search(page=${page.number-1}, keyword=${keyword}, category=${category})}">&lt;</a>
-            <span th:unless="${page.hasPrevious()}" class="arrow-disable">&lt;</span>
-            <span class="current" th:text="(${page.number}+1) + ' / ' + ${page.totalPages}">1 / 1</span>
-            <a th:if="${page.hasNext()}" class="arrow-enable"
-               th:href="@{/posts/search(page=${page.number+1}, keyword=${keyword}, category=${category})}">&gt;</a>
-            <span th:unless="${page.hasNext()}" class="arrow-disable">&gt;</span>
+    <div th:if="${page != null and !#lists.isEmpty(page.content)}" class="post-grid">
+        <div th:each="post : ${page.content}" class="post-card">
+            <a th:href="@{/posts/{id}(id=${post?.id})}" class="post-info-link">
+                <div class="isSoldBox" th:if="${post.sold}">판매완료</div>
+                <img class="preview" th:if="${post.images != null and post.images.size() > 0}" th:src="@{${post.images[0].imageUrl}}" alt="첫번째 이미지">
+                <img class="preview" th:if="${post.images == null or post.images.size() == 0}" src="https://placehold.co/210x210" alt="이미지 없음">
+                <div class="post-info">
+                    <div class="post-title" th:text="${post?.title ?: '제목 없음'}">제목</div>
+                    <div class="post-price">
+                        <span th:text="${#numbers.formatDecimal(post?.price, 0, 'COMMA', 0, 'POINT') ?: '0'}">가격</span>원</div>
+                    <div class="post-location" th:text="${post?.location ?: '장소 없음'}"></div>
+                    <div class="post-detail">조회 <span th:text="${post?.viewCount ?: '0'}"></span> ·
+                        채팅 <span th:text="${post?.getChatRoomsCount() ?: '0'}"></span></div>
+                </div>
+            </a>
         </div>
     </div>
 
-    <script src="/js/header.js"></script>
+    <div th:if="${page != null && page.totalPages > 1}" class="pagination">
+        <a th:if="${page.hasPrevious()}" class="arrow-enable"
+           th:href="@{/posts/search(page=${page.number-1}, keyword=${keyword}, category=${category})}">&lt;</a>
+        <span th:unless="${page.hasPrevious()}" class="arrow-disable">&lt;</span>
+        <span class="current" th:text="(${page.number}+1) + ' / ' + ${page.totalPages}">1 / 1</span>
+        <a th:if="${page.hasNext()}" class="arrow-enable"
+           th:href="@{/posts/search(page=${page.number+1}, keyword=${keyword}, category=${category})}">&gt;</a>
+        <span th:unless="${page.hasNext()}" class="arrow-disable">&gt;</span>
+    </div>
+</div>
+
+<script src="/js/header.js"></script>
 
 </body>
 </html>
