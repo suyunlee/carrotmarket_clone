@@ -6,6 +6,7 @@ import oreumi.group2.carrotClone.security.CustomUserDetailService;
 import oreumi.group2.carrotClone.security.NeighborhoodAccessFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -46,8 +47,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/images/**","/css/**","/js/**","/scripts/**","/", "/posts", "/posts/*", "/users/signup", "/users",
+                        .requestMatchers("/images/**","/css/**","/js/**","/scripts/**","/", "/posts", "/users/signup", "/users",
                                 "/login", "/maps/permission", "/maps/verify").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/posts/*")
+                        .permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterAfter(neighborhoodAccessFilter, UsernamePasswordAuthenticationFilter.class)

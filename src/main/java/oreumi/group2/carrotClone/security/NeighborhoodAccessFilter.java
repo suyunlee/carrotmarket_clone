@@ -28,14 +28,16 @@ public class NeighborhoodAccessFilter extends OncePerRequestFilter {
         String path = req.getServletPath();
         String method = req.getMethod();
 
-        boolean readOnlyPost =
-                "GET".equals(method) && ("/posts".equals(path) || path.matches("^/posts/\\d+$"));
+        if ("GET".equals(method) && path.matches("^/posts/\\d+$")) {
+            chain.doFilter(req, res);
+            return;
+        }
+        boolean isReadOnlyList = "GET".equals(method) && "/posts".equals(path);
+        boolean isBlockPost = path.startsWith("/posts") && !isReadOnlyList;
+        boolean isBlockChat = path.startsWith("/chat/");
 
-        boolean blockPostActions = path.startsWith("/posts") && !readOnlyPost;
-        boolean blockChat        = path.startsWith("/chat/");
-
-        if (blockPostActions || blockChat) {
-            Authentication auth = SecurityContextHolder
+        if (isBlockPost || isBlockChat) {
+                Authentication auth = SecurityContextHolder
                     .getContext().getAuthentication();
 
             // 1) 로그인 안 됨 → 회원가입으로 리다이렉트
