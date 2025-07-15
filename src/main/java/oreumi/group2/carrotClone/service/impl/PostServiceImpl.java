@@ -1,8 +1,7 @@
 package oreumi.group2.carrotClone.service.impl;
 
 import jakarta.persistence.EntityExistsException;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
+import lombok.*;
 import oreumi.group2.carrotClone.dto.PostDTO;
 import oreumi.group2.carrotClone.model.*;
 import oreumi.group2.carrotClone.repository.LikeRepository;
@@ -15,11 +14,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,14 +31,14 @@ import java.util.UUID;
 @Transactional
 public class PostServiceImpl implements PostService {
 
-    @Autowired PostRepository postRepository;
     /* DI */
+    @Autowired PostRepository postRepository;
     @Autowired LikeRepository likeRepository;
     private final String FILESTORE_PATH = "C:/uploads/";
 
     /* ID 기반 게시물 찾기 */
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public Optional<Post> findById(Long id) { return postRepository.findById(id); }
 
     /* 전체 조회 */
@@ -86,16 +87,16 @@ public class PostServiceImpl implements PostService {
         p.setPrice(postDTO.getPrice());
         p.setLocation(postDTO.getLocation());
         p.setCategory(postDTO.getCategory());
-//        List<Image> imageList = new ArrayList<>();
-//        for(MultipartFile file : files){
-//            String fileurl = storeAndGetFileUrl(file);
-//            Image image = new Image();
-//            image.setImageUrl(fileurl);
-//            image.setPost(p);
-//
-//            imageList.add(image);
-//        }
-//        p.setImages(imageList);
+        List<Image> imageList = new ArrayList<>();
+        for(MultipartFile file : files){
+            String fileurl = storeAndGetFileUrl(file);
+            Image image = new Image();
+            image.setImageUrl(fileurl);
+            image.setPost(p);
+
+            imageList.add(image);
+        }
+        p.setImages(imageList);
         return postRepository.save(p);
     }
 
@@ -106,12 +107,14 @@ public class PostServiceImpl implements PostService {
         if(p == null){
             throw new EntityExistsException("존재하지않는 게시물입니다.");
         }
+        deleteImages(id);
         postRepository.deleteById(p.get().getId());
     }
 
     /* 게시물 업데이트 */
     @Override
-    public Post updatePost(Long id, PostDTO p) {
+    @Transactional
+    public Post updatePost(Long id, PostDTO p, List<MultipartFile> files) {
         return postRepository.findById(id).map(
                 existingPost -> {
                     existingPost.setTitle(p.getTitle());
@@ -119,6 +122,23 @@ public class PostServiceImpl implements PostService {
                     existingPost.setLocation(p.getLocation());
                     existingPost.setDescription(p.getDescription());
                     existingPost.setCategory(p.getCategory());
+
+                    if (files != null &&
+                            files.stream().anyMatch(file -> !file.isEmpty())) {
+                        deleteImages(id);
+                        existingPost.getImages().clear();
+                        List<Image> imageList = new ArrayList<>();
+                        for (MultipartFile file : files) {
+                            String fileurl = storeAndGetFileUrl(file);
+                            Image image = new Image();
+                            image.setImageUrl(fileurl);
+                            image.setPost(existingPost);
+
+                            imageList.add(image);
+                        }
+                        existingPost.getImages().addAll(imageList);
+                    }
+
                     return postRepository.save(existingPost);
                 }).orElseThrow(() -> new EntityExistsException("존재하지않는 게시물입니다."));
     }
@@ -162,9 +182,26 @@ public class PostServiceImpl implements PostService {
         return "/uploads/" + storeFilename;
     }
 
+    /* 이미지 삭제 */
+    public void deleteImages(Long postId){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+
+        List<Image> images = post.getImages();
+
+        for (Image image : images) {
+            Path filePath = Paths.get("C:" + image.getImageUrl());
+            try {
+                Files.deleteIfExists(filePath);
+            } catch (IOException e) {
+                System.out.println("파일 삭제 실패: " + filePath);
+                e.printStackTrace();
+            }
+        }
+    }
+
     /* 좋아요 */
     @Override
-    @Transactional(readOnly = true)
     public boolean isLikedByUser(Long postId, User user) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));

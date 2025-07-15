@@ -131,6 +131,9 @@ public class PostController {
             Post post = postService.createPost(user, postDTO, files);
             redirectAttributes.addFlashAttribute("success", "게시글이 성공적으로 등록되었습니다.");
             return "redirect:/posts/" + post.getId();
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/posts/new";
         } catch (Exception e) {
             e.printStackTrace();
             redirectAttributes.addFlashAttribute("error", "게시글 등록 중 오류가 발생했습니다.");
@@ -224,10 +227,14 @@ public class PostController {
 //      }
 //        postDTO.setImages(images);
         try {
-            Post post = postService.updatePost(id, postDTO);
+            Post post = postService.updatePost(id, postDTO, files);
             redirectAttributes.addFlashAttribute("success", "게시글이 성공적으로 수정되었습니다.");
             return "redirect:/posts/" + post.getId();
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/posts/" + id + "/edit";
         } catch (Exception e) {
+            e.printStackTrace();
             redirectAttributes.addFlashAttribute("error", "게시글 수정 중 오류가 발생했습니다.");
             return "redirect:/posts/" + id + "/edit";
         }

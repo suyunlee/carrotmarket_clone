@@ -6,7 +6,6 @@ import oreumi.group2.carrotClone.security.CustomUserDetailService;
 import oreumi.group2.carrotClone.security.NeighborhoodAccessFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -44,13 +43,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .ignoringRequestMatchers("/chat/**", "/ws-chat/**", "/posts"))
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/images/**","/css/**","/js/**","/scripts/**","/", "/posts", "/users/signup", "/users",
-                                "/login", "/maps/permission", "/maps/verify").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/posts/*")
-                        .permitAll()
+                        .requestMatchers("/images/**","/css/**","/js/**","/scripts/**","/", "/posts", "/posts/**", "/users/signup", "/users",
+                                "/login", "/maps/permission", "/maps/verify", "/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterAfter(neighborhoodAccessFilter, UsernamePasswordAuthenticationFilter.class)

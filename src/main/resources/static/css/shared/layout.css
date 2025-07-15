@@ -8,7 +8,7 @@ html, body{
     width:100%;
 }
 
-.location-section{
+.location__section{
     width:870px;
     height:74px;
     display:flex;
@@ -16,13 +16,13 @@ html, body{
     gap:8px;
 }
 
-.location-search-box{
+.location__search-box{
     display:flex;
     align-items:center;
     gap:7px;
 }
 
-.location-main{
+.location__main{
     display:flex;
     flex-direction:column;
     justify-content:center;
@@ -32,16 +32,17 @@ html, body{
     padding: 30px 0px;
 }
 
-.map-section{
+.map__section{
     display:flex;
     flex-direction:column;
+    gap:20px;
 }
 
-.text-center{
+.text--center{
     text-align : center;
 }
 
-.home-section-banner{
+.home__section-banner{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -51,7 +52,7 @@ html, body{
     box-sizing : border-box;
 }
 
-.home-main{
+.home__main{
     display:flex;
     flex-direction:column;
 
@@ -59,18 +60,18 @@ html, body{
     align-items: center;
 }
 
-.banner-text-area{
+.banner__text-area{
     flex-grow: 0;
     min-width: 0;
     width: 500px;
     height: 500px;
 }
 
-.banner-image-area{
+.banner__image-area{
     flex-shrink:0;
 }
 
-.banner-main-text{
+.banner__main-text{
     font-size: 51px;
     font-weight: 700;
     line-height: 64px;
@@ -79,7 +80,7 @@ html, body{
     height: 128px;
 }
 
-.banner-sub-text-opacity50{
+.banner__sub-text--opacity50{
     height: 52px;
     opacity: 50%;
     font-size: 22px;
@@ -88,14 +89,14 @@ html, body{
     margin-top: 10px;
 }
 
-.banner-sub-text{
+.banner__sub-text{
     height: 100px;
     font-size: 17px;
     font-weight: 400;
     line-height: 100%;
 }
 
-.banner-btn-box{
+.banner__btn-box{
         width: 155px;
         height: 47px;
         border-radius: 10px;
@@ -112,13 +113,13 @@ html, body{
         color: #000;
 }
 
-.banner-sub-menu{
+.banner__sub-menu{
     display: flex;
     font-size: 14px;
     gap: 20px;
 }
 
-.header-area{
+.header__area{
     display: flex;
     justify-content: space-between;
     height: 60px;
@@ -127,7 +128,7 @@ html, body{
     box-sizing: border-box;
 }
 
-.header-left-menu{
+.header__left-menu{
     display: flex;
     width: 169px;
     height: 23px;
@@ -139,25 +140,25 @@ html, body{
     color: #525359;
 }
 
-.header-left{
+.header__left{
     display:flex;
     gap:68px;
     height:34px;
 }
 
-.header-right{
+.header__right{
     display:flex;
     gap:10px;
 }
 
-.footer-area{
+.footer__area{
     height:275px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.footer-area-box{
+.footer__area-box{
     align-items: center;
     display: flex;
     width: 1200px;
@@ -165,7 +166,7 @@ html, body{
     justify-content: space-between;
 }
 
-.footer-left-box{
+.footer__left-box{
     width: 155px;
     height: 19px;
     gap: 40px;
@@ -173,7 +174,7 @@ html, body{
 }
 
 
-.footer-text{
+.footer__text{
     width: 57px;
     height: 19px;
     font-size: 16px;
@@ -183,7 +184,7 @@ html, body{
     line-height: 100%;
 }
 
-.footer-right-box{
+.footer__right-box{
     width: 259px;
     height: 75px;
     display: flex;
@@ -191,14 +192,14 @@ html, body{
     gap: 15px;
 }
 
-.footer-store-area{
+.footer__store-area{
     width: 259px;
     height: 41px;
     gap: 11px;
     display: flex;
 }
 
-.footer-btn-store{
+.footer__btn-store{
     background-color: #F2F3F6;
     color: #111111;
     font-size: 14px;
@@ -211,7 +212,7 @@ html, body{
     line-height: 41px;
 }
 
-.footer-store-text{
+.footer__store-text{
     width: 259px;
     height: 19px;
     font-size: 16px;

@@ -11,7 +11,7 @@
     <link rel="stylesheet" th:href="@{/css/layout.css}"/>
 </head>
 <body class="font-pretendard">
-    <div th:if="${error}"> <script> alert([[${error}]]); </script> </div>
+<div th:if="${error}"> <script> alert('[[${error}]]'); </script> </div>
 
     <header th:replace="~{fragments/header :: header}"></header>
     <div id="postDetail" class="container">
@@ -23,7 +23,7 @@
 
             <div id="imageView">
                 <img th:if="${post.images != null and post.images.size() > 0}" th:src="@{${post.images[0].imageUrl}}" alt="첫번째 이미지">
-                <img th:if="${post.images == null or post.images.size() == 0}" src="/images/placeholder.png" alt="이미지 없음">
+                <img th:if="${post.images == null or post.images.size() == 0}" src="https://placehold.co/210x210" alt="이미지 없음">
             </div>
 
             <div id="userView">

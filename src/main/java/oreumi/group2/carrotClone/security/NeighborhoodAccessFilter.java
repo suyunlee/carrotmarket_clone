@@ -40,7 +40,7 @@ public class NeighborhoodAccessFilter extends OncePerRequestFilter {
                 Authentication auth = SecurityContextHolder
                     .getContext().getAuthentication();
 
-            // 1) 로그인 안 됨 → 회원가입으로 리다이렉트
+            // 1) 로그인 안 됨 → 로그인으로 리다이렉트
             if (auth == null || !auth.isAuthenticated() ||
                     "anonymousUser".equals(auth.getPrincipal())) {
                 res.sendRedirect("/users/login");
