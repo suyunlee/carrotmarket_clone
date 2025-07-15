@@ -130,6 +130,4 @@ public class ChatRoomController {
         List<ChatRoomDTO> rooms = chatRoomService.getRoomsForUser(principal.getUsername());
         return ResponseEntity.ok(rooms);
     }
-
-
 }
