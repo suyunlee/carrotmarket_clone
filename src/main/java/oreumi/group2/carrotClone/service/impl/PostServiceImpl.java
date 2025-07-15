@@ -37,7 +37,7 @@ public class PostServiceImpl implements PostService {
 
     /* ID 기반 게시물 찾기 */
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public Optional<Post> findById(Long id) { return postRepository.findById(id); }
 
     /* 전체 조회 */
@@ -164,7 +164,7 @@ public class PostServiceImpl implements PostService {
 
     /* 좋아요 */
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public boolean isLikedByUser(Long postId, User user) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));
