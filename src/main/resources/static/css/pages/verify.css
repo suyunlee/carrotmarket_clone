@@ -73,3 +73,36 @@ body {
   flex-direction: column;
   gap: 20px;
 }
+
+.map{
+    height: 468px;
+    width: 870px;
+    pointer-events: none;
+}
+
+/*@media (min-width: 576px) { ... }   / 작은 태블릿 /
+@media (min-width: 768px) { ... }   / 일반 태블릿 /
+@media (min-width: 1200px) { ... }  / 데스크탑 */
+
+@media (max-width: 768px) {
+    .map{
+        width: 500px;
+    }
+
+    .btn--location-verify{
+        width : 500px;
+    }
+
+    .location__section{
+        width : 500px;
+    }
+
+    .btn--location-search{
+        font-size : 14px;
+    }
+}
+
+
+@media (min-width: 576px){
+
+}
