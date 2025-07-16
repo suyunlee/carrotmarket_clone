@@ -13,11 +13,6 @@ body {
     align-items: center;
 }
 
-
-.post-list__search {
-    background-color: #F2F3F6;
-}
-
 .post-list__header-container {
     width: 100%;
     height: 360px;
@@ -62,7 +57,7 @@ body {
 }
 
 .post-list__container,
-.post-list__container--search {
+.post-list__search-content {
     width: 90%;
     max-width: 1000px;
 }
@@ -101,10 +96,6 @@ body {
     flex-direction: column;
     gap: 16px;
 }
-.post-list__card-link:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-}
 
 .post-list__card-badge {
     position: absolute;
@@ -117,8 +108,7 @@ body {
     border-radius: 4px;
     z-index: 10;
 }
-
-.image-wrapper {
+.post-list__image-wrapper {
     overflow: hidden;
     border-radius: 12px;
     height: 210px;
@@ -157,7 +147,7 @@ body {
     font-weight: 600;
     font-size: 17px;
 }
-.post-list__pagination-link {
+.post-list__pagination a {
     text-decoration: none;
     color: inherit;
 }
@@ -190,11 +180,11 @@ body {
 }
 
 /* search */
-#searchBody {
+#post-list__search {
     background-color: #F2F3F6;
 }
 
-#searchResult{
+.post-list_search-result{
     display: flex;
     flex-direction: column;
     width: 90%;
@@ -203,17 +193,17 @@ body {
     top: 100px;
 }
 
-#searchKeyword {
+.post-list_search-keyword {
     font-size: 28px;
     font-weight: 700;
 }
 
-#searchContainer{
+.post-list__search-container{
     display: flex;
     margin: 40px 0 128px;
 }
 
-#categoryContainer{
+.post-list__category-container{
     width: 100%;
     min-width: 199px;
     max-width: 242px;
@@ -221,24 +211,24 @@ body {
     user-select: none;
 }
 
-#categoryTitle {
+.post-list__category-title {
   font-weight: 700;
   margin-bottom: 10px;
 }
 
-#categoryForm {
+.post-list__category-form {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-#categoryForm label {
+.post-list__category-form label {
   display: flex;
   align-items: center;
   cursor: pointer;
 }
 
-#categoryForm input[type="radio"] {
+.post-list__category-form input[type="radio"] {
   appearance: none;
   width: 18px;
   height: 18px;
@@ -250,12 +240,12 @@ body {
   background-color: white;
 }
 
-#categoryForm input[type="radio"]:checked {
+.post-list__category-form input[type="radio"]:checked {
   border-color: #FF6F0E;
   background-color: #FF6F0E;
 }
 
-#categoryForm input[type="radio"]:checked::after {
+.post-list__category-form input[type="radio"]:checked::after {
   content: "";
   position: absolute;
   top: 4px;
@@ -266,6 +256,6 @@ body {
   background-color: white;
 }
 
-#categoryForm input[type="radio"]:hover {
+.post-list__category-form input[type="radio"]:hover {
   background: #F2F3F6;
 }
