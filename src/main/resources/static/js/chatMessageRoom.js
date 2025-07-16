@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('#chatArea [data-id]')
     .forEach(el => renderIds.add(+el.dataset.id));
 
-  // 읽음 처리 함수
+    // 읽음 처리 함수
     function sendReadReceipt() {
         const toMark = Array.from(chatArea.children)
         .filter(el =>
@@ -40,7 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 method : 'POST',
                 headers : {
                     'Content-Type' : 'application/json'
-                     // [window.chatConfig.csrfHeader]: window.chatConfig.csrfToken
                 }
             })
             .then(response => {
@@ -53,53 +52,53 @@ document.addEventListener('DOMContentLoaded', () => {
                 confirmBtn.classList.add('chat-room__button--completed');
             })
             .catch(err => {
-                console.error(err);
-                alert('거래확정 중 오류가 발생했습니다.');
+                alert('거래확정은 판매자만 가능합니다.');
             });
       });
   }
 
   // 메시지 렌더링
-  function renderMessage(msg) {
-    if (renderIds.has(msg.id)) return;
-    renderIds.add(msg.id);
+    function renderMessage(msg) {
+        if (renderIds.has(msg.id)) return;
+        renderIds.add(msg.id);
 
-    const isMine = msg.senderUsername === currentUser;
-    const li     = document.createElement('li');
-    li.className = 'message ' + (isMine ? 'buyer' : 'seller');
-    li.dataset.id     = msg.id;
-    li.dataset.sender = msg.senderUsername;
+        const isMine = msg.senderUsername === currentUser;
+        const li     = document.createElement('li');
+        li.className = 'message ' + (isMine ? 'buyer' : 'seller');
+        li.dataset.id     = msg.id;
+        li.dataset.sender = msg.senderUsername;
 
-    if (!isMine) {
-      const av = document.createElement('div');
-      av.className = 'avatar';
-      av.innerHTML = '<img src="" alt="상대방"/>';
-      li.append(av);
+        if (!isMine) {
+          const av = document.createElement('div');
+          av.className = 'avatar';
+          av.innerHTML = msg.senderNickname;
+          li.append(av);
+        }
+
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.innerHTML = `
+          <p>${msg.content}</p>
+          <span class="time">${
+            new Date(msg.createdAt)
+              .toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})
+          }</span>
+          ${isMine
+            ? (msg.read
+                ? '<span class="read-badge">읽음</span>'
+                : '<span class="unread-badge">1</span>')
+            : ''}
+        `;
+        li.append(bubble);
+
+        chatArea.append(li);
+        chatArea.scrollTop = chatArea.scrollHeight;
     }
 
-    const bubble = document.createElement('div');
-    bubble.className = 'bubble';
-    bubble.innerHTML = `
-      <p>${msg.content}</p>
-      <span class="time">${
-        new Date(msg.createdAt)
-          .toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})
-      }</span>
-      ${isMine
-        ? (msg.read
-            ? '<span class="read-badge">읽음</span>'
-            : '<span class="unread-badge">1</span>')
-        : ''}
-    `;
-    li.append(bubble);
-
-    chatArea.append(li);
-    chatArea.scrollTop = chatArea.scrollHeight;
-  }
-
-  // STOMP 연결
-  const client = Stomp.over(new SockJS('/ws-chat'));
-  client.connect({}, () => {
+    // STOMP 연결
+    const client = Stomp.over(new SockJS('/ws-chat'));
+    client.debug = () => {};
+    client.connect({}, () => {
     client.subscribe(`/topic/chat/${roomId}`, frame => {
       const msg = JSON.parse(frame.body);
       renderMessage(msg);
@@ -110,25 +109,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     client.subscribe(`/topic/chat/${roomId}/read`, frame => {
-      const { messageIds, readerUsername } = JSON.parse(frame.body);
-      if (readerUsername === currentUser) return;
+        const { messageIds, readerUsername } = JSON.parse(frame.body);
+        if (readerUsername === currentUser) return;
 
-      messageIds.forEach(id => {
-        const el = document.querySelector(
-          `#chatArea li[data-id='${id}']`
-        );
-        if (el &&
-            !el.classList.contains('read') &&
-            el.dataset.sender === currentUser) {
-          el.classList.add('read');
-          const ub = el.querySelector('.unread-badge');
-          if (ub) ub.remove();
-          const rb = document.createElement('span');
-          rb.className = 'read-badge';
-          rb.textContent = '읽음';
-          el.querySelector('.bubble').append(rb);
-        }
-      });
+        messageIds.forEach(id => {
+            const el = document.querySelector(
+              `#chatArea li[data-id='${id}']`
+            );
+            if (el &&
+                !el.classList.contains('read') &&
+                el.dataset.sender === currentUser)
+            {
+              el.classList.add('read');
+              const ub = el.querySelector('.unread-badge');
+              if (ub) ub.remove();
+              const rb = document.createElement('span');
+              rb.className = 'read-badge';
+              rb.textContent = '읽음';
+              el.querySelector('.bubble').append(rb);
+            }
+        });
     });
 
     // 초기 메시지 가져오기 + 읽음 전송
@@ -138,105 +138,141 @@ document.addEventListener('DOMContentLoaded', () => {
         list.forEach(renderMessage);
         sendReadReceipt();
       })
-      .catch(console.error);
-  });
+    });
 
-  // 메시지 보내기
-  document.getElementById('chat-form').addEventListener('submit', e => {
-    e.preventDefault();
-    const input = document.getElementById('chat-input');
-    const text  = input.value.trim();
-    if (!text) return;
+    // 메시지 보내기
+    document.getElementById('chat-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const input = document.getElementById('chat-input');
+        const text  = input.value.trim();
+        if (!text) return;
 
-    client.send(
-      `/app/room/${roomId}/send`,
-      {'content-type':'application/json'},
-      JSON.stringify({
-        content: text,
-        senderUsername: currentUser
-      })
-    );
-    input.value = '';
-  });
+        client.send(
+          `/app/room/${roomId}/send`,
+          {'content-type':'application/json'},
+          JSON.stringify({
+            content: text,
+            senderUsername: currentUser
+          })
+        );
+        input.value = '';
+    });
 
-  // "읽지 않은 항목" 토글
-  const unreadToggle = document.querySelector('.chat-room__switch-input');
-  unreadToggle.addEventListener('change', () => {
-    const showUnreadOnly = unreadToggle.checked;
-    document.querySelectorAll('.chat-room__list .chat-room__item')
-      .forEach(li => {
-        const isUnread = li.dataset.unread === 'true';
-        li.style.display = (showUnreadOnly && !isUnread) ? 'none' : '';
-      });
-  });
+    // "읽지 않은 항목" 토글
+    const unreadToggle = document.querySelector('.chat-room__switch-input');
+    unreadToggle.addEventListener('change', () => {
+        const showUnreadOnly = unreadToggle.checked;
+        document.querySelectorAll('.chat-room__list .chat-room__item')
+        .forEach(li => {
+            const isUnread = li.dataset.unread === 'true';
+            li.style.display = (showUnreadOnly && !isUnread) ? 'none' : '';
+        });
+    });
 
   // 다른 채팅방 목록 로드
-  async function loadOtherRooms() {
-    const endpoint = postId
-      ? `/chat/post/${postId}/rooms?username=${encodeURIComponent(currentUser)}&full=true`
-      : `/chat/post/rooms?username=${encodeURIComponent(currentUser)}&full=true`;
-    const res = await fetch(endpoint);
+    async function loadOtherRooms() {
+        const endpoint = postId
+            ? `/chat/post/${postId}/rooms?username=${encodeURIComponent(currentUser)}&full=true`
+            : `/chat/post/rooms?username=${encodeURIComponent(currentUser)}&full=true`;
+        const res = await fetch(endpoint);
 
-    if (!res.ok) {
-      console.error('방 목록 로드 실패');
-      return;
-    }
-    const list = await res.json();
-     const roomsToShow = postId
+        if (!res.ok) {
+          return;
+        }
+
+        const list = await res.json();
+        const roomsToShow = postId
           ? ((currentUser === postOwner)
               ? list
               : list.filter(r => r.username === currentUser))
           : list;
 
-    roomsToShow
-      .filter(r => r.id !== +roomId)
-      .forEach(r => {
-        if (renderedRooms.has(r.id)) return;
-        renderedRooms.add(r.id);
+        roomsToShow
+            .forEach(r => {
 
-        const li = document.createElement('li');
-        li.className = 'chat-room__item';
-        li.dataset.unread = r.unreadCount > 0 ? 'true' : 'false';
+                if (renderedRooms.has(r.id)) return;
+                renderedRooms.add(r.id);
 
-        // info
-        const info = document.createElement('div');
-        info.className = 'chat-room__info';
+                if (r.chatBot) {
+                    const li = document.createElement('li');
+                    li.className = 'chat-room__item'
+                     + (r.id === +roomId ? ' chat-room__item--active' : '');
 
-        const header = document.createElement('div');
-        header.className = 'chat-room__header';
+                     const avatar = document.createElement('div');
+                     avatar.className = 'chat-room__avatar';
+                     avatar.innerHTML = `
+                       <img src="/images/icons/chatbot_icon.svg" alt="AI 챗봇"/>
+                     `;
+                     li.append(avatar);
 
-        const who = document.createElement('strong');
-        const lastTime = document.createElement('span');
-        lastTime.className = 'chat-room__time';
+                     const info = document.createElement('div');
+                     info.className = 'chat-room__info';
+                     info.innerHTML = `
+                       <strong>AI 챗봇</strong>
+                       <p>궁금한 내용을 물어보세요!</p>
+                     `;
+                     li.append(info);
 
-        who.textContent = r.username;
-        lastTime.textContent = r.lastMessageAt
-          ? new Date(r.lastMessageAt)
-              .toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})
-          : '';
-        header.append(who, lastTime);
+                     li.addEventListener('click', () => {
+                       location.href =
+                         `/chat/room/${r.id}?username=${encodeURIComponent(currentUser)}`;
+                     });
+                     chatList.prepend(li);
+                     return;
+                }
 
-        const footer = document.createElement('div');
-        footer.className = 'chat-room__footer';
-        if (r.unreadCount > 0) {
-          const badge = document.createElement('span');
-          badge.className = 'unread-badge';
-          badge.textContent = r.unreadCount;
-          footer.append(badge);
-        }
-        const lastMsg = document.createElement('p');
-        lastMsg.textContent = r.lastMessage || '';
-        footer.append(lastMsg);
+                const li = document.createElement('li');
+                li.className = 'chat-room__item'
+                +  (r.id === +roomId ? ' chat-room__item--active' : '') ;
+                li.dataset.unread = r.unreadCount > 0 ? 'true' : 'false';
 
-        info.append(header, footer);
-        li.append(info);
+                // info
+                const info = document.createElement('div');
+                info.className = 'chat-room__info';
 
-        li.addEventListener('click', () => {
-          location.href = `/chat/room/${r.id}?username=${encodeURIComponent(currentUser)}`;
-        });
+                const avatar = document.createElement('div');
+                avatar.className = 'chat-room__avatar';
+                const thumb = document.createElement('img');
 
-        chatList.append(li);
-      });
-  }
+                thumb.src = r.postImageUrl || '';
+                thumb.alt = '상품 썸네일';
+                avatar.appendChild(thumb);
+                li.appendChild(avatar);
+
+                const header = document.createElement('div');
+                header.className = 'chat-room__header';
+
+                const who = document.createElement('strong');
+                const lastTime = document.createElement('span');
+                lastTime.className = 'chat-room__time';
+
+                who.textContent = r.nickname;
+                lastTime.textContent = r.lastMessageAt
+                  ? new Date(r.lastMessageAt)
+                      .toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})
+                  : '';
+                header.append(who, lastTime);
+
+                const footer = document.createElement('div');
+                footer.className = 'chat-room__footer';
+                if (r.unreadCount > 0) {
+                  const badge = document.createElement('span');
+                  badge.className = 'unread-badge';
+                  badge.textContent = r.unreadCount;
+                  footer.append(badge);
+                }
+                const lastMsg = document.createElement('p');
+                lastMsg.textContent = r.lastMessage || '';
+                footer.append(lastMsg);
+
+                info.append(header, footer);
+                li.append(info);
+
+                li.addEventListener('click', () => {
+                  location.href = `/chat/room/${r.id}?username=${encodeURIComponent(currentUser)}`;
+                });
+             chatList.append(li);
+            });
+    }
   loadOtherRooms();
 });
