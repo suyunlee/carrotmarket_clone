@@ -2,4 +2,74 @@
 @import url("/css/shared/background.css");
 @import url("/css/shared/input.css");
 @import url("/css/shared/button.css");
-@import url("/css/shared/layout.css");
+@import url("/css/shared/header.css");
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.btn--location-search {
+  width: 143px;
+  height: 47px;
+  border-radius: 10px;
+  border: 1px solid #FF6F0E;
+  background: #fff;
+  font-size: 17px;
+  color: #FF6F0E;
+}
+.btn--location-search:disabled {
+
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn--location-verify {
+  width: 870px;
+  height: 53px;
+  border-radius: 8px;
+  background-color: #FF6F0E;
+  border: none;
+  font-size: 18px;
+  color: #fff;
+  font-weight: 700;
+  text-align: center;
+}
+
+.btn--location-verify:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.location__section {
+  width: 870px;
+  height: 74px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.location__search-box {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.location__main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  height: 100%;
+  padding: 30px 0;
+}
+
+.map__section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
