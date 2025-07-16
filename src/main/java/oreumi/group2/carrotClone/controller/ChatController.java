@@ -76,7 +76,7 @@ public class ChatController {
                         .toList();
 
         model.addAttribute("messages",dtos );
-        return "ChatMessageRoom";
+        return "chat_message_room";
     }
 
     // 클라이언트가 이 엔드포인트를 구독하면 과거 메시지 전체를 반환
