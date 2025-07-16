@@ -17,7 +17,7 @@ body {
     align-items: center;
 }
 
-.post-form__container {
+.post--container {
     position: relative;
     background-color: white;
     width: calc(100% - 240px);
@@ -43,19 +43,14 @@ body {
     cursor: default;
 }
 
-.post-form__product-info {
-    display: flex;
-    gap: 40px;
-}
-.post-form__product-group {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
 .post-form {
     display: flex;
     flex-direction: column;
+    gap: 40px;
+}
+
+.post-form__product-info {
+    display: flex;
     gap: 40px;
 }
 
@@ -66,6 +61,12 @@ body {
     border: 1px solid #ccc;
     margin: 5px;
     border-radius: 10px;
+}
+
+.post-form__product-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .post-form__field--title,
@@ -131,7 +132,7 @@ textarea::-webkit-scrollbar-thumb {
     border-radius: 4px;
 }
 
-.post-detail {
+#post-detail {
     background: none;
     padding: 0;
     gap: 20px;
@@ -189,7 +190,7 @@ textarea::-webkit-scrollbar-thumb {
     opacity: 0.3;
     font-size: 14px;
 }
-.post-detail__chat-button {
+#post-detail__chat-button {
     width: 162px;
     height: 44px;
 }
