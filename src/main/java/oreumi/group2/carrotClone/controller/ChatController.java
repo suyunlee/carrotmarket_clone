@@ -64,12 +64,11 @@ public class ChatController {
             model.addAttribute("postOwner",post.getUser().getUsername());
 
             if(post.getImages().size() > 0){
-                model.addAttribute("postImage", post.getImages().get(0));
-                System.out.println(post.getImages().get(0));
+                model.addAttribute("postImage", post.getImages().get(0).getImageUrl());
             }
 
         }
-
+        model.addAttribute("isChatBot", chatRoom.isChatBot());
         List<ChatMessageDTO> dtos = chatMessageService.getMessages(roomId)
                         .stream()
                         .map(ChatMessageDTO :: fromEntity)
