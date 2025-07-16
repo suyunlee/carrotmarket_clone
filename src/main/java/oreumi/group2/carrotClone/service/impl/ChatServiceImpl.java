@@ -196,13 +196,14 @@ public class ChatServiceImpl implements ChatRoomService, ChatMessageService {
 
     @Override
     public ChatRoom getOrCreateAIBotRoom(String username) {
-        return chatRoomRepository.findByUser_UsernameAndPostIsNull(username)
+        return chatRoomRepository.findByUser_UsernameAndPostIsNullAndIsChatBotTrue(username)
                 .orElseGet(() -> {
                     User user = userRepository.findByUsername(username)
                             .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
                     ChatRoom aiRoom = ChatRoom.builder()
                             .user(user)
                             .post(null)
+                            .isChatBot(true)
                             .build();
                     return chatRoomRepository.save(aiRoom);
                 });
