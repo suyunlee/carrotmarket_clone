@@ -36,11 +36,14 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             (:priceMin = 0 OR p.price >= :priceMin)
             AND
             (:priceMax = 0 OR p.price <= :priceMax)
+            AND
+            (:isSold = false OR p.Sold = false)
             ORDER BY p.createdAt DESC
             """)
     Page<Post> findByKeywordAndCategory(@Param("keyword") String keyword,
                                           @Param("categoryId") Long categoryId,
                                           @Param("priceMin") Integer priceMin,
                                           @Param("priceMax") Integer priceMax,
+                                          @Param("isSold") boolean isSold,
                                           Pageable pageable);
 }

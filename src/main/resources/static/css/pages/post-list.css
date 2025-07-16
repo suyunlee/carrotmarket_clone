@@ -213,12 +213,18 @@ body {
     display: flex;
     margin: 40px 0 128px;
     justify-content: center;
+    gap: 30px;
 }
 
 .post-list__filter-container {
     display: flex;
     flex-direction: column;
     gap: 20px;
+}
+
+.post-list__filter__title-container {
+    display: flex;
+    justify-content: space-between;
 }
 
 .post-list__filter-title {
@@ -262,19 +268,33 @@ body {
     cursor: pointer;
 }
 
-.post-list_form input[type="radio"] {
+.post-list__checkbox-form label{
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.post-list_form input[type="radio"],
+.post-list__checkbox-form input[type="checkbox"] {
     appearance: none;
     width: 18px;
     height: 18px;
     border: 1px solid #DBDCE2;
-    border-radius: 50%;
     margin-right: 8px;
     position: relative;
     transition: border-color 0.2s ease;
     background-color: white;
 }
 
-.post-list_form input[type="radio"]:checked {
+.post-list__checkbox-form input[type="checkbox"] {
+    border-radius: 2px;
+}
+.post-list_form input[type="radio"] {
+    border-radius: 50%;
+}
+
+.post-list_form input[type="radio"]:checked,
+.post-list__checkbox-form input[type="checkbox"]:checked {
     border-color: #FF6F0E;
     background-color: #FF6F0E;
 }
@@ -290,13 +310,26 @@ body {
     background-color: white;
 }
 
-.post-list_form input[type="radio"]:hover {
+.post-list__checkbox-form input[type="checkbox"]:checked::after {
+      content: "";
+      position: absolute;
+      left: 5px;
+      top: 2px;
+      width: 5px;
+      height: 9px;
+      border: solid white;
+      border-width: 0 3px 3px 0;
+      transform: rotate(45deg);
+}
+
+.post-list_form input[type="radio"]:hover,
+.post-list__checkbox-form input[type="checkbox"]:hover {
     background: #F2F3F6;
 }
 
 .post-list__divider {
     border: 1px solid #DBDCE2;
-    width: 90%;
+    width: 100%;
     border-width: 1px 0 0 0;
     height: 1px;
 }
@@ -362,7 +395,7 @@ body {
     font-family: inherit;
 }
 
-#custom-price-form button {
+#custom-price-form button, .post-list__filter-reset {
     font-family: inherit;
     font-size: 14px;
     background: none;

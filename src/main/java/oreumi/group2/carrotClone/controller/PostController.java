@@ -55,6 +55,7 @@ public class PostController {
                              @RequestParam(required = false) Long category,
                              @RequestParam(required = false) Integer priceMin,
                              @RequestParam(required = false) Integer priceMax,
+                             @RequestParam(required = false) Boolean isSold,
                              Model model,
                              @AuthenticationPrincipal CustomUserPrincipal principal){
         User user = null;
@@ -72,7 +73,7 @@ public class PostController {
             postPage = Page.empty(pageable);
             model.addAttribute("hasKeyword", false);
         } else {
-            postPage = postService.searchPosts(keyword, category, priceMin, priceMax, pageable);
+            postPage = postService.searchPosts(keyword, category, priceMin, priceMax, isSold, pageable);
             model.addAttribute("hasKeyword", keyword != null && !keyword.isBlank());
         }
         model.addAttribute("page", postPage);
@@ -81,6 +82,7 @@ public class PostController {
         model.addAttribute("category", category);
         model.addAttribute("priceMin", priceMin);
         model.addAttribute("priceMax", priceMax == Integer.MAX_VALUE ? 0 : priceMax);
+        model.addAttribute("isSold", isSold);
 
         return "post/post_search";
     }

@@ -11,10 +11,18 @@
         <div class="post-list_search-keyword">"<span th:text="${keyword}"></span>" 검색 결과</div>
         <div class="post-list__search-container">
             <div class="post-list__filter-container">
-                <div class="post-list__filter-title">필터</div>
-                <form class="post-list__checkbok-form" id="checkbox-form" th:action="@{/posts/search}" method="get">
+                <div class="post-list__filter__title-container">
+                    <div class="post-list__filter-title">필터</div>
+                    <a href="/posts/search" class="post-list__filter-reset">초기화</a>
+                </div>
+                <form class="post-list__checkbox-form" id="checkbox-form" th:action="@{/posts/search}" method="get">
+                    <input type="hidden" name="keyword" th:value="${keyword}" />
+                    <input type="hidden" name="category" th:value="${category}" />
+                    <input type="hidden" name="priceMin" th:value="${priceMin}" />
+                    <input type="hidden" name="priceMax" th:value="${priceMax}" />
                     <label>
-                        <input type="checkbox" id="checkbox" name="isSold" value="false" />
+                        <input type="checkbox" id="checkbox" name="isSold" value="true"
+                            th:checked="${isSold} ? 'checked': null">
                         거래 가능만 보기
                     </label>
                 </form>
@@ -23,7 +31,10 @@
                 <div class="post-list__category-container">
                     <div class="post-list__filter-name">카테고리</div>
                     <form class="post-list_form" id="category-form" th:action="@{/posts/search}" method="get">
+                        <input type="hidden" name="isSold" th:value="${isSold}" />
                         <input type="hidden" name="keyword" th:value="${keyword}" />
+                        <input type="hidden" name="priceMin" th:value="${priceMin}" />
+                        <input type="hidden" name="priceMax" th:value="${priceMax}" />
                         <div th:each="cate : ${categories}">
                             <label><input type="radio" name="category"
                                           class="category-radio"
@@ -40,10 +51,11 @@
                 <div class="post-list__price-container">
                     <div class="post-list__filter-name">가격</div>
                     <form class="post-list_form" id="price-form" th:action="@{/posts/search}" method="get">
+                        <input type="hidden" name="isSold" th:value="${isSold}" />
                         <input type="hidden" name="keyword" th:value="${keyword}" />
                         <input type="hidden" name="category" th:value="${category}" />
                         <button type="submit" name="priceMax" value="0"
-                                th:classappend="${priceMax == -1} ? ' selected'">나눔</button>
+                                th:classappend="${priceMax == 0} ? ' selected'">나눔</button>
                         <button type="submit" name="priceMax" value="5000"
                                 th:classappend="${priceMax == 5000} ? ' selected'">5,000원 이하</button>
                         <button type="submit" name="priceMax" value="10000"
@@ -52,6 +64,7 @@
                                 th:classappend="${priceMax == 20000} ? ' selected'">20,000원 이하</button>
                     </form>
                     <form class="post-list_form" id="custom-price-form" th:action="@{/posts/search}" method="get">
+                        <input type="hidden" name="isSold" th:value="${isSold}" />
                         <input type="hidden" name="keyword" th:value="${keyword}" />
                         <input type="hidden" name="category" th:value="${category}" />
                         <div class="post-list__input-container">

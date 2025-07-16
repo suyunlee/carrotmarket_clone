@@ -235,8 +235,9 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public Page<Post> searchPosts(String keyword, Long categoryId,
-                                  Integer priceMin, Integer priceMax, Pageable pageable) {
+                                  Integer priceMin, Integer priceMax, Boolean isSold, Pageable pageable) {
+        boolean onlyAvaliable = Boolean.TRUE.equals(isSold);
         return postRepository.findByKeywordAndCategory(keyword, categoryId,
-                priceMin, priceMax, pageable);
+                priceMin, priceMax, onlyAvaliable, pageable);
     }
 }
