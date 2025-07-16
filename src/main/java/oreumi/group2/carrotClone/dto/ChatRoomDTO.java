@@ -10,9 +10,10 @@ import java.time.LocalDateTime;
 public class ChatRoomDTO {
 
     private Long id, userId, postId;
-    private String username, lastMessage;
-    private long unreadCount;
+    private String username, lastMessage,nickname,postImageUrl;
     private LocalDateTime lastMessageAt;
+    private long unreadCount;
+    private boolean isChatBot;
 
     public ChatRoomDTO() {}
 
@@ -22,17 +23,7 @@ public class ChatRoomDTO {
         this.postId = postId;
         this.unreadCount = unreadCount;
         this.username = username;
-    }
-
-    public ChatRoomDTO(Long id, Long userId, Long postId, String username,long unreadCount,String lastMessage,
-                       LocalDateTime lastMessageAt){
-        this.id = id;
-        this.userId = userId;
-        this.postId = postId;
-        this.unreadCount = unreadCount;
-        this.username = username;
-        this.lastMessage = lastMessage;
-        this.lastMessageAt = lastMessageAt;
+        this.postImageUrl = "";
     }
 
     /* 채팅방 필터링 DTO */
@@ -53,9 +44,14 @@ public class ChatRoomDTO {
         dto.userId = r.getUser().getId();
         dto.postId = (r.getPost() != null ? r.getPost().getId() : 0L);
         dto.username = r.getUser().getUsername();
+        dto.nickname = r.getUser().getNickname();
         dto.unreadCount = unreadCount;
         dto.lastMessage = (lastMsg != null ? lastMsg.getContent() : "");
         dto.lastMessageAt = (lastMsg != null ? lastMsg.getCreatedAt() : null);
+        if (r.getPost() != null && !r.getPost().getImages().isEmpty()) {
+            dto.postImageUrl = r.getPost().getImages().get(0).getImageUrl();
+        }
+        dto.isChatBot = r.isChatBot();
         return dto;
     }
 }
