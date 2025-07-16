@@ -3,6 +3,7 @@
 @import url("/css/shared/input.css");
 @import url("/css/shared/button.css");
 @import url("/css/shared/layout.css");
+@import url("/css/shared/header.css");
 
 body {
   background-color: #fff5e8;
