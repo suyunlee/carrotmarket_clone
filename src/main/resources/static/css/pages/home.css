@@ -103,6 +103,10 @@ body {
     line-height: 100px;
 }
 
+.post-list__grid{
+    justify-content : center;
+}
+
 
 @media (max-width: 1024px){
     .home__section-banner{

@@ -5,7 +5,8 @@
     <title>로그인 | 당근마켓 클론</title>
     <link rel="stylesheet" th:href="@{/css/pages/auth.css}" />
 </head>
-<body class="font-pretendard">
+<body class="font--pretendard">
+<header th:replace="~{fragments/header :: header}"></header>
 <div class="auth-page__container">
     <div class="auth-page__logo">
         <img th:src="@{/images/icons/header_icon.svg}"
