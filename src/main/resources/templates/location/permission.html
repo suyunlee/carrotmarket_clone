@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <title>위치 권한 요청</title>
     <script th:src="@{/scripts/location-permission.js}"></script>
-    <link rel="stylesheet" th:href="@{/css/pages/verify}">
+    <link rel="stylesheet" th:href="@{/css/pages/verify.css}">
 </head>
 <body class="bg--yellow-200 font--pretendard">
-<h2>위치 권한 확인 중...</h2>
+<header th:replace="~{fragments/header :: header}"></header>
+    <div class="text__permission">
+        <sapn>📍 위치 권한 확인 중입니다...</sapn>
+        <span>🚫 권한을 허용하지 않으실 경우, 위치 인증을 이용할 수 없습니다. 🚫</span>
+    </div>
 </body>
 </html>
