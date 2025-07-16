@@ -32,6 +32,13 @@ public class NeighborhoodAccessFilter extends OncePerRequestFilter {
             chain.doFilter(req, res);
             return;
         }
+
+        if ("GET".equals(method) &&
+                ("/posts/search".equals(path) || path.startsWith("/posts/search/"))) {
+            chain.doFilter(req, res);
+            return;
+        }
+
         boolean isReadOnlyList = "GET".equals(method) && "/posts".equals(path);
         boolean isBlockPost = path.startsWith("/posts") && !isReadOnlyList;
         boolean isBlockChat = path.startsWith("/chat/");
