@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>문제가 발생했습니다</title>
+  <link rel="stylesheet" th:href="@{/css/pages/error-page.css}" />
+</head>
+<body class="error-page">
+  <div class="error-page__container">
+    <h1 class="error-page__status" th:text="${status}">Error</h1>
+    <h2 class="error-page__error" th:text="${error}">에러 발생</h2>
+    <p class="error-page__message" th:text="${message}">요청을 처리하는 중에 문제가 발생했습니다.</p>
+    <a class="error-page__home-btn" th:href="@{/users/login}">로그인 페이지로 돌아가기</a>
+  </div>
+</body>
+</html>
