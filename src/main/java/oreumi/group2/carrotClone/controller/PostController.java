@@ -53,11 +53,16 @@ public class PostController {
     public String searchPost(@RequestParam(defaultValue = "0") int page,
                              @RequestParam(required = false) String keyword,
                              @RequestParam(required = false) Long category,
+                             @RequestParam(required = false) Integer priceMin,
+                             @RequestParam(required = false) Integer priceMax,
                              Model model,
                              @AuthenticationPrincipal CustomUserPrincipal principal){
         User user = null;
         if (principal != null) { user = principal.getUser(); }
         model.addAttribute("user", user);
+
+        if (priceMin == null) priceMin = 0;
+        if (priceMax == null) priceMax = Integer.MAX_VALUE;
 
         Pageable pageable = PageRequest.of(page, 8);
         Page<Post> postPage;
@@ -67,13 +72,15 @@ public class PostController {
             postPage = Page.empty(pageable);
             model.addAttribute("hasKeyword", false);
         } else {
-            postPage = postService.searchPosts(keyword, category, pageable);
+            postPage = postService.searchPosts(keyword, category, priceMin, priceMax, pageable);
             model.addAttribute("hasKeyword", keyword != null && !keyword.isBlank());
         }
         model.addAttribute("page", postPage);
         model.addAttribute("categories", categoryRepository.findAll());
         model.addAttribute("keyword", keyword);
         model.addAttribute("category", category);
+        model.addAttribute("priceMin", priceMin);
+        model.addAttribute("priceMax", priceMax == Integer.MAX_VALUE ? 0 : priceMax);
 
         return "post/post_search";
     }

@@ -215,6 +215,18 @@ body {
     justify-content: center;
 }
 
+.post-list__filter-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.post-list__filter-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
 .post-list__category-container,
 .post-list__price-container {
     width: 100%;
@@ -222,6 +234,9 @@ body {
     max-width: 242px;
     font-size: 17px;
     user-select: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 @media (max-width: 990px){
@@ -232,7 +247,7 @@ body {
 
 .post-list__filter-name {
     font-weight: 700;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .post-list_form {
@@ -251,7 +266,7 @@ body {
     appearance: none;
     width: 18px;
     height: 18px;
-    border: 1px solid #898A93;
+    border: 1px solid #DBDCE2;
     border-radius: 50%;
     margin-right: 8px;
     position: relative;
@@ -277,4 +292,84 @@ body {
 
 .post-list_form input[type="radio"]:hover {
     background: #F2F3F6;
+}
+
+.post-list__divider {
+    border: 1px solid #DBDCE2;
+    width: 90%;
+    border-width: 1px 0 0 0;
+    height: 1px;
+}
+
+#price-form button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-family: inherit;
+    background: none;
+    border: 1px solid #DBDCE2;
+    border-radius: 9999px;
+    padding: 4px 12px;
+    cursor: pointer;
+    height: 32px;
+    font-size: 14px;
+    align-self: flex-start;
+    width: auto;
+    margin: 2px 0;
+}
+
+#price-form button.selected {
+    background: black;
+    color: white;
+    border: none;
+}
+
+#custom-price-form {
+    display: flex;
+    flex-direction: column;
+    background: none;
+    gap: 2px;
+}
+
+.post-list__input-container {
+    display: flex;
+    background: none;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 2px;
+}
+
+.post-list__input-container input[type="number"]{
+    background: none;
+    border: 1px solid #DBDCE2;
+    width: 70px;
+    height: 36px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.post-list__input-container input::-webkit-inner-spin-button,
+.post-list__input-container input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+#custom-price-form span {
+    font-size: 17px;
+    color: #898A93;
+    font-family: inherit;
+}
+
+#custom-price-form button {
+    font-family: inherit;
+    font-size: 14px;
+    background: none;
+    border: none;
+    color: #898A93;
+    cursor: pointer;
+    text-decoration: underline;
+    align-self: flex-start;
+    width: auto;
 }
