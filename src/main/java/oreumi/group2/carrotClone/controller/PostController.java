@@ -81,7 +81,8 @@ public class PostController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("category", category);
         model.addAttribute("priceMin", priceMin);
-        model.addAttribute("priceMax", priceMax == Integer.MAX_VALUE ? 0 : priceMax);
+        model.addAttribute("priceMax", priceMax == Integer.MAX_VALUE ? null : priceMax);
+        model.addAttribute("priceMaxInput", priceMax == Integer.MAX_VALUE ? 0 : priceMax);
         model.addAttribute("isSold", isSold);
 
         return "post/post_search";

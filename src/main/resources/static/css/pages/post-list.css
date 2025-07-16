@@ -249,6 +249,9 @@ body {
     .post-list__filter-container {
         display: none;
     }
+    .post-list_search-result {
+        width: 80%;
+    }
 }
 
 .post-list__filter-name {

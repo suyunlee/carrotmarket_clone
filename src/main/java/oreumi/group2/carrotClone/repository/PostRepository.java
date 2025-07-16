@@ -34,8 +34,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             (:categoryId IS NULL OR p.category.id = :categoryId)
             AND
             (:priceMin = 0 OR p.price >= :priceMin)
-            AND
-            (:priceMax = 0 OR p.price <= :priceMax)
+            AND (
+                (:priceMax = 0 AND p.price = 0)
+                OR (:priceMax > 0 AND p.price <= :priceMax)
+            )
             AND
             (:isSold = false OR p.Sold = false)
             ORDER BY p.createdAt DESC
