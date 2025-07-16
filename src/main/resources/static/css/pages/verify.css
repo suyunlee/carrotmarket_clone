@@ -99,7 +99,7 @@ body {
 }
 
 
-@media (min-width: 576px){
+@media (max-width: 576px){
     .map{
         width: 300px;
     }
