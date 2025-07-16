@@ -45,8 +45,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers("/chat/**", "/ws-chat/**", "/posts"))
-                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+                        .ignoringRequestMatchers("/chat/**", "/ws-chat/**", "/posts" ))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/images/**","/css/**","/js/**","/scripts/**","/", "/posts", "/posts/**", "/users/signup", "/users",
                                 "/login", "/maps/permission", "/maps/verify", "/uploads/**").permitAll()
