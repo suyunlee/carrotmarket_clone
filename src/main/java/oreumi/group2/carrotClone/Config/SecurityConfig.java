@@ -48,7 +48,9 @@ public class SecurityConfig {
                         .ignoringRequestMatchers("/chat/**", "/ws-chat/**", "/posts"))
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/images/**","/css/**","/js/**","/scripts/**","/", "/posts", "/posts/**", "/users/signup", "/users",
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/scripts/**").permitAll()
+                        .requestMatchers("/error").permitAll()
+                        .requestMatchers("/", "/posts", "/posts/**", "/users/signup", "/users",
                                 "/login", "/maps/permission", "/maps/verify", "/uploads/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/posts/*").permitAll()
                         .anyRequest().authenticated()
