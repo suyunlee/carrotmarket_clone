@@ -19,20 +19,20 @@
             <p class="banner__sub-text--opacity50" th:utext="'동네라서 가능한 모든 것<br/> 당근에서 가까운 이웃과 함께해요.'">배너 서브텍스트</p>
             <button class="btn--store">
                 <img th:src="@{/images/icons/google_icon.svg}" alt="Google Play">
-                Google Play
+                <span class="btn--store-text">Google Play</span>
             </button>
             <button class="btn--store">
                 <img th:src="@{/images/icons/apple_icon.svg}" alt="App Store">
-                App Store
+                <span class="btn--store-text">App Store</span>
             </button>
         </div>
         <div class="banner__image-area">
-            <img th:src="@{/images/banners/main_banner1.png}" alt="배너 이미지">
+            <img class="banner__image-source" th:src="@{/images/banners/main_banner1.png}" alt="배너 이미지">
         </div>
     </section>
     <section class="home__section-banner bg--gray-000">
         <div class="banner__image-area">
-            <img th:src="@{/images/banners/main_banner2.png}" alt="배너 이미지">
+            <img class="banner__image-source" th:src="@{/images/banners/main_banner2.png}" alt="배너 이미지">
         </div>
 
         <div class="banner__text-area">
@@ -67,12 +67,12 @@
         </div>
 
         <div class="banner__image-area">
-            <img th:src="@{/images/banners/main_banner3.png}" alt="배너 이미지">
+            <img class="banner__image-source" th:src="@{/images/banners/main_banner3.png}" alt="배너 이미지">
         </div>
     </section>
     <section class="home__section-banner bg--gray-000">
         <div class="banner__image-area">
-            <img th:src="@{/images/banners/main_banner4.png}" alt="배너 이미지">
+            <img class="banner__image-source" th:src="@{/images/banners/main_banner4.png}" alt="배너 이미지">
         </div>
 
         <div class="banner__text-area">
@@ -81,32 +81,30 @@
         </div>
     </section>
     <section class="bg--gray-050">
-        <div id="listContainer">
-            <h3 id="listTitle">중고거래 인기매물</h3>
+<!--        <div id="listContainer">-->
+<!--            <h3 id="listTitle">중고거래 인기매물</h3>-->
 
-            <div th:if="${page == null || #lists.isEmpty(page.content)}" class="no-post">
-                <p>등록된 중고 매물이 없습니다.</p>
-            </div>
+<!--            <div th:if="${page == null || #lists.isEmpty(page.content)}" class="no-post">-->
+<!--                <p>등록된 중고 매물이 없습니다.</p>-->
+<!--            </div>-->
 
-            <div th:if="${page != null && !#lists.isEmpty(page.content)}" class="post-grid">
-                <div th:each="post : ${page.content}" class="post-card">
-                    <a th:href="@{/posts/{id}(id=${post?.id})}" class="post-info-link">
-                        <div class="isSoldBox" th:if="${post.sold}">판매완료</div>
-                        <img class="preview" th:if="${post.images != null and post.images.size() > 0}" th:src="@{${post.images[0].imageUrl}}" alt="첫번째 이미지">
-                        <img class="preview" th:if="${post.images == null or post.images.size() == 0}" src="https://placehold.co/210x210" alt="이미지 없음">
-                        <div class="post-info">
-                            <div class="post-title" th:text="${post?.title ?: '제목 없음'}">제목</div>
-                            <div class="post-price">
-                                <span th:text="${#numbers.formatDecimal(post?.price, 0, 'COMMA', 0, 'POINT') ?: '0'}">가격</span>원</div>
-                            <div class="post-location" th:text="${post?.location ?: '장소 없음'}"></div>
-                            <div class="post-detail">조회 <span th:text="${post?.viewCount ?: '0'}"></span> ·
-                                채팅 <span th:text="${post?.getChatRoomsCount() ?: '0'}"></span></div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-
+<!--            <div th:if="${page != null && !#lists.isEmpty(page.content)}" class="post-grid">-->
+<!--                <div th:each="post : ${page.content}" class="post-card">-->
+<!--                    <a th:href="@{/posts/{id}(id=${post?.id})}" class="post-info-link">-->
+<!--                        <div class="isSoldBox" th:if="${post.sold}">판매완료</div>-->
+<!--                        <img class="preview" th:if="${post.images != null and post.images.size() > 0}" th:src="@{${post.images[0].imageUrl}}" alt="첫번째 이미지">-->
+<!--                        <img class="preview" th:if="${post.images == null or post.images.size() == 0}" src="https://placehold.co/210x210" alt="이미지 없음">-->
+<!--                        <div class="post-info">-->
+<!--                            <div class="post-title" th:text="${post?.title ?: '제목 없음'}">제목</div>-->
+<!--                            <div class="post-price">-->
+<!--                                <span th:text="${#numbers.formatDecimal(post?.price, 0, 'COMMA', 0, 'POINT') ?: '0'}">가격</span>원</div>-->
+<!--                            <div class="post-location" th:text="${post?.location ?: '장소 없음'}"></div>-->
+<!--                            <div class="post-detail">조회 <span th:text="${post?.viewCount ?: '0'}"></span> ·-->
+<!--                                채팅 <span th:text="${post?.getChatRoomsCount() ?: '0'}"></span></div>-->
+<!--                        </div>-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--            </div>-->
     </section>
 </main>
 <footer th:replace="~{fragments/footer :: footer}"></footer>

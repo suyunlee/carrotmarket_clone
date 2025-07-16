@@ -72,3 +72,21 @@
   color: #fff;
   line-height: 100%;
 }
+
+@media (max-width: 1024px){
+    .footer__area-box{
+        width: 768px;
+    }
+}
+
+@media (max-width: 768px){
+    .footer__area-box{
+        width: 576px;
+    }
+}
+
+@media (max-width: 576px){
+    .footer__area-box{
+        width: 500px;
+    }
+}
