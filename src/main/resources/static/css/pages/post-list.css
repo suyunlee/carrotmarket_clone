@@ -1,0 +1,186 @@
+@import url("/css/shared/font.css");
+@import url("/css/shared/background.css");
+@import url("/css/shared/input.css");
+@import url("/css/shared/button.css");
+@import url("/css/shared/layout.css");
+
+
+body {
+    background-color: #FFFFFF;
+    color: #111111;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.post-list__search {
+    background-color: #F2F3F6;
+}
+
+.post-list__header-container {
+    width: 100%;
+    height: 360px;
+    background-color: #FFFAE0;
+    display: flex;
+    justify-content: center;
+}
+
+.post-list__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.post-list__header-info {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 0 40px;
+    min-width: 360px;
+}
+
+.post-list__heading-main {
+    font-size: 40px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.post-list__heading-sub {
+    font-size: 15px;
+    font-weight: 400;
+    opacity: 0.5;
+    margin: 0;
+}
+
+.post-list__banner-image {
+    width: 476px;
+    height: 360px;
+}
+
+.post-list__container,
+.post-list__container--search {
+    width: 90%;
+    max-width: 1000px;
+}
+.post-list__container--search {
+    position: absolute;
+    top: 100px;
+}
+
+.post-list__title {
+    font-size: 30px;
+    text-align: center;
+    padding: 30px;
+}
+
+.post-list__empty {
+    text-align: center;
+    color: #8D8D8D;
+    font-size: 20px;
+}
+
+.post-list__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(210px, 1fr));
+    gap: 53px;
+    margin-bottom: 40px;
+}
+
+.post-list__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.post-list__card-link {
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.post-list__card-link:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.post-list__card-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: rgba(0,0,0,0.7);
+    color: white;
+    padding: 4px 8px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    z-index: 10;
+}
+
+.post-list__card-image {
+    border-radius: 12px;
+    width: 210px;
+    height: 210px;
+    object-fit: cover;
+}
+
+.post-list__card-title {
+    font-size: 17px;
+}
+.post-list__card-price {
+    font-size: 14px;
+    font-weight: 700;
+}
+.post-list__card-location,
+.post-list__card-detail {
+    font-size: 14px;
+    color: #898A93;
+}
+.post-list__card-detail span {
+    font-size: 12px;
+}
+
+.post-list__pagination {
+    padding: 20px;
+    text-align: center;
+    color: #686971;
+    font-weight: 600;
+    font-size: 17px;
+}
+.post-list__pagination-link {
+    text-decoration: none;
+    color: inherit;
+}
+.post-list__pagination-link--disabled {
+    color: #AAABB4;
+}
+
+.post-list__fab {
+    position: fixed;
+    right: 50px;
+    bottom: 50%;
+    transform: translateY(50%);
+    width: 106px;
+    height: 106px;
+    border-radius: 50%;
+    background-color: #FF6F0E;
+    color: white;
+    text-align: center;
+    line-height: 106px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    z-index: 999;
+}
+.post-list__fab:hover {
+    background-color: #df5901;
+    transform: translateY(50%) scale(1.05);
+}
+
+
