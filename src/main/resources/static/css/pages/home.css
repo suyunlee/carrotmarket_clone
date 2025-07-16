@@ -89,6 +89,25 @@ body {
   gap: 20px;
 }
 
+.banner__posts-area {
+    width : 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.post-list__more{
+    text-align:center;
+}
+
+.post-list__hyperlink{
+    color: #111111;
+    text-decoration: underline;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 100px;
+}
+
+
 @media (max-width: 1024px){
     .home__section-banner{
         padding : 0 80px;
