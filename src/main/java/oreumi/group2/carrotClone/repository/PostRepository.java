@@ -29,12 +29,18 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("""
             SELECT p FROM Post p WHERE
-            ( (:keyword IS NULL OR :keyword = '' OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')) ) )
+            (:keyword IS NULL OR :keyword = '' OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')) )
             AND
-            ( (:categoryId IS NULL OR p.category.id = :categoryId) )
+            (:categoryId IS NULL OR p.category.id = :categoryId)
+            AND
+            (:priceMin = 0 OR p.price >= :priceMin)
+            AND
+            (:priceMax = 0 OR p.price <= :priceMax)
             ORDER BY p.createdAt DESC
             """)
     Page<Post> findByKeywordAndCategory(@Param("keyword") String keyword,
                                           @Param("categoryId") Long categoryId,
+                                          @Param("priceMin") Integer priceMin,
+                                          @Param("priceMax") Integer priceMax,
                                           Pageable pageable);
 }

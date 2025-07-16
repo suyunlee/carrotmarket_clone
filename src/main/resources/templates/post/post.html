@@ -23,7 +23,7 @@
         <p>등록된 중고 매물이 없습니다.</p>
     </div>
 
-    <div th:if="${page != null && !#lists.isEmpty(page.content)}" class="post-list__grid">
+    <div th:if="${page != null && !#lists.isEmpty(page.content)}" class="post-list__grid" id="post-grid">
         <div th:each="post : ${page.content}" class="post-list__card">
             <a th:href="@{/posts/{id}(id=${post?.id})}" class="post-list__card-link">
                 <div class="post-list__card-badge" th:if="${post.sold}">판매완료</div>

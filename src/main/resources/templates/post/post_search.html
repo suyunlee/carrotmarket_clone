@@ -10,21 +10,61 @@
     <div class="post-list_search-result">
         <div class="post-list_search-keyword">"<span th:text="${keyword}"></span>" 검색 결과</div>
         <div class="post-list__search-container">
-            <div class="post-list__category-container">
-                <div class="post-list__category-title">카테고리</div>
-                <form id="post-list__category-form" th:action="@{/posts/search}" method="get">
-                    <input type="hidden" name="keyword" th:value="${keyword}" />
-                    <div th:each="cate : ${categories}">
-                        <label><input type="radio" name="category"
-                                      class="post-list__category-radio"
-                                      th:value="${cate.id}"
-                                      th:checked="${category} == ${cate.id}">
-                            <span th:text="${cate.name}"></span>
-                        </label>
-                    </div>
+            <div class="post-list__filter-container">
+                <div class="post-list__filter-title">필터</div>
+                <form class="post-list__checkbok-form" id="checkbox-form" th:action="@{/posts/search}" method="get">
+                    <label>
+                        <input type="checkbox" id="checkbox" name="isSold" value="false" />
+                        거래 가능만 보기
+                    </label>
                 </form>
+                <hr class="post-list__divider">
+
+                <div class="post-list__category-container">
+                    <div class="post-list__filter-name">카테고리</div>
+                    <form class="post-list_form" id="category-form" th:action="@{/posts/search}" method="get">
+                        <input type="hidden" name="keyword" th:value="${keyword}" />
+                        <div th:each="cate : ${categories}">
+                            <label><input type="radio" name="category"
+                                          class="category-radio"
+                                          th:value="${cate.id}"
+                                          th:checked="${category} == ${cate.id}">
+                                <span th:text="${cate.name}"></span>
+                            </label>
+                        </div>
+                    </form>
+                </div>
+
+                <hr class="post-list__divider">
+
+                <div class="post-list__price-container">
+                    <div class="post-list__filter-name">가격</div>
+                    <form class="post-list_form" id="price-form" th:action="@{/posts/search}" method="get">
+                        <input type="hidden" name="keyword" th:value="${keyword}" />
+                        <input type="hidden" name="category" th:value="${category}" />
+                        <button type="submit" name="priceMax" value="0"
+                                th:classappend="${priceMax == -1} ? ' selected'">나눔</button>
+                        <button type="submit" name="priceMax" value="5000"
+                                th:classappend="${priceMax == 5000} ? ' selected'">5,000원 이하</button>
+                        <button type="submit" name="priceMax" value="10000"
+                                th:classappend="${priceMax == 10000} ? ' selected'">10,000원 이하</button>
+                        <button type="submit" name="priceMax" value="20000"
+                                th:classappend="${priceMax == 20000} ? ' selected'">20,000원 이하</button>
+                    </form>
+                    <form class="post-list_form" id="custom-price-form" th:action="@{/posts/search}" method="get">
+                        <input type="hidden" name="keyword" th:value="${keyword}" />
+                        <input type="hidden" name="category" th:value="${category}" />
+                        <div class="post-list__input-container">
+                            <input type="number" name="priceMin" th:value="${priceMin != null} ? ${priceMin} : 0"/>
+                            <span> - </span>
+                            <input type="number" name="priceMax" th:value="${priceMax != null} ? ${priceMax} : 0"/>
+                        </div>
+                        <button type="submit">적용하기</button>
+                    </form>
+                </div>
             </div>
             <div class="post-list__search-content">
+                <div class="post-list_search-content__filter"></div>
                 <div th:if="${hasKeyword and (page == null or #lists.isEmpty(page.content))}" class="post-list__empty">
                     <p>검색 결과가 없습니다.</p>
                 </div>
@@ -63,11 +103,14 @@
 
     <script src="/js/header.js"></script>
     <script>
-        document.querySelectorAll('.post-list__category-radio').forEach(radio => {
+        document.querySelectorAll('.category-radio').forEach(radio => {
           radio.addEventListener('change', function() {
-            document.getElementById('post-list__category-form').submit();
+            document.getElementById('category-form').submit();
           });
         });
+        document.getElementById('checkbox').addEventListener('change', () => {
+            document.getElementById('checkbox-form').submit();
+            });
     </script>
 
 </body>
