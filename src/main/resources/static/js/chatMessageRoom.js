@@ -68,28 +68,40 @@ document.addEventListener('DOMContentLoaded', () => {
         li.dataset.id     = msg.id;
         li.dataset.sender = msg.senderUsername;
 
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.innerHTML = `
+          <span>${msg.content}</span>
+        `;
+        const read = document.createElement('div');
+        read.className = 'read';
+        if(isMine){
+            read.innerHTML = msg.read
+           ? '<span class="read-badge">읽음</span>'
+           : '<span class="unread-badge">1</span>';
+        }
+
+        const timeEl = document.createElement('div');
+        timeEl.textContent = new Date(msg.createdAt)
+                          .toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+        timeEl.className = 'time';
+
         if (!isMine) {
           const av = document.createElement('div');
           av.className = 'avatar';
           av.innerHTML = msg.senderNickname;
           li.append(av);
         }
+        else{
+            li.append(read);
+            li.append(timeEl);
+        }
 
-        const bubble = document.createElement('div');
-        bubble.className = 'bubble';
-        bubble.innerHTML = `
-          <p>${msg.content}</p>
-          <span class="time">${
-            new Date(msg.createdAt)
-              .toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})
-          }</span>
-          ${isMine
-            ? (msg.read
-                ? '<span class="read-badge">읽음</span>'
-                : '<span class="unread-badge">1</span>')
-            : ''}
-        `;
         li.append(bubble);
+        if(!isMine){
+            li.append(timeEl);
+            li.append(read);
+        }
 
         chatArea.append(li);
         chatArea.scrollTop = chatArea.scrollHeight;
@@ -209,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
                      info.className = 'chat-room__info';
                      info.innerHTML = `
                        <strong>AI 챗봇</strong>
-                       <p>궁금한 내용을 물어보세요!</p>
+                       <span>궁금한 내용을 물어보세요!</span>
                      `;
                      li.append(info);
 
@@ -246,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const lastTime = document.createElement('span');
                 lastTime.className = 'chat-room__time';
 
-                who.textContent = r.nickname;
+                who.textContent = r.nickname + '  ';
                 lastTime.textContent = r.lastMessageAt
                   ? new Date(r.lastMessageAt)
                       .toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})
@@ -261,8 +273,8 @@ document.addEventListener('DOMContentLoaded', () => {
                   badge.textContent = r.unreadCount;
                   footer.append(badge);
                 }
-                const lastMsg = document.createElement('p');
-                lastMsg.textContent = r.lastMessage || '';
+                const lastMsg = document.createElement('span');
+                lastMsg.textContent = '  마지막 메세지 : ' +  r.lastMessage || '';
                 footer.append(lastMsg);
 
                 info.append(header, footer);
