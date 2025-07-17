@@ -20,6 +20,7 @@
 body {
   margin: 0;
   padding: 0;
+  flex-direction: column;
   font-family: 'Pretendard', sans-serif;
   background-color: var(--gray-light);
   display: flex;
