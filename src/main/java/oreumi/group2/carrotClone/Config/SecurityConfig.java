@@ -59,10 +59,13 @@ public class SecurityConfig {
                 .formLogin(login -> login
                         .loginPage("/users/login")
                         .loginProcessingUrl("/login") /* post */
-                        .failureUrl("/users/login?error")        // 실패 시 이동할 URL
+                        .defaultSuccessUrl("/", true)
+                        .failureHandler((request, response, exception) -> {
+                            request.setAttribute("로그인 실패하였습니다.", exception.getMessage());
+                            request.getRequestDispatcher("/error-page").forward(request, response);
+                        })      // 실패 시 출력 메세지 및 error 로 보내기
                         .usernameParameter("username")           // 아이디 필드명 지정
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/", true)
                         .permitAll()
                 )
                 .logout(logout -> logout

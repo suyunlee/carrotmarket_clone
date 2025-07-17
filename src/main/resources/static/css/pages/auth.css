@@ -1,3 +1,4 @@
+/* src/main/resources/static/css/pages/auth.css */
 @import url("/css/shared/font.css");
 @import url("/css/shared/background.css");
 @import url("/css/shared/input.css");
@@ -15,21 +16,22 @@
 * {
   box-sizing: border-box;
 }
+
 body {
   margin: 0;
   padding: 0;
   font-family: 'Pretendard', sans-serif;
   background-color: var(--gray-light);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
-/* Container */
+/* Container (mobile 기본) */
 .auth-page__container {
-  width: 400px;
-  margin: 80px auto;
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0;
+  width: 100%;
+  padding: 16px;
+  margin: 40px 0;
 }
 
 /* Form */
@@ -64,7 +66,6 @@ body {
   padding: 12px;
   border: 1px solid var(--gray-border);
   border-radius: 4px;
-  font-family: 'Poppins', sans-serif;
   font-size: 14px;
   background: var(--gray-input-bg);
 }
@@ -96,7 +97,8 @@ body {
   justify-content: center;
   padding: 0;
 }
-.auth-page__button-google-icon {
+.auth-page__button-google-icon,
+.auth-page__button-icon {
   width: 18px;
   height: 18px;
   margin-right: 8px;
@@ -118,4 +120,28 @@ body {
 .auth-page__link-anchor {
   color: var(--orange);
   text-decoration: none;
+}
+
+/* 반응형 */
+@media (min-width: 576px) {
+  .auth-page__container {
+    max-width: 450px;
+    margin: 60px auto;
+    padding: 24px;
+  }
+}
+
+@media (min-width: 768px) {
+  .auth-page__container {
+    max-width: 400px;
+    margin: 80px auto;
+    padding: 0;
+  }
+}
+
+@media (min-width: 1200px) {
+  .auth-page__container {
+    max-width: 400px;
+    margin: 120px auto;
+  }
 }
