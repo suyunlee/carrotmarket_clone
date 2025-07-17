@@ -25,5 +25,5 @@ public interface PostService {
     void increaseViewCount(Long postId); /* 조회수 */
     Page<Post> findAll(Pageable pageable);
     Page<Post> searchPosts(String keyword, Long categoryId,
-                           Integer priceMin, Integer priceMax, Pageable pageable);
+                           Integer priceMin, Integer priceMax, Boolean isSold, Pageable pageable);
 }
