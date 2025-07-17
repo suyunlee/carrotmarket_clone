@@ -6,6 +6,8 @@ import oreumi.group2.carrotClone.model.ChatMessage;
 import oreumi.group2.carrotClone.model.ChatRoom;
 import oreumi.group2.carrotClone.model.Post;
 import oreumi.group2.carrotClone.model.User;
+import oreumi.group2.carrotClone.model.enums.AuthProvider;
+import oreumi.group2.carrotClone.model.enums.UserRole;
 import oreumi.group2.carrotClone.repository.ChatMessageRepository;
 import oreumi.group2.carrotClone.repository.ChatRoomRepository;
 import oreumi.group2.carrotClone.repository.PostRepository;
@@ -90,28 +92,6 @@ public class ChatServiceImpl implements ChatRoomService, ChatMessageService {
                 .toList();
     }
 
-    /* 채팅방 업데이트 */
-    @Override
-    public ChatRoom updateChatRoom(ChatRoom chatRoom) {
-        return chatRoomRepository.findById(chatRoom.getId()).map(
-                existingRoom->{
-                    existingRoom.setMessages(chatRoom.getMessages());
-                    return chatRoomRepository.save(existingRoom);
-                }).orElseThrow(()->new EntityNotFoundException("존재하지 않는 채팅방입니다."));
-    }
-
-    /* 채팅방 삭제 */
-    @Override
-    public void deleteChatRoom(ChatRoom chatRoom) {
-        Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findById(chatRoom.getId());
-
-        if(!chatRoomOptional.isEmpty()){
-            chatRoomRepository.delete(chatRoomOptional.get());
-        }else{
-            throw new EntityNotFoundException("존재하지 않는 채팅방입니다.");
-        }
-    }
-
     /* Id 기준 채팅방 조회 */
     @Override
     public ChatRoom findChatRoomById(Long id) {
@@ -124,45 +104,32 @@ public class ChatServiceImpl implements ChatRoomService, ChatMessageService {
         }
     }
 
-    /* 특정 게시물 채팅방 조회 */
-    @Override
-    public List<ChatRoom> findChatRoomsByPostId(Long id) {
-        return chatRoomRepository.findAllByPostId(id);
-    }
-
-    /* 전체 조회 */
-    @Override
-    public List<ChatRoom> findAllChatRooms(){
-        return chatRoomRepository.findAll();
-    }
-
-    /* UserId 기준 조회 */
-    @Override
-    public List<ChatRoom> findChatRoomsByUserId(Long userId) {
-        return chatRoomRepository.findChatRoomsByUserId(userId);
-    }
-
-    /* postId , userId 기준 조회 */
-    @Override
-    public Optional<ChatRoom> findByPostIdAndUserId(Long postId, Long userId) {
-        Optional<ChatRoom> c = chatRoomRepository.findByPostIdAndUserId(postId,userId);
-
-        if(!c.isEmpty()){
-            return c;
-        }
-        else{
-            return null;
-        }
-    }
-
     /* 메세지 저장 */
     @Override
+    @Transactional
     public ChatMessage saveMessage(Long chatRoomId, String content, String username) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new RuntimeException("채팅방이 없습니다."));
 
-        User sender = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("유저가 없습니다."));
+        User sender;
+        // 2) 먼저 실제 로그인 유저인지 확인
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isPresent()) {
+            sender = userOpt.get();
+        }
+        // 3) 아니라면 챗봇 메시지로 간주해서, 챗봇 계정을 조회하거나 생성
+        else {
+            sender = userRepository.findByUsername("chatbot@naver.com")
+                    // 챗봇 계정이 없으면 새로 만들어서 저장
+                    .orElseGet(() -> {
+                        User chatbot = new User();
+                        chatbot.setUsername("chatbot@naver.com");
+                        chatbot.setPassword("qwe123@!#q");
+                        chatbot.setRole(UserRole.USER);
+                        chatbot.setNickname("chatbot");
+                        return userRepository.save(chatbot);
+                    });
+        }
 
         ChatMessage message = ChatMessage.builder()
                 .chatRoom(chatRoom)
@@ -171,8 +138,6 @@ public class ChatServiceImpl implements ChatRoomService, ChatMessageService {
                 .build();
 
         ChatMessage saved = chatMessageRepository.save(message);
-        saved.getChatRoom().getPost().getUser().getUsername();
-        saved.getChatRoom().getUser().getUsername();
         return saved;
     }
 
