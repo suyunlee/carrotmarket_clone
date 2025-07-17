@@ -41,42 +41,6 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public Optional<Post> findById(Long id) { return postRepository.findById(id); }
 
-    /* 전체 조회 */
-    @Override
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
-    }
-
-    // 제목 기반 검색
-    @Override
-    public List<Post> searchPostsByTitle(String keyword) {
-        return postRepository.findByTitleContainingIgnoreCase(keyword);
-    }
-
-    // 위치 기반 검색
-    @Override
-    public List<Post> searchPostsByLocation(String location) {
-        return postRepository.findByLocationContainingIgnoreCase(location);
-    }
-
-    // 최신순 정렬
-    @Override
-    public List<Post> getPostsSortedByNewest() {
-        return postRepository.findAllByOrderByCreatedAtDesc();
-    }
-
-    // 가격 정렬 (비싼순서 / 싼 순서)
-    @Override
-    public List<Post> getPostsSortedByPrice(boolean ascending) {
-        return ascending ? postRepository.findAllByOrderByPriceAsc() : postRepository.findAllByOrderByPriceDesc();
-    }
-
-    // 게시물 단건 조회
-    @Override
-    public Post getPostById(Long id) {
-        return postRepository.findById(id).orElse(null);
-    }
-
     // 게시물 등록
     @Override
     public Post createPost(User user, PostDTO postDTO, List<MultipartFile> files) {
