@@ -11,6 +11,7 @@ import oreumi.group2.carrotClone.model.ChatRoom;
 import oreumi.group2.carrotClone.model.User;
 import oreumi.group2.carrotClone.service.ChatMessageService;
 import oreumi.group2.carrotClone.service.ChatRoomService;
+import oreumi.group2.carrotClone.service.GeminiService;
 import oreumi.group2.carrotClone.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -34,6 +35,7 @@ public class ChatController {
     private final SimpMessagingTemplate template;
     private final ChatRoomService chatRoomService;
     private final UserService userService;
+    private final GeminiService geminiService;
 
     /* 채팅방 입장 */
     @GetMapping
@@ -110,6 +112,24 @@ public class ChatController {
         ChatMessageDTO dto = ChatMessageDTO.fromEntity(saved);
         // 같은 방 (topic) 구독자에게 메세지 전달
         template.convertAndSend("/topic/chat/" + roomId,dto);
+
+        ChatRoom room = chatRoomService.findChatRoomById(roomId);
+
+        if (room.isChatBot()) {
+            // 5) GeminiService 로 AI 답변 생성
+            String aiReplyText = geminiService.generateReply(payload.getContent());
+
+            // 6) AI 답변 저장 (username="chatbot" 으로 저장하도록 chatMessageService 구현)
+            var aiSaved = chatMessageService.saveMessage(
+                    roomId,
+                    aiReplyText,
+                    "chatbot"
+            );
+            var aiDto = ChatMessageDTO.fromEntity(aiSaved);
+
+            // 7) AI 메시지 브로드캐스트
+            template.convertAndSend("/topic/chat/" + roomId, aiDto);
+        }
     }
 
     /* 실시간 읽음 처리 */
