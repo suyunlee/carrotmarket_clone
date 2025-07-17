@@ -271,9 +271,10 @@ document.addEventListener('DOMContentLoaded', () => {
                   const badge = document.createElement('span');
                   badge.className = 'unread-badge';
                   badge.textContent = r.unreadCount;
-                  footer.append(badge);
+                  header.append(badge);
                 }
                 const lastMsg = document.createElement('span');
+                lastMsg.className = "chat-room__last-message";
                 lastMsg.textContent = '  마지막 메세지 : ' +  r.lastMessage || '';
                 footer.append(lastMsg);
 
