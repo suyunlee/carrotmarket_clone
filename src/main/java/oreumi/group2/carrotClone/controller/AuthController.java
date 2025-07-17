@@ -3,7 +3,9 @@ package oreumi.group2.carrotClone.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import oreumi.group2.carrotClone.dto.UserDTO;
+import oreumi.group2.carrotClone.security.CustomUserPrincipal;
 import oreumi.group2.carrotClone.service.UserService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,8 +22,12 @@ public class AuthController {
 
     // 회원가입 페이지 표시
     @GetMapping("/signup")
-    public String showRegister(Model model) {
-        model.addAttribute("user", new UserDTO());
+    public String showRegister(Model model,
+                               @AuthenticationPrincipal CustomUserPrincipal principal) {
+        if(principal != null){
+            return "redirect:/";
+        }
+        model.addAttribute("userDTO", new UserDTO());
         return "signup";
     }
 
@@ -44,7 +50,10 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String showLogin(){
+    public String showLogin(@AuthenticationPrincipal CustomUserPrincipal principal){
+        if(principal != null){
+            return "redirect:/";
+        }
         return "login";
     }
 }
