@@ -64,19 +64,18 @@ public class ChatController {
             model.addAttribute("postOwner",post.getUser().getUsername());
 
             if(post.getImages().size() > 0){
-                model.addAttribute("postImage", post.getImages().get(0));
-                System.out.println(post.getImages().get(0));
+                model.addAttribute("postImage", post.getImages().get(0).getImageUrl());
             }
 
         }
-
+        model.addAttribute("isChatBot", chatRoom.isChatBot());
         List<ChatMessageDTO> dtos = chatMessageService.getMessages(roomId)
                         .stream()
                         .map(ChatMessageDTO :: fromEntity)
                         .toList();
 
         model.addAttribute("messages",dtos );
-        return "ChatMessageRoom";
+        return "chat_message_room";
     }
 
     // 클라이언트가 이 엔드포인트를 구독하면 과거 메시지 전체를 반환

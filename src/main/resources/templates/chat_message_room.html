@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title th:text="'채팅방 ' + ${roomId}">채팅방</title>
-    <link rel="stylesheet" th:href="@{/css/chatMessageRoom.css}"/>
+    <link rel="stylesheet" th:href="@{/css/pages/chat-message-room.css}"/>
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}"></header>
@@ -13,7 +13,7 @@
     <div class="chat-room__container">
         <aside class="chat-room__sidebar">
             <div class="chat-room__sidebar-header">
-                <span class="chat-room__user-name" th:text="${currentUser}">내아이디</span>
+                <span class="chat-room__user-name" th:text="${user.nickname}">내아이디</span>
                 <div class="chat-room__unread">
                     <span class="chat-room__unread-label">읽지 않은 항목</span>
                     <label class="chat-room__switch">
@@ -23,13 +23,6 @@
                 </div>
             </div>
             <ul class="chat-room__list" id="chatList">
-                <li class="chat-room__item chat-room__item--active">
-                    <div class="chat-room__avatar"><img src="" alt="AI 챗봇"/></div>
-                    <div class="chat-room__info">
-                        <strong>AI 챗봇</strong>
-                        <p>궁금한 내용을 물어보세요!</p>
-                    </div>
-                </li>
             </ul>
         </aside>
 
@@ -37,12 +30,16 @@
             <div class="chat-room__product-header"
                 th:if="${post != null}">
                 <div class="chat-room__product-header-top">
-                    <span class="chat-room__partner-name" th:text="${post.user.username}">상대방아이디</span>
+                    <span class="chat-room__partner-name" th:text="${post.user.nickname}">상대방아이디</span>
                     <span class="chat-room__temperature">36.9℃</span>
                 </div>
                 <div class="chat-room__product-header-bottom">
                     <div class="chat-room__product-info">
-                        <img class="chat-room__product-thumb" th:src="${postImage != null ? postImage.imageUrl : 'https://placehold.co/210x210'}" alt="상품 이미지"/>
+                        <img class="chat-room__product-thumb"
+                             th:src="${postImage != null
+                                ? postImage
+                                : ''}"
+                             alt="상품 이미지"/>
                         <div class="chat-room__product-details">
                             <div class="chat-room__product-title" th:text="${post.title}">LG 양문형 냉장고 779L</div>
                             <div class="chat-room__product-price" th:text="${post.price} + '원'">150,000원</div>
@@ -52,16 +49,25 @@
                             class="chat-room__button--complete"
                             th:text="${post.sold} ? '거래완료' : '거래확정하기'"
                             th:disabled="${post.sold}"
-                            th:classappend="${post.sold} ? 'chat-room__button-completed'">
+                            th:classappend="${post.sold} ? 'chat-room__button--completed'">
                         거래확정하기
                     </button>
                 </div>
             </div>
 
-            <div class="chat-room__product-header"
+            <div class="chat-room__chatbot-header"
                  th:if="${post == null}">
-                <h2>AI 챗봇과 대화하기</h2>
-                <p>무엇이든 물어보세요!</p>
+                <div class="chat-room__avatar">
+                    <img th:src="@{/images/icons/chatbot_icon.svg}" alt="AI 챗봇"/>
+                </div>
+                <div class="chat-room__chatbot-info">
+                    <h2 class="chat-room__chatbot-title">
+                        AI 챗봇과 대화하기
+                    </h2>
+                    <p class="chat-room__chatbot-subtitle">
+                        무엇이든 물어보세요!
+                    </p>
+                </div>
             </div>
 
             <div class="chat-room__messages" id="chatArea"></div>

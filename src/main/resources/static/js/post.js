@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const {currentUser, postOwner, postId} = window.chatConfig || {};
-    const previewImage = document.querySelector('.previewImage');
+    const previewImage = document.querySelector('.post-form__image-preview');
     const fileInput = document.getElementById('fileInput');
-    const chatBtn = document.getElementById('chatButton');
+    const chatBtn = document.getElementById('post-detail__chat-button');
 
 
     if(previewImage && fileInput){

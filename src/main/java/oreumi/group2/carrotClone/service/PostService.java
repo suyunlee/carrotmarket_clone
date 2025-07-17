@@ -24,5 +24,6 @@ public interface PostService {
     boolean isLikedByUser(Long postId, User user); /* 좋아요 */
     void increaseViewCount(Long postId); /* 조회수 */
     Page<Post> findAll(Pageable pageable);
-    Page<Post> searchPosts(String keyword, Long categoryId, Pageable pageable);
+    Page<Post> searchPosts(String keyword, Long categoryId,
+                           Integer priceMin, Integer priceMax, Pageable pageable);
 }

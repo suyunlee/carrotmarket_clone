@@ -45,7 +45,7 @@ public class PostController {
         Page<Post> postPage = postService.findAll(pageable);
         model.addAttribute("page", postPage);
 
-        return "post";
+        return "post/post";
     }
 
     /* 검색 게시글 목록 */
@@ -53,11 +53,16 @@ public class PostController {
     public String searchPost(@RequestParam(defaultValue = "0") int page,
                              @RequestParam(required = false) String keyword,
                              @RequestParam(required = false) Long category,
+                             @RequestParam(required = false) Integer priceMin,
+                             @RequestParam(required = false) Integer priceMax,
                              Model model,
                              @AuthenticationPrincipal CustomUserPrincipal principal){
         User user = null;
         if (principal != null) { user = principal.getUser(); }
         model.addAttribute("user", user);
+
+        if (priceMin == null) priceMin = 0;
+        if (priceMax == null) priceMax = Integer.MAX_VALUE;
 
         Pageable pageable = PageRequest.of(page, 8);
         Page<Post> postPage;
@@ -67,15 +72,17 @@ public class PostController {
             postPage = Page.empty(pageable);
             model.addAttribute("hasKeyword", false);
         } else {
-            postPage = postService.searchPosts(keyword, category, pageable);
+            postPage = postService.searchPosts(keyword, category, priceMin, priceMax, pageable);
             model.addAttribute("hasKeyword", keyword != null && !keyword.isBlank());
         }
         model.addAttribute("page", postPage);
         model.addAttribute("categories", categoryRepository.findAll());
         model.addAttribute("keyword", keyword);
         model.addAttribute("category", category);
+        model.addAttribute("priceMin", priceMin);
+        model.addAttribute("priceMax", priceMax == Integer.MAX_VALUE ? 0 : priceMax);
 
-        return "post_search";
+        return "post/post_search";
     }
 
     /* 게시글 작성 폼 */
@@ -99,7 +106,7 @@ public class PostController {
         model.addAttribute("user", user);
         model.addAttribute("post", postDTO);
         model.addAttribute("categories", categoryRepository.findAll());
-        return "post_form";
+        return "post/post_form";
     }
 
     /* 게시글 등록 처리 */
@@ -166,7 +173,7 @@ public class PostController {
             model.addAttribute("isLikedByCurrentUser", false);
         }
 
-        return "post_detail";
+        return "post/post_detail";
     }
 
     /* 게시글 수정 폼 */
@@ -197,7 +204,7 @@ public class PostController {
         model.addAttribute("mode", "edit");
         model.addAttribute("categories", categoryRepository.findAll());
 
-        return "post_form";
+        return "post/post_form";
     }
 
     /* 게시글 수정 처리 */

@@ -28,9 +28,6 @@ public class User {
               message = "유효한 이메일 주소를 입력하세요.")
     private String username;
 
-//    @Column(updatable = true)
-//    private String email; // 소셜로그인한 이메일 삭제
-
     @ValidPassword
     @Column(length = 255) // nullable -> true Pattern 필요할듯
     @Pattern( regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&]).{8,}$",
@@ -40,15 +37,12 @@ public class User {
     @Column(nullable = false, length = 20) // 구글 로그인으로 인해 unique -> 삭제 채팅방 nickname(username)
     private String nickname;
 
-//    @Column(name = "phonenumber", nullable = false, length = 20)
-//    private String phoneNumber;
-
     @Column(length = 255)
     private String location;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false,updatable = false)
-    private LocalDateTime createdAt; /* 생성일자 */
+    private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)

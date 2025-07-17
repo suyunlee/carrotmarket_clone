@@ -234,7 +234,9 @@ public class PostServiceImpl implements PostService {
     /* 페이지네이션(검색) */
     @Override
     @Transactional(readOnly = true)
-    public Page<Post> searchPosts(String keyword, Long categoryId, Pageable pageable) {
-        return postRepository.findByKeywordAndCategory(keyword, categoryId, pageable);
+    public Page<Post> searchPosts(String keyword, Long categoryId,
+                                  Integer priceMin, Integer priceMax, Pageable pageable) {
+        return postRepository.findByKeywordAndCategory(keyword, categoryId,
+                priceMin, priceMax, pageable);
     }
 }
