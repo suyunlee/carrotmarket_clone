@@ -3,8 +3,6 @@ package oreumi.group2.carrotClone.service.impl;
 import com.google.genai.Client;
 import com.google.genai.types.GenerateContentConfig;
 import com.google.genai.types.GenerateContentResponse;
-import com.google.genai.types.ListModelsResponse;
-import com.google.genai.types.Model;
 import oreumi.group2.carrotClone.Config.GeminiProperties;
 import oreumi.group2.carrotClone.service.GeminiService;
 import org.springframework.stereotype.Service;
@@ -19,7 +17,6 @@ public class GeminiServiceImpl implements GeminiService {
         this.client = Client.builder()
                 .apiKey(props.getApikey())
                 .build();
-
     }
 
     @Override
