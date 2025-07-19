@@ -14,9 +14,9 @@
         <div class="post-form__product-info">
             <img class="post-form__image-preview" th:if="${post.images != null and post.images.size() > 0}"
                  th:src="${post.images[0].imageUrl}" alt="이미지 업로드"/>
-            <img class="post-form__image-preview"
+            <img class="post-form__image-preview" id="cameraImage"
                  th:if="${post.images == null or post.images.size() == 0}"
-                 src="https://placehold.co/210x210" alt="기본 이미지">
+                 src="/images/icons/camera_icon.svg" alt="기본 이미지">
             <input hidden type="file" id="fileInput" name="files" accept="image/*" multiple>
             <div class="post-form__product-group">
                 <label>글 제목</label>

@@ -119,6 +119,7 @@ body {
 }
 .post-list__image-wrapper {
     overflow: hidden;
+    background: #cbcbcb;
     border-radius: 12px;
     aspect-ratio: 1 / 1;
     width: 100%;
@@ -131,6 +132,7 @@ body {
     object-fit: cover;
     transition: transform 0.3s ease;
 }
+
 .post-list__card-link:hover .post-list__card-image {
     transform: scale(1.05);
 }

@@ -260,3 +260,7 @@ textarea::-webkit-scrollbar-thumb {
     border-radius: 5px;
     border: none;
 }
+
+#cameraImage {
+    object-fit: none
+}
