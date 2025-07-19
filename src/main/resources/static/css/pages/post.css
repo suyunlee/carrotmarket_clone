@@ -63,6 +63,10 @@ body {
     border-radius: 10px;
 }
 
+#cameraImage {
+    object-fit: none
+}
+
 .post-form__product-group {
     display: flex;
     flex-direction: column;
@@ -259,8 +263,4 @@ textarea::-webkit-scrollbar-thumb {
     background: #F2F3F6;
     border-radius: 5px;
     border: none;
-}
-
-#cameraImage {
-    object-fit: none
 }

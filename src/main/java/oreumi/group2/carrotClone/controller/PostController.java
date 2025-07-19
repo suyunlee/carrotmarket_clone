@@ -10,9 +10,7 @@ import oreumi.group2.carrotClone.repository.CategoryRepository;
 import oreumi.group2.carrotClone.repository.UserRepository;
 import oreumi.group2.carrotClone.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,15 +33,22 @@ public class PostController {
     /* 전체 게시글 목록 */
     @GetMapping
     public String showPost(@RequestParam(defaultValue = "0") int page,
+                           @RequestParam(defaultValue = "false") boolean fragment,
                            Model model,
                            @AuthenticationPrincipal CustomUserPrincipal principal){
         User user = null;
         if (principal != null) { user = principal.getUser(); }
         model.addAttribute("user", user);
 
-        Pageable pageable = PageRequest.of(page, 12);
-        Page<Post> postPage = postService.findAll(pageable);
-        model.addAttribute("page", postPage);
+        Pageable pageable = PageRequest.of(page, 12, Sort.by("createdAt").descending());
+        Slice<Post> postSlice = postService.findAllSlice(pageable);
+        model.addAttribute("page", postSlice);
+
+        System.out.println("불러온 게시물 수: { " + postSlice.getContent().size() + " }");
+
+        if(fragment) {
+            return "post/post :: postCards";
+        }
 
         return "post/post";
     }

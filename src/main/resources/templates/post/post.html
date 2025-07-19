@@ -23,7 +23,8 @@
         <p>등록된 중고 매물이 없습니다.</p>
     </div>
 
-    <div th:if="${page != null && !#lists.isEmpty(page.content)}" class="post-list__grid" id="post-grid">
+    <div th:if="${page != null && !#lists.isEmpty(page.content)}"
+         class="post-list__grid" id="post-grid" th:fragment="postCards">
         <div th:each="post : ${page.content}" class="post-list__card">
             <a th:href="@{/posts/{id}(id=${post?.id})}" class="post-list__card-link">
                 <div class="post-list__card-badge" th:if="${post.sold}">판매완료</div>
@@ -42,19 +43,10 @@
             </a>
         </div>
     </div>
-
-    <div th:if="${page != null && page.totalPages > 1}" class="post-list__pagination">
-        <a th:if="${page.hasPrevious()}" class="post-list__pagination-link--enabled"
-           th:href="@{/posts(page=${page.number-1})}">&lt;</a>
-        <span th:unless="${page.hasPrevious()}" class="post-list__pagination-link--disabled">&lt;</span>
-        <span class="current" th:text="(${page.number}+1) + ' / ' + ${page.totalPages}">페이지 1 / 1</span>
-        <a th:if="${page.hasNext()}" class="post-list__pagination-link--enabled"
-           th:href="@{/posts(page=${page.number+1})}">&gt;</a>
-        <span th:unless="${page.hasNext()}" class="post-list__pagination-link--disabled">&gt;</span>
-    </div>
 </div>
 <a th:href="@{/posts/new}" class="post-list__fab">거래글 쓰기</a>
 
+<script src="/js/post.js"></script>
 <script src="/js/header.js"></script>
 
 </body>

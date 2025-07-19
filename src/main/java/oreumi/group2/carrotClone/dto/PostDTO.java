@@ -11,9 +11,8 @@ import oreumi.group2.carrotClone.model.Image;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,10 +30,10 @@ public class PostDTO  implements Serializable {
     @NotNull(message = "가격을 입력하세요.")
     private BigDecimal price;   // 판매 가격
     private boolean sold;  // 판매 여부
-    private LocalDate createdAt;    //등록 날짜
+    private LocalDateTime createdAt;    //등록 날짜
     @NotBlank(message = "위치를 입력하세요.")
     private String location;    // 글 등록 위치
-    private Integer viewCount;  // 조회수
+    private Long viewCount;  // 조회수
     private Long userId;    // 게시글 작성 유저 아이디
     private List<Image> images;
     private Category category;

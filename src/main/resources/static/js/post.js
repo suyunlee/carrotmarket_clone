@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('fileInput');
     const chatBtn = document.getElementById('post-detail__chat-button');
 
-
+    // 이미지
     if(previewImage && fileInput){
         previewImage.addEventListener('click', () => { fileInput.click(); });
         fileInput.addEventListener('change', async () => {
@@ -12,7 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if(files.length > 0) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    previewImage.src = e.target.result; };
+                    previewImage.src = e.target.result;
+                    previewImage.style.objectFit = 'cover';
+                };
                 reader.readAsDataURL(files[0]);
 
                 const formData = new FormData();
@@ -35,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 채팅방 연결
     chatBtn.addEventListener('click', async () => {
             if (currentUser === postOwner) {
               // 판매자 모드 → 이미 있는 방이 있으면 입장, 없으면 안내
@@ -68,3 +71,43 @@ document.addEventListener('DOMContentLoaded', () => {
             }
     });
 });
+
+    // 무한스크롤
+    let page = 0;
+    const size = 12;
+    let isLoading = false;
+    let hasNext = true;
+
+    const grid = document.getElementById('post-grid');
+    const sentinel = document.createElement('div');
+    sentinel.id = 'scroll-sentinel';
+    grid.after(sentinel);
+
+    const observer = new IntersectionObserver(async (entries) => {
+        if (entries[0].isIntersecting && !isLoading && hasNext) {
+            isLoading = true;
+            page++;
+
+            try {
+                const res = await fetch(`/posts?page=${page}&fragment=true`);
+                const html = await res.text();
+
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+
+                const cards = temp.querySelectorAll('.post-list__card');
+                if(cards.length === 0) {
+                    hasNext = false;
+                    observer.unobserve(sentinel);
+                }
+
+                cards.forEach(card => grid.appendChild(card));
+            } catch (e) {
+                console.error('게시글 로딩 실패', e);
+            }
+
+            isLoading = false;
+
+        }
+    }, { threshold: 1 });
+    observer.observe(sentinel);

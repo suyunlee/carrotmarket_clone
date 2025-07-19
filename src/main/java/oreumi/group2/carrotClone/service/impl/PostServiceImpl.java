@@ -1,6 +1,7 @@
 package oreumi.group2.carrotClone.service.impl;
 
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityManager;
 import lombok.*;
 import oreumi.group2.carrotClone.dto.PostDTO;
 import oreumi.group2.carrotClone.model.*;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -240,4 +242,9 @@ public class PostServiceImpl implements PostService {
         return postRepository.findByKeywordAndCategory(keyword, categoryId,
                 priceMin, priceMax, onlyAvaliable, pageable);
     }
+
+    /* slice를 통한 무한스크롤 */
+    @Override
+    @Transactional(readOnly = true)
+    public Slice<Post> findAllSlice(Pageable pageable) { return postRepository.findAll(pageable); }
 }

@@ -5,6 +5,7 @@ import oreumi.group2.carrotClone.model.Post;
 import oreumi.group2.carrotClone.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -26,4 +27,5 @@ public interface PostService {
     Page<Post> findAll(Pageable pageable);
     Page<Post> searchPosts(String keyword, Long categoryId,
                            Integer priceMin, Integer priceMax, Boolean isSold, Pageable pageable);
+    Slice<Post> findAllSlice(Pageable pageable);
 }
