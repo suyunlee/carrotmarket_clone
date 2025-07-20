@@ -40,6 +40,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             )
             AND
             (:isSold = false OR p.Sold = false)
+            AND
+            (:dong IS NULL OR :dong = '' OR LOWER(p.location) LIKE LOWER(CONCAT('%', :dong, '%')) )
             ORDER BY p.createdAt DESC
             """)
     Page<Post> findByKeywordAndCategory(@Param("keyword") String keyword,
@@ -47,5 +49,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
                                           @Param("priceMin") Integer priceMin,
                                           @Param("priceMax") Integer priceMax,
                                           @Param("isSold") boolean isSold,
+                                          @Param("dong") String dong,
                                           Pageable pageable);
 }

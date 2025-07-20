@@ -44,8 +44,6 @@ public class PostController {
         Slice<Post> postSlice = postService.findAllSlice(pageable);
         model.addAttribute("page", postSlice);
 
-        System.out.println("불러온 게시물 수: { " + postSlice.getContent().size() + " }");
-
         if(fragment) {
             return "post/post :: postCards";
         }
@@ -61,6 +59,7 @@ public class PostController {
                              @RequestParam(required = false) Integer priceMin,
                              @RequestParam(required = false) Integer priceMax,
                              @RequestParam(required = false) Boolean isSold,
+                             @RequestParam(required = false) String dong,
                              Model model,
                              @AuthenticationPrincipal CustomUserPrincipal principal){
         User user = null;
@@ -69,24 +68,35 @@ public class PostController {
 
         String location;
         if(user == null || user.getLocation().isEmpty()) {
-            location = "충청북도 청주시 흥덕구 가경동";
+            location = "서울특별시 강서구 화곡동";
         } else {
             location = user.getLocation();
         }
+
+        if (location != null && location.contains(" ")) {
+            int spaceIndex = location.lastIndexOf(" ");
+            String guName = location.substring(0, spaceIndex);
+            model.addAttribute("guName", guName);
+        } else {
+            model.addAttribute("guName", location != null ? location : "지역 없음");
+        }
+
         String[] parts = location != null ? location.trim().split(" ") : new String[0];
-        if (parts.length >= 3) {
-            String gu = parts[0] + " " + parts[1];
+        if (parts.length >= 2) {
+            String gu = parts[parts.length - 2];
             List<String> dongList = postService.getRegionData(gu);
             model.addAttribute("dongList", dongList);
         } else {
-            model.addAttribute("dongList", Collections.emptyList());
+            model.addAttribute("dongList", null);
         }
 
-        if(parts[2] != null) {
-            String dong = parts[2];
-            model.addAttribute("selectedDong", dong);
+        if(dong == null) {
+            if(parts.length >= 2) {
+                String dongName = parts[parts.length - 1];
+                model.addAttribute("selectedDong", dongName);
+            } else model.addAttribute("selectedDong", null);
         } else {
-            model.addAttribute("selectedDong", null);
+            model.addAttribute("selectedDong", dong);
         }
 
 
@@ -101,7 +111,7 @@ public class PostController {
             postPage = Page.empty(pageable);
             model.addAttribute("hasKeyword", false);
         } else {
-            postPage = postService.searchPosts(keyword, category, priceMin, priceMax, isSold, pageable);
+            postPage = postService.searchPosts(keyword, category, priceMin, priceMax, isSold, dong, pageable);
             model.addAttribute("hasKeyword", keyword != null && !keyword.isBlank());
         }
         model.addAttribute("page", postPage);

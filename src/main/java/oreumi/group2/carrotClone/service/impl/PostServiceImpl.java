@@ -1,7 +1,6 @@
 package oreumi.group2.carrotClone.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityExistsException;
 import lombok.*;
 import oreumi.group2.carrotClone.dto.PostDTO;
@@ -15,21 +14,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,8 +33,6 @@ public class PostServiceImpl implements PostService {
     @Autowired PostRepository postRepository;
     @Autowired LikeRepository likeRepository;
     private final String FILESTORE_PATH = "C:/uploads/";
-    @Value("${publicapi.key}")
-    private String serviceKey;
 
     /* ID 기반 게시물 찾기 */
     @Override
@@ -246,10 +233,10 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public Page<Post> searchPosts(String keyword, Long categoryId,
-                                  Integer priceMin, Integer priceMax, Boolean isSold, Pageable pageable) {
+                                  Integer priceMin, Integer priceMax, Boolean isSold, String dong, Pageable pageable) {
         boolean onlyAvaliable = Boolean.TRUE.equals(isSold);
         return postRepository.findByKeywordAndCategory(keyword, categoryId,
-                priceMin, priceMax, onlyAvaliable, pageable);
+                priceMin, priceMax, onlyAvaliable, dong, pageable);
     }
 
     /* slice를 통한 무한스크롤 */
@@ -258,84 +245,54 @@ public class PostServiceImpl implements PostService {
     public Slice<Post> findAllSlice(Pageable pageable) { return postRepository.findAll(pageable); }
 
 
-    @Override
-    public List<String> getRegionData(String regionName) {
-        List<String> dongList = new ArrayList<>();
+    private final List<String> dongList = new ArrayList<>();
 
-        try{
-            int page = 1;
-            boolean hasMore = true;
+    @PostConstruct
+    public void loadDongList() {
+        try (InputStream is = getClass().getResourceAsStream("/data/dong-list.csv");
+             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
 
-            while (hasMore) {
-                StringBuilder urlBuilder = new StringBuilder("https://api.odcloud.kr/api/15063424/v1/uddi:6d7fd177-cc7d-426d-ba80-9b137edf6066");
+            if (is == null) {
+                System.err.println("CSV 파일을 찾을 수 없습니다.");
+                return;
+            }
 
-                urlBuilder.append("?" + URLEncoder.encode("page", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(page), "UTF-8"));
-                urlBuilder.append("&" + URLEncoder.encode("perPage", "UTF-8") + "=" + URLEncoder.encode("1000", "UTF-8"));
-                urlBuilder.append("&" + URLEncoder.encode("returnType", "UTF-8") + "=" + URLEncoder.encode("JSON", "UTF-8"));
-                urlBuilder.append("&" + URLEncoder.encode("serviceKey", "UTF-8") + "=" + URLEncoder.encode(serviceKey, "UTF-8"));
-
-                URL url = new URL(urlBuilder.toString());
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.setRequestProperty("Content-type", "application/json");
-
-                System.out.println("통신 결과 : ");
-                if (conn.getResponseCode() == 200) {
-                    System.out.println("성공");
-                } else {
-                    System.out.println("실패");
-                }
-
-                BufferedReader br;
-                if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
-                    br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                } else {
-                    br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-                }
-                StringBuilder sb = new StringBuilder();
-                String line;
-
-                while ((line = br.readLine()) != null) {
-                    sb.append(line);
-                }
-
-                br.close();
-                conn.disconnect();
-
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode root = mapper.readTree(sb.toString());
-                JsonNode data = root.path("data");
-
-                if (data.isEmpty()) {
-                    hasMore = false;
-                    break;
-                }
-
-
-                for (JsonNode node : data) {
-                    String sido = node.path("시도명").asText();
-                    String sigungu = node.path("시군구명").asText();
-                    String eupmyeon = node.path("읍면동명").asText();
-
-                    String fullName = sido + " " + sigungu;
-
-                    if (fullName.contains(regionName)) {
-                        if(!eupmyeon.equals("null"))
-                            dongList.add(eupmyeon);
-                        System.out.println("동이름 : " + eupmyeon);
-                    }
-                }
-                System.out.println("현재 페이지: " + page);
-                if (data.size() < 1000) {
-                    hasMore = false;
-                } else {
-                    page++;
+            String line = reader.readLine();
+            while ((line = reader.readLine()) != null) {
+                String[] tokens = line.split(",");
+                if (tokens.length >= 3) {
+                    String fullDong = tokens[1] + " " + tokens[2] + " " + tokens[3] + " " + tokens[4];
+                    dongList.add(fullDong.trim());
                 }
             }
 
-        } catch (Exception e) {
+            System.out.println("동 리스트 로딩 완료: " + dongList.size() + "개");
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        return dongList.stream().distinct().toList();
+    }
+
+    @Override
+    public List<String> getRegionData(String regionName) {
+        return dongList.stream()
+                .filter(dong -> dong.contains(regionName))
+                .map(dong -> {
+
+                    String[] parts = dong.split(" ");
+                    List<String> priorityOrder = List.of("동", "가", "읍", "면");
+
+                    for (int i = parts.length - 1; i >= 0; i--) {
+                        for (String suffix : priorityOrder) {
+                            if (parts[i].endsWith(suffix) && !parts[i].contains(regionName)) {
+                                return parts[i];
+                            }
+                        }
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
     }
 }

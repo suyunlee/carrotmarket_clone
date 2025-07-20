@@ -26,7 +26,7 @@ public interface PostService {
     void increaseViewCount(Long postId); /* 조회수 */
     Page<Post> findAll(Pageable pageable);
     Page<Post> searchPosts(String keyword, Long categoryId,
-                           Integer priceMin, Integer priceMax, Boolean isSold, Pageable pageable);
+                           Integer priceMin, Integer priceMax, Boolean isSold, String dong, Pageable pageable);
     Slice<Post> findAllSlice(Pageable pageable);
     List<String> getRegionData(String regionName);
 }

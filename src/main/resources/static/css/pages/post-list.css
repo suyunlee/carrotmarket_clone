@@ -38,7 +38,7 @@ body {
 }
 
 .post-list__heading-main {
-    font-size: 40px;
+    font-size: 36px;
     font-weight: 700;
     font-style: Bold;
     margin: 0;
@@ -65,7 +65,7 @@ body {
 }
 
 .post-list__title {
-    font-size: 30px;
+    font-size: 26px;
     text-align: center;
     padding: 30px;
 }
@@ -73,7 +73,7 @@ body {
 .post-list__empty {
     text-align: center;
     color: #8D8D8D;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .post-list__grid {
@@ -113,7 +113,7 @@ body {
     background-color: rgba(0,0,0,0.7);
     color: white;
     padding: 4px 8px;
-    font-size: 0.9rem;
+    font-size: 12px;
     border-radius: 4px;
     z-index: 10;
 }
@@ -138,7 +138,7 @@ body {
 }
 
 .post-list__card-title {
-    font-size: 17px;
+    font-size: 15px;
 }
 .post-list__card-price {
     font-size: 14px;
@@ -146,11 +146,11 @@ body {
 }
 .post-list__card-location,
 .post-list__card-detail {
-    font-size: 14px;
+    font-size: 12px;
     color: #898A93;
 }
 .post-list__card-detail span {
-    font-size: 12px;
+    font-size: 10px;
 }
 
 .post-list__pagination {
@@ -158,7 +158,7 @@ body {
     text-align: center;
     color: #686971;
     font-weight: 600;
-    font-size: 17px;
+    font-size: 15px;
 }
 .post-list__pagination a {
     text-decoration: none;
@@ -173,14 +173,14 @@ body {
     right: 50px;
     bottom: 50%;
     transform: translateY(50%);
-    width: 106px;
-    height: 106px;
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
     background-color: #FF6F0E;
     color: white;
     text-align: center;
-    line-height: 106px;
-    font-size: 16px;
+    line-height: 90px;
+    font-size: 14px;
     font-weight: bold;
     text-decoration: none;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
@@ -207,7 +207,7 @@ body {
 }
 
 .post-list_search-keyword {
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 700;
 }
 
@@ -230,17 +230,18 @@ body {
 }
 
 .post-list__filter-title {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 700;
     margin-bottom: 5px;
 }
 
 .post-list__category-container,
+.post-list__dong-container,
 .post-list__price-container {
     width: 100%;
     min-width: 199px;
     max-width: 242px;
-    font-size: 17px;
+    font-size: 15px;
     user-select: none;
     display: flex;
     flex-direction: column;
@@ -261,10 +262,45 @@ body {
     margin-bottom: 5px;
 }
 
-.post-list_form {
+.post-list_form, .post-list__dong-form {
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+.post-list__dong-form.collapsed {
+    height: 150px;
+    overflow: hidden;
+}
+
+.post-list__dong-form.expanded {
+    height: 500px;
+    overflow: auto;
+}
+
+.post-list__dong-form::-webkit-scrollbar {
+    width: 6px;
+}
+
+.post-list__dong-form::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.post-list__dong-form::-webkit-scrollbar-thumb {
+    background-color: #E5E5E5;
+    border-radius: 10px;
+    border: none;
+}
+
+.toggle-button {
+    font-family: inherit;
+    background: none;
+    border: none;
+    color: #FF6F0E;
+    cursor: pointer;
+    padding: 5px 0;
+    text-align: left;
+    text-decoration: underline;
 }
 
 .post-list_form label {
@@ -395,7 +431,7 @@ body {
 }
 
 #custom-price-form span {
-    font-size: 17px;
+    font-size: 15px;
     color: #898A93;
     font-family: inherit;
 }
