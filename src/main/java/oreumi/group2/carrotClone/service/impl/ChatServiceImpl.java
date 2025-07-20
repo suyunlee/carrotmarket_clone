@@ -6,7 +6,6 @@ import oreumi.group2.carrotClone.model.ChatMessage;
 import oreumi.group2.carrotClone.model.ChatRoom;
 import oreumi.group2.carrotClone.model.Post;
 import oreumi.group2.carrotClone.model.User;
-import oreumi.group2.carrotClone.model.enums.AuthProvider;
 import oreumi.group2.carrotClone.model.enums.UserRole;
 import oreumi.group2.carrotClone.repository.ChatMessageRepository;
 import oreumi.group2.carrotClone.repository.ChatRoomRepository;
