@@ -68,7 +68,7 @@ public class PostController {
 
         String location;
         if(user == null || user.getLocation().isEmpty()) {
-            location = "서울특별시 강서구 화곡동";
+            location = "충청북도 청주시 흥덕구 가경동";
         } else {
             location = user.getLocation();
         }
@@ -82,22 +82,20 @@ public class PostController {
         }
 
         String[] parts = location != null ? location.trim().split(" ") : new String[0];
+
+        if(dong == null && parts.length >= 2) dong = parts[parts.length - 1];
         if (parts.length >= 2) {
             String gu = parts[parts.length - 2];
-            List<String> dongList = postService.getRegionData(gu);
+            List<String> dongList = new ArrayList<>();
+            dongList.add(dong);
+            for(String dongName : postService.getRegionData(gu, dong))
+                dongList.add(dongName);
             model.addAttribute("dongList", dongList);
         } else {
             model.addAttribute("dongList", null);
         }
 
-        if(dong == null) {
-            if(parts.length >= 2) {
-                String dongName = parts[parts.length - 1];
-                model.addAttribute("selectedDong", dongName);
-            } else model.addAttribute("selectedDong", null);
-        } else {
-            model.addAttribute("selectedDong", dong);
-        }
+
 
 
         if (priceMin == null) priceMin = 0;
@@ -122,6 +120,7 @@ public class PostController {
         model.addAttribute("priceMax", priceMax == Integer.MAX_VALUE ? null : priceMax);
         model.addAttribute("priceMaxInput", priceMax == Integer.MAX_VALUE ? 0 : priceMax);
         model.addAttribute("isSold", isSold);
+        model.addAttribute("selectedDong", dong);
 
         return "post/post_search";
     }

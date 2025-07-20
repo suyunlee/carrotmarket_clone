@@ -274,7 +274,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<String> getRegionData(String regionName) {
+    public List<String> getRegionData(String regionName, String dongName) {
         return dongList.stream()
                 .filter(dong -> dong.contains(regionName))
                 .map(dong -> {
@@ -284,7 +284,8 @@ public class PostServiceImpl implements PostService {
 
                     for (int i = parts.length - 1; i >= 0; i--) {
                         for (String suffix : priorityOrder) {
-                            if (parts[i].endsWith(suffix) && !parts[i].contains(regionName)) {
+                            if (parts[i].endsWith(suffix) && !parts[i].contains(regionName)
+                                    && !parts[i].contains(dongName)) {
                                 return parts[i];
                             }
                         }
