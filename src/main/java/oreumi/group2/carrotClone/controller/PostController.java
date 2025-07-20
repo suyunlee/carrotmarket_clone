@@ -68,7 +68,7 @@ public class PostController {
 
         String location;
         if(user == null || user.getLocation().isEmpty()) {
-            location = "충청북도 청주시 흥덕구 가경동";
+            location = "서울특별시 강서구 화곡동";
         } else {
             location = user.getLocation();
         }
