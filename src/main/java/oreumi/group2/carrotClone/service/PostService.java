@@ -28,4 +28,5 @@ public interface PostService {
     Page<Post> searchPosts(String keyword, Long categoryId,
                            Integer priceMin, Integer priceMax, Boolean isSold, Pageable pageable);
     Slice<Post> findAllSlice(Pageable pageable);
+    List<String> getRegionData(String regionName);
 }

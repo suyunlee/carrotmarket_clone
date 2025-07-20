@@ -67,6 +67,29 @@ public class PostController {
         if (principal != null) { user = principal.getUser(); }
         model.addAttribute("user", user);
 
+        String location;
+        if(user == null || user.getLocation().isEmpty()) {
+            location = "충청북도 청주시 흥덕구 가경동";
+        } else {
+            location = user.getLocation();
+        }
+        String[] parts = location != null ? location.trim().split(" ") : new String[0];
+        if (parts.length >= 3) {
+            String gu = parts[0] + " " + parts[1];
+            List<String> dongList = postService.getRegionData(gu);
+            model.addAttribute("dongList", dongList);
+        } else {
+            model.addAttribute("dongList", Collections.emptyList());
+        }
+
+        if(parts[2] != null) {
+            String dong = parts[2];
+            model.addAttribute("selectedDong", dong);
+        } else {
+            model.addAttribute("selectedDong", null);
+        }
+
+
         if (priceMin == null) priceMin = 0;
         if (priceMax == null) priceMax = Integer.MAX_VALUE;
 
