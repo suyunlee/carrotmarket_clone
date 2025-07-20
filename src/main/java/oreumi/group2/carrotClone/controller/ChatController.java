@@ -110,25 +110,28 @@ public class ChatController {
         );
         // DTO 로 변환 (필터링)
         ChatMessageDTO dto = ChatMessageDTO.fromEntity(saved);
-        // 같은 방 (topic) 구독자에게 메세지 전달
         template.convertAndSend("/topic/chat/" + roomId,dto);
 
         ChatRoom room = chatRoomService.findChatRoomById(roomId);
-
         if (room.isChatBot()) {
-            // 5) GeminiService 로 AI 답변 생성
-            String aiReplyText = geminiService.generateReply(payload.getContent());
 
-            // 6) AI 답변 저장 (username="chatbot" 으로 저장하도록 chatMessageService 구현)
+            chatMessageService.markSingleRead(saved.getId());
+            ReadReceiptDTO receipt = new ReadReceiptDTO();
+            receipt.setReaderUsername("chatbot");
+            receipt.setMessageIds(List.of(saved.getId()));
+
+            template.convertAndSend("/topic/chat/"
+                    + roomId +
+                    "/read",receipt
+            );
+            String aiReplyText = geminiService.generateReply(payload.getContent());
             var aiSaved = chatMessageService.saveMessage(
                     roomId,
                     aiReplyText,
                     "chatbot"
             );
-            var aiDto = ChatMessageDTO.fromEntity(aiSaved);
-
-            // 7) AI 메시지 브로드캐스트
-            template.convertAndSend("/topic/chat/" + roomId, aiDto);
+            ChatMessageDTO aiDto = ChatMessageDTO.fromEntity(aiSaved);
+            template.convertAndSend("/topic/chat/" + roomId , aiDto);
         }
     }
 
