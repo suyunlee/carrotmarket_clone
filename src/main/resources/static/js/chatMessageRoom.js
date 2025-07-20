@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const toMark = Array.from(chatArea.children)
         .filter(el =>
             el.dataset.sender !== currentUser &&
-            !el.classList.contains('read')
+            !el.classList.contains('.unread-badge')
         )
         .map(el => +el.dataset.id);
 
@@ -57,14 +57,14 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
-  // 메시지 렌더링
+    // 메시지 렌더링
     function renderMessage(msg) {
         if (renderIds.has(msg.id)) return;
         renderIds.add(msg.id);
 
         const isMine = msg.senderUsername === currentUser;
         const li     = document.createElement('li');
-        li.className = 'message ' + (isMine ? 'buyer' : 'seller');
+        li.classList.add('message', isMine ? 'buyer' : 'seller');
         li.dataset.id     = msg.id;
         li.dataset.sender = msg.senderUsername;
 
@@ -73,18 +73,19 @@ document.addEventListener('DOMContentLoaded', () => {
         bubble.innerHTML = `
           <span>${msg.content}</span>
         `;
+
+        const timeEl = document.createElement('div');
+        timeEl.textContent = new Date(msg.createdAt)
+                      .toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+        timeEl.className = 'time';
+
         const read = document.createElement('div');
-        read.className = 'read';
         if(isMine){
+            read.className = 'read';
             read.innerHTML = msg.read
            ? '<span class="read-badge">읽음</span>'
            : '<span class="unread-badge">1</span>';
         }
-
-        const timeEl = document.createElement('div');
-        timeEl.textContent = new Date(msg.createdAt)
-                          .toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-        timeEl.className = 'time';
 
         if (!isMine) {
           const av = document.createElement('div');
@@ -102,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
             li.append(timeEl);
             li.append(read);
         }
-
         chatArea.append(li);
         chatArea.scrollTop = chatArea.scrollHeight;
     }
@@ -125,20 +125,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (readerUsername === currentUser) return;
 
         messageIds.forEach(id => {
-            const el = document.querySelector(
-              `#chatArea li[data-id='${id}']`
-            );
-            if (el &&
-                !el.classList.contains('read') &&
-                el.dataset.sender === currentUser)
-            {
-              el.classList.add('read');
-              const ub = el.querySelector('.unread-badge');
-              if (ub) ub.remove();
-              const rb = document.createElement('span');
-              rb.className = 'read-badge';
-              rb.textContent = '읽음';
-              el.querySelector('.bubble').append(rb);
+            const el = document.querySelector(`li[data-id='${id}']`);
+            if (el && el.dataset.sender === currentUser){
+                const status = el.querySelector('.read');
+                if (status) {
+                  status.innerHTML = '<span class="read-badge">읽음</span>';
+                }
             }
         });
     });
