@@ -9,7 +9,7 @@
     <header th:replace="~{fragments/header :: header}"></header>
     <div class="post-list_search-result">
         <div class="post-list_search-keyword"
-             th:text="${keyword != null ? '“' + keyword + '” 검색 결과' : guName + ' ' + selectedDong + ' 중고거래'}">
+             th:text="${(keyword != null and keyword != '') ? '“' + keyword + '” 검색 결과' : guName + ' ' + selectedDong + ' 중고거래'}">
         </div>
         <div class="post-list__search-container">
             <div class="post-list__filter-container">
