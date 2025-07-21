@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 채팅방 연결
+    if(chatBtn){
     chatBtn.addEventListener('click', async () => {
             if (currentUser === postOwner) {
               // 판매자 모드 → 이미 있는 방이 있으면 입장, 없으면 안내
@@ -70,7 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
               location.href = `/chat/room/${dto.id}?username=${encodeURIComponent(currentUser)}`;
             }
     });
+    }
 });
+
 
     // 무한스크롤
     let page = 0;
