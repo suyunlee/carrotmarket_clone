@@ -23,6 +23,19 @@ public class Image {
     @Column(nullable = false,name = "url")
     private String imageUrl; /* 이미지 url  */
 
+    @Column(nullable = false, name = "s3_key")
+    private String s3Key; /* S3에서의 파일 키 */
+
+    @Column(nullable = false, name = "original_filename")
+    private String originalFilename;
+
+    public Image(Post post, String imageUrl, String s3Key, String originalFilename) {
+        this.post = post;
+        this.imageUrl = imageUrl;
+        this.s3Key = s3Key;
+        this.originalFilename = originalFilename;
+    }
+
     //ToString 무한 순환참조 방지
     @Override
     public String toString(){
