@@ -47,6 +47,7 @@
                     </div>
                     <button id="confirm-btn"
                             class="chat-room__button--complete"
+                            th:if="${currentUser == postOwner or post.sold}"
                             th:text="${post.sold} ? '거래완료' : '거래확정하기'"
                             th:disabled="${post.sold}"
                             th:classappend="${post.sold} ? 'chat-room__button--completed'">
