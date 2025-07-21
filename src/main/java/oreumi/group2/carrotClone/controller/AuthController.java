@@ -28,7 +28,7 @@ public class AuthController {
             return "redirect:/";
         }
         model.addAttribute("userDTO", new UserDTO());
-        return "signup";
+        return "auth/signup";
     }
 
     // 회원가입 처리
@@ -38,12 +38,12 @@ public class AuthController {
 
         if (userService.findByUsername(userDTO.getUsername()).isPresent()) {
             model.addAttribute("usernameError", "이미 존재하는 이메일입니다.");
-            return "signup";
+            return "auth/signup";
         }
 
         if (userDTO.getPassword().length() <= 2) {
             model.addAttribute("passwordError", "비밀번호는 3자리 이상이어야 합니다.");
-            return "signup";
+            return "auth/signup";
         }
         userService.register(userDTO);
         return "redirect:/users/login"; // 로그인 페이지로 이동
@@ -54,6 +54,6 @@ public class AuthController {
         if(principal != null){
             return "redirect:/";
         }
-        return "login";
+        return "auth/login";
     }
 }

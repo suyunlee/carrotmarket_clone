@@ -17,6 +17,6 @@ public class ErrorHandler {
         System.out.println(status);
 
         model.addAttribute("message", "오류가 발생했습니다. " + ex.getMessage());
-        return "error-page";
+        return "error/error-page";
     }
 }
