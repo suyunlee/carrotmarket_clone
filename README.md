@@ -33,14 +33,34 @@
 # 📁 디렉토리 구조
 
   ```
-oreumi.group2.carrotClone
-├── config
-├── controller
-├── dto
-├── model
-├── repository
-├── service
-└── util
+carrotmarket-clone/
+├── 📦 oreumi.group2.carrotClone/
+│   ├── ⚙️  Config/            # 설정 클래스 (Security, Web 등)
+│   ├── 🧭 controller/        # 웹 요청 처리 컨트롤러
+│   ├── 📨 dto/               # DTO (데이터 전송 객체)
+│   ├── ❌ error/             # 예외 처리 관련 클래스
+│   ├── 🧩 model/             # JPA 엔티티 및 도메인 모델
+│   ├── 🗂️  repository/        # JPA 리포지토리
+│   ├── 🔐 security/          # 인증/인가 로직
+│   ├── 🧠 service/           # 비즈니스 로직 처리
+│   ├── ✅ validation/        # 커스텀 검증
+│   └── 🚀 CarrotCloneApplication.java  # 메인 실행 클래스
+
+├── 📁 resources/
+│   ├── 📂 data/              # 초기 데이터 또는 테스트 파일
+│   ├── 🌐 static/            # 정적 자원 (브라우저에서 직접 접근)
+│   │   ├── 🎨 css/           # 스타일시트
+│   │   ├── 🖼️ images/        # 이미지 파일
+│   │   └── ⚙️ js/            # 자바스크립트
+│   └── 📄 templates/         # Thymeleaf 템플릿
+│       ├── 🔐 auth/          # 로그인/회원가입 등 인증 관련 뷰
+│       ├── 💬 chat/          # 채팅방 관련 뷰
+│       ├── ❌ error/         # 에러 페이지
+│       ├── 🧩 fragments/     # 공통 레이아웃 (header/footer 등)
+│       ├── 📍 location/      # 위치 인증 관련 뷰
+│       ├── 📝 post/          # 게시글 관련 뷰
+│       └── 🏠 home.html       # 홈 화면 뷰 (루트 페이지)
+
 ```
 
 
