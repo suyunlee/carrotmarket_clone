@@ -68,5 +68,33 @@ carrotmarket-clone/
 
 ## 🗺️ ERD 이미지
 
-![carrotERD (1)](https://github.com/user-attachments/assets/fc6c611c-43f2-4f64-a58a-56ccd93c45e8)
+<img width="1516" height="484" alt="image" src="https://github.com/user-attachments/assets/a7810241-a469-4dde-9ae3-686a2c4144c5" />
 
+## 🗏 페이지 구성
+
+### 메인 페이지
+<img width="1626" height="932" alt="image" src="https://github.com/user-attachments/assets/c8e49a05-22b0-48f9-9b02-35c027d91248" />
+<img width="1006" height="279" alt="image" src="https://github.com/user-attachments/assets/c29661b6-db48-4efc-b631-bcd7985cd569" />
+
+
+- 메인 담당자 : 노윤표
+- 주요 개발 기능 : 페이지 Flex 및 반응형 구성, 헤더 푸터(공통 페이지) 구현
+
+---
+
+### 로그인 / 회원 가입 페이지
+<img width="402" height="373" alt="image" src="https://github.com/user-attachments/assets/3b802cfe-367e-4ea0-a408-c35799b25b9a" />
+<img width="372" height="411" alt="image" src="https://github.com/user-attachments/assets/646458ab-2c5f-4230-9b80-decccbc306c4" />
+
+- 메인 담당자 : 허준
+- 주요 개발 기능 : 로그인 / 가입 폼 처리, FilterChain을 사용한 인증 / 인가 처리, 소셜 로그인(구글) 연동
+
+---
+
+### 게시물 페이지 (리스트 / 등록 / 상세 페이지)
+<img width="1007" height="913" alt="image" src="https://github.com/user-attachments/assets/c933b1c4-1981-4755-af91-f645e7dd299a" />
+<img width="921" height="602" alt="image" src="https://github.com/user-attachments/assets/0e006d3c-5c8c-4145-901c-510c6f71b8f5" />
+<img width="1007" height="713" alt="image" src="https://github.com/user-attachments/assets/3342672f-c0aa-4082-8779-eb8d6c2b6552" />
+
+- 메인 담당자 : 이수윤
+- 주요 개발 기능 : 게시물 페이지네이션(무한 스크롤), AWS S3 이미지 업로딩, 게시물 리스트 그리드 및 반응형 구성
