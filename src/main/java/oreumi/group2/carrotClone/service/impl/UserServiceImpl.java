@@ -66,18 +66,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username);
     }
 
-    /* nickname 기준으로 조회 */
-    @Override
-    public Optional<User> findByNickname(String nickname) {
-        return userRepository.findByNickname(nickname);
-    }
-
-    /* id 기준 user 조회 */
-    @Override
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
-    }
-
     /* 유저 정보 업데이트 */
     @Override
     public User updateUser(User user) {
@@ -93,34 +81,5 @@ public class UserServiceImpl implements UserService {
         exiting.setRole(user.getRole());
 
         return userRepository.save(user);
-    }
-
-    /* id 기준 위치 조회 */
-    @Override
-    public String getLocation(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new EntityExistsException("해당 유저는 존재하지 않습니다"))
-                .getLocation();
-    }
-
-    /* id 기준 유저 삭제 */
-    @Override
-    public void deleteUser(Long id) {
-        if(userRepository.findById(id) == null){
-            throw new EntityExistsException("해당 유저는 존재하지않습니다.");
-        }
-        userRepository.deleteById(id);
-    }
-
-    /* 전체 조회 */
-    @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    /* 소셜 로그인 */
-    @Override
-    public Optional<User> findByProviderAndProviderId(AuthProvider provider, String providerId) {
-        return userRepository.findByProviderAndProviderId(provider,providerId);
     }
 }

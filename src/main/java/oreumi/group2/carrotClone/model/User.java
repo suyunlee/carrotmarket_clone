@@ -24,17 +24,16 @@ public class User {
     private Long id;
 
     @Column(unique = true, nullable = false, length = 255)
-    @Pattern( regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
               message = "유효한 이메일 주소를 입력하세요.")
     private String username;
 
     @ValidPassword
-    @Column(length = 255) // nullable -> true Pattern 필요할듯
-    @Pattern( regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&]).{8,}$",
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&]).{8,}$",
                 message = "유효한 비밀번호를 입력하세요.")
     private String password;
 
-    @Column(nullable = false, length = 20) // 구글 로그인으로 인해 unique -> 삭제 채팅방 nickname(username)
+    @Column(nullable = false, length = 20)
     private String nickname;
 
     @Column(length = 255)
