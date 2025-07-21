@@ -112,5 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
             isLoading = false;
 
         }
-    }, { threshold: 1 });
+    }, { threshold: 1,
+         rootMargin: '100px'});
     observer.observe(sentinel);
