@@ -29,7 +29,7 @@
             <a th:href="@{/posts/{id}(id=${post?.id})}" class="post-list__card-link">
                 <div class="post-list__card-badge" th:if="${post.sold}">판매완료</div>
                 <div class="post-list__image-wrapper">
-                    <img class="post-list__card-image" th:if="${post.images != null and post.images.size() > 0}" th:src="@{${post.images[0].imageUrl}}" alt="첫번째 이미지">
+                    <img class="post-list__card-image" th:if="${post.images != null and post.images.size() > 0}" th:src="${post.images[0].imageUrl}" alt="첫번째 이미지">
                     <div class="post-list__card-image" th:if="${post.images == null or post.images.size() == 0}"></div>
                 </div>
                 <div class="post-list__card-info">

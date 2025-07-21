@@ -8,20 +8,17 @@ import oreumi.group2.carrotClone.model.*;
 import oreumi.group2.carrotClone.repository.LikeRepository;
 import oreumi.group2.carrotClone.repository.PostRepository;
 import oreumi.group2.carrotClone.service.PostService;
+import oreumi.group2.carrotClone.service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 @Service
@@ -32,7 +29,7 @@ public class PostServiceImpl implements PostService {
     /* DI */
     @Autowired PostRepository postRepository;
     @Autowired LikeRepository likeRepository;
-    private final String FILESTORE_PATH = "C:/uploads/";
+    @Autowired S3Service s3Service;
 
     /* ID 기반 게시물 찾기 */
     @Override
@@ -53,12 +50,14 @@ public class PostServiceImpl implements PostService {
                 files.stream().anyMatch(file -> !file.isEmpty())) {
             List<Image> imageList = new ArrayList<>();
             for (MultipartFile file : files) {
-                String fileurl = storeAndGetFileUrl(file);
-                Image image = new Image();
-                image.setImageUrl(fileurl);
-                image.setPost(p);
-
-                imageList.add(image);
+                try {
+                    String fileUrl = s3Service.uploadFile(file);
+                    String s3Key = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+                    Image image = new Image(p, fileUrl, s3Key, file.getOriginalFilename());
+                    imageList.add(image);
+                    } catch (IOException e) {
+                        throw new RuntimeException("파일 업로드 중 오류 발생", e);
+                    }
             }
             p.setImages(imageList);
         }
@@ -94,12 +93,14 @@ public class PostServiceImpl implements PostService {
                         existingPost.getImages().clear();
                         List<Image> imageList = new ArrayList<>();
                         for (MultipartFile file : files) {
-                            String fileurl = storeAndGetFileUrl(file);
-                            Image image = new Image();
-                            image.setImageUrl(fileurl);
-                            image.setPost(existingPost);
-
-                            imageList.add(image);
+                            try {
+                                String fileUrl = s3Service.uploadFile(file);
+                                String s3Key = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+                                Image image = new Image(existingPost, fileUrl, s3Key, file.getOriginalFilename());
+                                imageList.add(image);
+                            } catch (IOException e) {
+                                throw new RuntimeException("파일 업로드 중 오류 발생", e);
+                            }
                         }
                         existingPost.getImages().addAll(imageList);
                     }
@@ -108,60 +109,14 @@ public class PostServiceImpl implements PostService {
                 }).orElseThrow(() -> new EntityExistsException("존재하지않는 게시물입니다."));
     }
 
-    /* 이미지 확장자 리턴 메소드 */
-    private String getFileType(MultipartFile multipartFile) {
-        String contentType = multipartFile.getContentType();
-        if (contentType != null) {
-            MediaType mediaType = MediaType.parseMediaType(contentType);
-            switch (mediaType.toString()) {
-                case MediaType.IMAGE_JPEG_VALUE -> { return ".jpeg"; }
-                case MediaType.IMAGE_PNG_VALUE -> { return ".png"; }
-            }
-        }
-        return "";
-    }
-
-    /* 이미지 저장 */
-    @SneakyThrows
-    public String storeAndGetFileUrl(MultipartFile multipartFile) {
-        if(getFileType(multipartFile).contentEquals("")) {
-            throw new IllegalArgumentException("허용되지 않은 이미지 파일 타입입니다.");
-        }
-
-        String originalFilename = multipartFile.getOriginalFilename();
-        String storeFilename = UUID.randomUUID() + "_" + originalFilename;
-        File file = new File(FILESTORE_PATH + storeFilename);
-        File parentDir = file.getParentFile();
-        if (!parentDir.exists()) {
-            if (!parentDir.mkdirs()) {
-                throw new IOException("폴더 만들기 실패");
-            }
-        }
-
-        try {
-            multipartFile.transferTo(file);
-        } catch (IOException e) {
-            throw new RuntimeException("파일 저장 실패", e);
-        }
-
-        return "/uploads/" + storeFilename;
-    }
-
     /* 이미지 삭제 */
     public void deleteImages(Long postId){
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
         List<Image> images = post.getImages();
-
         for (Image image : images) {
-            Path filePath = Paths.get("C:" + image.getImageUrl());
-            try {
-                Files.deleteIfExists(filePath);
-            } catch (IOException e) {
-                System.out.println("파일 삭제 실패: " + filePath);
-                e.printStackTrace();
-            }
+            s3Service.deleteFile(image.getS3Key());
         }
     }
 
