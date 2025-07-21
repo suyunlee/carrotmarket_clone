@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 avatar.className = 'chat-room__avatar';
                 const thumb = document.createElement('img');
 
-                thumb.src = r.postImageUrl || '';
+                thumb.src = r.postImageUrl || `/images/banners/main_banner1.png`;
                 thumb.alt = '상품 썸네일';
                 avatar.appendChild(thumb);
                 li.appendChild(avatar);
