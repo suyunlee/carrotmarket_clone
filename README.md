@@ -73,8 +73,8 @@ carrotmarket-clone/
 ## 🗏 페이지 구성
 
 ### 메인 페이지
-<img width="1626" height="932" alt="image" src="https://github.com/user-attachments/assets/c8e49a05-22b0-48f9-9b02-35c027d91248" />
-<img width="1006" height="279" alt="image" src="https://github.com/user-attachments/assets/c29661b6-db48-4efc-b631-bcd7985cd569" />
+<img width="450" height="450" alt="image" src="https://github.com/user-attachments/assets/c8e49a05-22b0-48f9-9b02-35c027d91248" />
+<img width="450" height="279" alt="image" src="https://github.com/user-attachments/assets/c29661b6-db48-4efc-b631-bcd7985cd569" />
 
 
 - 메인 담당자 : 노윤표
@@ -92,9 +92,28 @@ carrotmarket-clone/
 ---
 
 ### 게시물 페이지 (리스트 / 등록 / 상세 페이지)
-<img width="1007" height="913" alt="image" src="https://github.com/user-attachments/assets/c933b1c4-1981-4755-af91-f645e7dd299a" />
-<img width="921" height="602" alt="image" src="https://github.com/user-attachments/assets/0e006d3c-5c8c-4145-901c-510c6f71b8f5" />
-<img width="1007" height="713" alt="image" src="https://github.com/user-attachments/assets/3342672f-c0aa-4082-8779-eb8d6c2b6552" />
+<img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/c933b1c4-1981-4755-af91-f645e7dd299a" />
+<img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/0e006d3c-5c8c-4145-901c-510c6f71b8f5" />
+<img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/3342672f-c0aa-4082-8779-eb8d6c2b6552" />
 
 - 메인 담당자 : 이수윤
 - 주요 개발 기능 : 게시물 페이지네이션(무한 스크롤), AWS S3 이미지 업로딩, 게시물 리스트 그리드 및 반응형 구성
+
+---
+
+### 동네 인증 페이지
+<img width="450" height="450" alt="image" src="https://github.com/user-attachments/assets/44dda113-e675-44d8-8c3a-2b8f54d0d59a" />
+<img width="450" height="450" alt="image" src="https://github.com/user-attachments/assets/a367962a-60f6-4fab-b203-c28e3309629a" />
+
+- 메인 담당자 : 노윤표
+- 주요 개발 기능 : Google Map API 연동, 장소 기반 검색(Google Places), 좌표 거리 계산(Geocoding API) 구현
+
+---
+
+### 채팅 페이지
+<img width="450" height="450" alt="image" src="https://github.com/user-attachments/assets/f26bb9ee-227b-4391-ac8b-e2de4b18c0c0" />
+<img width="450" height="450" alt="image" src="https://github.com/user-attachments/assets/784ddfce-2856-497e-8776-a3259bf09652" />
+
+
+- 메인 담당자 : 최수호
+- Web Socket 기반 1:1 실시간 채팅 기능 구현, Gemini Ai 챗봇 기능 구현
