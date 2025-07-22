@@ -1,0 +1,106 @@
+@import url("/css/shared/font.css");
+@import url("/css/shared/background.css");
+@import url("/css/shared/input.css");
+@import url("/css/shared/button.css");
+
+.header__btn--login {
+  width: 98px;
+  height: 39px;
+  border-radius: 6px;
+  border: 1px solid #DBDCE2;
+  text-align: center;
+  line-height: 39px;
+  text-decoration: none;
+  color: #111111;
+  font-size: 17px;
+  font-weight: 400;
+  background-color: #fff;
+}
+.header__btn--login:hover {
+  border-color: #FF6F0E;
+  color: #FF6F0E;
+}
+
+.header__btn--left {
+  display: flex;
+  height: 100%;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 43px;
+  text-decoration: none;
+  color: #525359;
+}
+.header__btn--left:hover {
+  color: #FF6F0E;
+}
+
+.header__area {
+  display: flex;
+  justify-content: space-between;
+  height: 60px;
+  width: 100%;
+  padding: 7px 120px;
+  box-sizing: border-box;
+}
+
+.header__left {
+  display: flex;
+  gap: 68px;
+  height: 34px;
+}
+
+.header__left-menu {
+  display: flex;
+  width: 200px;
+  height: 23px;
+  gap: 31px;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 100%;
+  text-decoration: none;
+  color: #525359;
+}
+
+.header__right {
+  display: flex;
+  gap: 10px;
+}
+
+@media (max-width: 1024px){
+    .header__left-menu {
+        display:none;
+    }
+}
+
+
+@media (max-width: 768px){
+  .header__area {
+    padding: 10px 24px;
+    gap: 10px;
+  }
+
+  .header__btn--login {
+    width: 90px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 576px){
+  .header__area {
+    padding: 10px 24px;
+    gap: 10px;
+  }
+
+  .header__btn--login {
+    width: 90px;
+    font-size: 15px;
+  }
+
+  .header__btn--login{
+    display: none;
+  }
+
+  .header__btn--login{
+    display: none;
+  }
+}

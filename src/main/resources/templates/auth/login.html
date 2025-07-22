@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>로그인 | 당근마켓 클론</title>
+    <link rel="stylesheet" th:href="@{/css/pages/auth.css}" />
+</head>
+<body class="font--pretendard">
+<header th:replace="~{fragments/header :: header}"></header>
+<div class="auth-page__container">
+    <div class="auth-page__logo">
+        <img th:src="@{/images/icons/header_icon.svg}"
+             alt="당근마켓 로고"
+             class="auth-page__logo-icon" />
+    </div>
+
+    <div th:if="${param.error}"
+         class="auth-page__error">
+        로그인 정보가 올바르지 않습니다.
+    </div>
+
+    <form id="loginForm"
+          th:action="@{/login}"
+          method="post"
+          class="auth-page__form"
+          novalidate>
+        <!-- EMAIL -->
+        <div class="auth-page__form-group">
+            <label for="username"
+                   class="auth-page__form-group-label">
+                이메일
+            </label>
+            <input type="text"
+                   id="username"
+                   name="username"
+                   placeholder="이메일 입력"
+                   required
+                   class="auth-page__form-group-input" />
+            <div id="loginUserError"
+                 class="auth-page__error"></div>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="auth-page__form-group">
+            <label for="password"
+                   class="auth-page__form-group-label">
+                비밀번호
+            </label>
+            <input type="password"
+                   id="password"
+                   name="password"
+                   placeholder="비밀번호 입력"
+                   required
+                   class="auth-page__form-group-input" />
+            <div id="loginPwError"
+                 class="auth-page__error"></div>
+        </div>
+
+        <!-- PRIMARY LOGIN BUTTON -->
+        <button type="submit"
+                class="auth-page__button auth-page__button--primary">
+            로그인
+        </button>
+
+        <!-- GOOGLE LOGIN BUTTON -->
+        <button type="button"
+                class="auth-page__button auth-page__button--google"
+                onclick="location.href='/oauth2/authorization/google'">
+            <img th:src="@{/images/icons/google_color_icon.svg}"
+                 alt="Google 로고"
+                 class="auth-page__button-icon" />
+            Google로 로그인
+        </button>
+
+        <!-- SIGNUP LINK -->
+        <p class="auth-page__link">
+            당근마켓 회원이 아니신가요?
+            <a th:href="@{/users/signup}"
+               class="auth-page__link-anchor">
+                회원가입
+            </a>
+        </p>
+    </form>
+</div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      let valid = true;
+      const emailPat = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+      // 이메일 검증
+      const email = this.username.value.trim();
+      const emailErrEl = document.getElementById('loginUserError');
+      if (!emailPat.test(email)) {
+        emailErrEl.textContent = '유효한 이메일을 입력해주세요.';
+        valid = false;
+      } else {
+        emailErrEl.textContent = '';
+      }
+
+      // 비밀번호 길이 검증
+      const pw = this.password.value;
+      const pwErrEl = document.getElementById('loginPwError');
+      if (pw.length < 8) {
+        pwErrEl.textContent = '비밀번호는 최소 8자 이상이어야 합니다.';
+        valid = false;
+      } else {
+        pwErrEl.textContent = '';
+      }
+
+      if (!valid) e.preventDefault();
+    });
+</script>
+<script src="/js/header.js"></script>
+</body>
+</html>
+
+
+
+

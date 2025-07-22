@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시물 상세 페이지</title>
+    <link rel="stylesheet" href="/css/pages/post.css">
+</head>
+<body class="font--pretendard">
+<div th:if="${error}"> <script> alert('[[${error}]]'); </script> </div>
+
+    <header th:replace="~{fragments/header :: header}"></header>
+    <div id="post-detail" class="post--container">
+        <div class="post-detail__back">
+            <img src="/images/icons/leftarrow_icon.svg" alt="목록보기 화살표" class="post-detail__back-icon">
+            <a th:href="@{/posts}" class="post-detail__back-link">목록보기</a>
+        </div>
+        <div class="post-detail__content">
+
+            <div class="post-detail__image-view">
+                <img th:if="${post.images != null and post.images.size() > 0}" th:src="@{${post.images[0].imageUrl}}" alt="첫번째 이미지">
+                <div th:if="${post.images == null or post.images.size() == 0}"></div>
+            </div>
+
+            <div class="post-detail__user">
+                <div class="post-detail__user-info">
+                    <div class="post-detail__user-nickname" th:text="${post != null and post.user != null ? post.user.nickname : '아이디' }"></div>
+                    <div class="post-detail__user-location" th:text="${post != null and post.user != null ? post.user.location : '부평 1동'}"></div>
+                </div>
+                <button class="button--primary" id="post-detail__chat-button" th:data-post-id="${post.id}"
+                        th:attr="disabled=${user == null or post.sold}">채팅하기</button>
+            </div>
+
+            <hr class="post-detail__divider">
+
+            <div class="post-detail__info">
+                <div class="post-detail__info-header">
+                    <div class="post-detail__info-title" th:text="${post != null ? post.title : '글 제목 입니다.'}"></div>
+                    <div class="post-detail__info-price"><span th:text="${post != null ? #numbers.formatDecimal(post.price, 0, 'COMMA', 0, 'POINT') : '50,000'}"></span> 원</div>
+                </div>
+                <div class="post-detail__info-count">
+                    <div>조회 <span th:text="${post != null ? post.viewCount : '0'}"></span>
+                        | 채팅 <span th:text="${chatCount != null ? chatCount : '0'}"></span></div>
+                </div>
+            </div>
+
+            <pre class="post-detail__info-description" th:text="${post != null ? post.description : '글 내용입니다.'}"></pre>
+
+            <div class="post-detail__info-location">희망 거래장소 | <span th:text="${post != null ? post.location : '부평역 1번출구'}"></span></div>
+
+            <div class="post-detail__actions" th:if="${user?.id == post.user.id}">
+                <div class="post-detail__actions-button">
+                    <form th:action="@{/posts/{id}(id=${post.id})}" method="post">
+                        <input type="submit" class="post-detail__action-btn--delete" value="삭제하기" onclick="return confirm('삭제하시겠습니까?');">
+                    </form>
+                    <div id="vertical">|</div>
+                    <a th:href="@{/posts/{id}/edit(id=${post.id})}" class="post-detail__action-btn--update">수정하기</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+           window.chatConfig = {
+              currentUser : /*[[${user != null ? user.username : 'anonymous'}]]*/,
+              postOwner   : /*[[${post != null && post.user != null ? post.user.username : ''}]]*/,
+              postId      : /*[[${post != null ? post.id : 0}]]*/
+          };
+        /*]]>*/
+    </script>
+    <script src="/js/header.js"></script>
+    <script src="/js/post.js"></script>
+
+</body>
+</html>

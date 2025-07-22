@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>거래 매물 검색</title>
+    <link rel="stylesheet" href="/css/pages/post-list.css">
+</head>
+<body class="font--pretendard" id="post-list__search">
+    <header th:replace="~{fragments/header :: header}"></header>
+    <div class="post-list_search-result">
+        <div class="post-list_search-keyword"
+             th:text="${(keyword != null and keyword != '') ? '“' + keyword + '” 검색 결과' : guName + ' ' + selectedDong + ' 중고거래'}">
+        </div>
+        <div class="post-list__search-container">
+            <div class="post-list__filter-container">
+                <div class="post-list__filter__title-container">
+                    <div class="post-list__filter-title">필터</div>
+                    <a href="/posts/search" class="post-list__filter-reset">초기화</a>
+                </div>
+                <form class="post-list__checkbox-form" id="checkbox-form" th:action="@{/posts/search}" method="get">
+                    <input type="hidden" name="dong" th:value="${selectedDong}" />
+                    <input type="hidden" name="keyword" th:value="${keyword}" />
+                    <input type="hidden" name="category" th:value="${category}" />
+                    <input type="hidden" name="priceMin" th:value="${priceMin}" />
+                    <input type="hidden" name="priceMax" th:value="${priceMax}" />
+                    <label>
+                        <input type="checkbox" id="checkbox" name="isSold" value="true"
+                            th:checked="${isSold} ? 'checked': null">
+                        거래 가능만 보기
+                    </label>
+                </form>
+
+                <hr class="post-list__divider">
+
+                <div class="post-list__dong-container">
+                    <div class="post-list__filter-name">위치</div>
+                    <form class="post-list_form" id="dong-form" th:action="@{/posts/search}" method="get">
+                        <label th:text="${guName}"></label>
+                        <div class="post-list__dong-form collapsed" id="dong-list">
+                            <input type="hidden" name="isSold" th:value="${isSold}" />
+                            <input type="hidden" name="keyword" th:value="${keyword}" />
+                            <input type="hidden" name="category" th:value="${category}" />
+                            <input type="hidden" name="priceMin" th:value="${priceMin}" />
+                            <input type="hidden" name="priceMax" th:value="${priceMax}" />
+
+                            <div th:each="dongName : ${dongList}">
+                                <label>
+                                    <input type="radio" name="dong"
+                                           th:value="${dongName}"
+                                           class="dong-radio"
+                                           th:checked="${selectedDong} == ${dongName}" />
+                                    <span th:text="${dongName}">동이름</span>
+                                </label>
+                            </div>
+                        </div>
+                        <button type="button" class="toggle-button" id="toggle-dong-list">더보기</button>
+                    </form>
+                </div>
+
+                <hr class="post-list__divider">
+
+                <div class="post-list__category-container">
+                    <div class="post-list__filter-name">카테고리</div>
+                    <form class="post-list_form" id="category-form" th:action="@{/posts/search}" method="get">
+                        <input type="hidden" name="dong" th:value="${selectedDong}" />
+                        <input type="hidden" name="isSold" th:value="${isSold}" />
+                        <input type="hidden" name="keyword" th:value="${keyword}" />
+                        <input type="hidden" name="priceMin" th:value="${priceMin}" />
+                        <input type="hidden" name="priceMax" th:value="${priceMax}" />
+                        <div th:each="cate : ${categories}">
+                            <label><input type="radio" name="category"
+                                          class="category-radio"
+                                          th:value="${cate.id}"
+                                          th:checked="${category} == ${cate.id}">
+                                <span th:text="${cate.name}"></span>
+                            </label>
+                        </div>
+                    </form>
+                </div>
+
+                <hr class="post-list__divider">
+
+                <div class="post-list__price-container">
+                    <div class="post-list__filter-name">가격</div>
+                    <form class="post-list_form" id="price-form" th:action="@{/posts/search}" method="get">
+                        <input type="hidden" name="dong" th:value="${selectedDong}" />
+                        <input type="hidden" name="isSold" th:value="${isSold}" />
+                        <input type="hidden" name="keyword" th:value="${keyword}" />
+                        <input type="hidden" name="category" th:value="${category}" />
+                        <button type="submit" name="priceMax" value="0"
+                                th:classappend="${priceMax == 0} ? ' selected'">나눔</button>
+                        <button type="submit" name="priceMax" value="5000"
+                                th:classappend="${priceMax == 5000} ? ' selected'">5,000원 이하</button>
+                        <button type="submit" name="priceMax" value="10000"
+                                th:classappend="${priceMax == 10000} ? ' selected'">10,000원 이하</button>
+                        <button type="submit" name="priceMax" value="20000"
+                                th:classappend="${priceMax == 20000} ? ' selected'">20,000원 이하</button>
+                    </form>
+                    <form class="post-list_form" id="custom-price-form" th:action="@{/posts/search}" method="get">
+                        <input type="hidden" name="isSold" th:value="${isSold}" />
+                        <input type="hidden" name="keyword" th:value="${keyword}" />
+                        <input type="hidden" name="category" th:value="${category}" />
+                        <div class="post-list__input-container">
+                            <input type="number" name="priceMin" th:value="${priceMin != null} ? ${priceMin} : 0"/>
+                            <span> - </span>
+                            <input type="number" name="priceMax" th:value="${priceMaxInput != null} ? ${priceMaxInput} : 0"/>
+                        </div>
+                        <button type="submit">적용하기</button>
+                    </form>
+                </div>
+            </div>
+            <div class="post-list__search-content">
+                <div class="post-list_search-content__filter"></div>
+                <div th:if="${page == null or #lists.isEmpty(page.content)}" class="post-list__empty">
+                    <p>검색 결과가 없습니다.</p>
+                </div>
+                <div th:if="${page != null and !#lists.isEmpty(page.content)}" class="post-list__grid">
+                    <div th:each="post : ${page.content}" class="post-list__card">
+                        <a th:href="@{/posts/{id}(id=${post?.id})}" class="post-list__card-link">
+                            <div class="post-list__card-badge" th:if="${post.sold}">판매완료</div>
+                            <div class="post-list__image-wrapper">
+                                <img class="post-list__card-image" th:if="${post.images != null and post.images.size() > 0}" th:src="@{${post.images[0].imageUrl}}" alt="첫번째 이미지">
+                                <div class="post-list__card-image" th:if="${post.images == null or post.images.size() == 0}"></div>
+                            </div>
+                            <div class="post-list__card-info">
+                                <div class="post-list__card-title" th:text="${post?.title ?: '제목 없음'}">제목</div>
+                                <div class="post-list__card-price">
+                                    <span th:text="${#numbers.formatDecimal(post?.price, 0, 'COMMA', 0, 'POINT') ?: '0'}">가격</span>원</div>
+                                <div class="post-list__card-location" th:text="${post?.location ?: '장소 없음'}"></div>
+                                <div class="post-list__card-detail">조회 <span th:text="${post?.viewCount ?: '0'}"></span> ·
+                                    채팅 <span th:text="${post?.getChatRoomsCount() ?: '0'}"></span></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div th:if="${page != null && page.totalPages > 1}" class="post-list__pagination">
+                    <a th:if="${page.hasPrevious()}" class="post-list__pagination-link--enabled"
+                       th:href="@{/posts/search(page=${page.number-1}, keyword=${keyword}, category=${category})}">&lt;</a>
+                    <span th:unless="${page.hasPrevious()}" class="post-list__pagination-link--disabled">&lt;</span>
+                    <span class="current" th:text="(${page.number}+1) + ' / ' + ${page.totalPages}">1 / 1</span>
+                    <a th:if="${page.hasNext()}" class="post-list__pagination-link--enabled"
+                       th:href="@{/posts/search(page=${page.number+1}, keyword=${keyword}, category=${category})}">&gt;</a>
+                    <span th:unless="${page.hasNext()}" class="post-list__pagination-link--disabled">&gt;</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/header.js"></script>
+    <script>
+        document.querySelectorAll('.dong-radio').forEach(radio => {
+          radio.addEventListener('change', function() {
+            document.getElementById('dong-form').submit();
+          });
+        });
+        document.querySelectorAll('.category-radio').forEach(radio => {
+          radio.addEventListener('change', function() {
+            document.getElementById('category-form').submit();
+          });
+        });
+        document.getElementById('checkbox').addEventListener('change', () => {
+            document.getElementById('checkbox-form').submit();
+            });
+
+        document.getElementById('toggle-dong-list').addEventListener('click', function () {
+            const dongList = document.getElementById('dong-list');
+            const button = this;
+
+            dongList.classList.toggle('expanded');
+            dongList.classList.toggle('collapsed');
+
+            if (dongList.classList.contains('expanded')) {
+                button.textContent = '접기';
+            } else {
+                button.textContent = '더보기';
+            }
+        });
+    </script>
+
+</body>
+</html>
