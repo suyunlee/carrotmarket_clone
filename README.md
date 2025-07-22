@@ -3,6 +3,7 @@
 # 📁 프로젝트 개요
 
 - 챗봇 상담사가 있는 중고 거래 플랫폼 페이지 만들기 (With Spring Boot)
+- 프로젝트 기간 : 2025.07.03 ~ 2025.07.23
 
 # 🤝 팀 소개
 <table border= 1px solid>
@@ -70,7 +71,7 @@ carrotmarket-clone/
 
 <img width="1516" height="484" alt="image" src="https://github.com/user-attachments/assets/a7810241-a469-4dde-9ae3-686a2c4144c5" />
 
-## 🗏 페이지 구성
+# 🗏 페이지 구성
 
 ### 메인 페이지
 <img width="450" height="450" alt="image" src="https://github.com/user-attachments/assets/c8e49a05-22b0-48f9-9b02-35c027d91248" />
@@ -97,7 +98,7 @@ carrotmarket-clone/
 <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/3342672f-c0aa-4082-8779-eb8d6c2b6552" />
 
 - 메인 담당자 : 이수윤
-- 주요 개발 기능 : 게시물 페이지네이션(무한 스크롤), AWS S3 이미지 업로딩, 게시물 리스트 그리드 및 반응형 구성
+- 주요 개발 기능 : 게시물 CRUD 구현, 페이지네이션(무한 스크롤), AWS S3 이미지 업로딩, 게시물 리스트 그리드 및 반응형 구성
 
 ---
 
@@ -117,3 +118,29 @@ carrotmarket-clone/
 
 - 메인 담당자 : 최수호
 - Web Socket 기반 1:1 실시간 채팅 기능 구현, Gemini Ai 챗봇 기능 구현
+
+
+# 📌 URL 명세표
+
+| 기능 구분             | HTTP 메서드 | URL                                  | 설명                            | 접근 권한            |
+|----------------------|-------------|--------------------------------------|----------------------------------|-----------------------|
+| 📝 회원가입           | GET         | /users/signup                        | 회원가입 폼 페이지               | 🔓 모두 가능          |
+|                      | POST        | /users/signup                        | 회원 등록 처리                   | 🔓 모두 가능          |
+| 🔐 로그인             | GET         | /login                               | 로그인 페이지                     | 🔓 모두 가능          |
+|                      | POST        | /login                               | 로그인 요청                       | 🔓 모두 가능          |
+| 📋 게시글 목록        | GET         | /posts                               | 전체 게시글 목록                 | 🔓 모두 가능          |
+| ✍️ 게시글 등록        | GET         | /posts/new                           | 게시글 작성 폼                   | 🗺️ 위치 인증 필요     |
+|                      | POST        | /posts                               | 게시글 등록 처리                 | 🗺️ 위치 인증 필요     |
+| 📄 게시글 상세        | GET         | /posts/{id}                          | 특정 게시글 상세 보기            | 🔓 모두 가능          |
+| 🖋️ 게시글 수정        | GET         | /posts/{id}/edit                     | 게시글 수정 폼                   | 🗺️ 위치 인증 필요     |
+|                      | POST        | /posts/{id}/edit                     | 게시글 수정 처리                 | 🗺️ 위치 인증 필요     |
+| 🗑️ 게시글 삭제        | DELETE      | /posts/{id}                          | 게시글 삭제 처리                 | 🗺️ 위치 인증 필요     |
+| 💬 채팅방 입장        | GET         | /chat/post/{roomId}                 | 채팅방 페이지 진입               | 🗺️ 위치 인증 필요     |
+| 채팅방 리스트(유저) | GET       | /chat/post/rooms                    | 특정 유저의 모든 채팅방 리스트   | 🔐 로그인 필요        |
+| 채팅방 리스트(게시물) | GET    | /chat/post/{postId}/rooms           | 특정 게시물의 채팅방 리스트      | 🔐 로그인 필요        |
+| 채팅방 생성        | POST        | /chat/post/{postId}/rooms           | 채팅방 생성                      | 🗺️ 위치 인증 필요     |
+| 💸 거래 완료 처리      | POST        | /chat/post/{postId}/confirm         | 거래 완료 처리                   | 🗺️ 위치 인증 필요     |
+| 🤖 챗봇 대화           | GET         | /chat/post/ai                        | AI 챗봇 대화 진입/생성           | 🗺️ 위치 인증 필요     |
+| 📍 위치 권한 페이지    | GET         | /maps/permission                    | 위치 권한 설정                   | 🔐 로그인 필요        |
+| 🧭 위치 인증 페이지 | GET        | /maps/verify                        | 위치 인증 페이지 진입            | 🔐 로그인 필요        |
+|                      | POST        | /maps/verify                        | 위치 인증 전송                   | 🔐 로그인 필요        |
