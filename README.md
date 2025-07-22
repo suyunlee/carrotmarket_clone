@@ -5,6 +5,9 @@
 - 챗봇 상담사가 있는 중고 거래 플랫폼 페이지 만들기 (With Spring Boot)
 - 프로젝트 기간 : 2025.07.03 ~ 2025.07.23
 
+# 📺️ 프로젝트 시연 영상
+- [영상 링크](https://youtu.be/u_17cqQIflI?si=_ycFC5jOP_5aM4Tv)
+
 # 🤝 팀 소개
 <table border= 1px solid>
   <thead>
