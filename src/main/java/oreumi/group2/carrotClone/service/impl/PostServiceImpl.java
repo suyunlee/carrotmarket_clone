@@ -5,7 +5,6 @@ import jakarta.persistence.EntityExistsException;
 import lombok.*;
 import oreumi.group2.carrotClone.dto.PostDTO;
 import oreumi.group2.carrotClone.model.*;
-import oreumi.group2.carrotClone.repository.LikeRepository;
 import oreumi.group2.carrotClone.repository.PostRepository;
 import oreumi.group2.carrotClone.service.PostService;
 import oreumi.group2.carrotClone.service.S3Service;
@@ -28,7 +27,6 @@ public class PostServiceImpl implements PostService {
 
     /* DI */
     @Autowired PostRepository postRepository;
-    @Autowired LikeRepository likeRepository;
     @Autowired S3Service s3Service;
 
     /* ID 기반 게시물 찾기 */
@@ -118,23 +116,6 @@ public class PostServiceImpl implements PostService {
         for (Image image : images) {
             s3Service.deleteFile(image.getS3Key());
         }
-    }
-
-    /* 좋아요 */
-    @Override
-    public boolean isLikedByUser(Long postId, User user) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));
-
-        Optional<Like> existingLike = likeRepository.findByPostIdAndUserId(postId , user.getId());
-
-        if (existingLike.isPresent()) {
-            likeRepository.delete(existingLike.get());
-        } else {
-            Like like = new Like(post, user);
-            likeRepository.save(like);
-        }
-        return likeRepository.existsByPostIdAndUserId(postId,user.getId());
     }
 
     /* 조회수 */

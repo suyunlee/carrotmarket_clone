@@ -196,13 +196,8 @@ public class PostController {
         model.addAttribute("post", post);
         model.addAttribute("user", user);
         model.addAttribute("chatCount", post.getChatRoomsCount());
-        model.addAttribute("likeCount", post.getLikeCount());
 
-        if(user != null) {
-            model.addAttribute("isLikedByCurrentUser", postService.isLikedByUser(id, user));
-        } else {
-            model.addAttribute("isLikedByCurrentUser", false);
-        }
+        model.addAttribute("isLikedByCurrentUser", false);
 
         return "post/post_detail";
     }

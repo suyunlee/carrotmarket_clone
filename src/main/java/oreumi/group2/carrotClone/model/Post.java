@@ -13,7 +13,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "post")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Post {
@@ -47,17 +48,13 @@ public class Post {
     @Column(name = "viewcount")
     private Long viewCount = 0L; /* 조회수 */
 
-    /* 좋아요 : 일대다 관계 (1: N)*/
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Like> likes = new ArrayList<>(); /* 좋아요 */
-
     /* 이미지 : 일대다 관계 (1: N)*/    
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Image> images = new ArrayList<>(); /* 좋아요 */
+    private List<Image> images = new ArrayList<>();
 
     /* 채팅방 : 일대다 관계 (1: N)*/
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChatRoom> chatRooms = new ArrayList<>(); /* 좋아요 */
+    private List<ChatRoom> chatRooms = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
@@ -67,6 +64,5 @@ public class Post {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category; /* category 정보 */
 
-    public int getLikeCount() { return likes.size(); }
     public int getChatRoomsCount() { return chatRooms.size(); }
 }

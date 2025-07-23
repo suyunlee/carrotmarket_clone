@@ -16,7 +16,6 @@ public interface PostService {
     Post createPost (User user, PostDTO postDTO, List<MultipartFile> images); /* 저장 */
     void deletePost(Long id); // 삭제
     Post updatePost(Long id, PostDTO p,  List<MultipartFile> files); /* 단일 업데이트 */
-    boolean isLikedByUser(Long postId, User user); /* 좋아요 */
     void increaseViewCount(Long postId); /* 조회수 */
     Page<Post> findAll(Pageable pageable);
     Page<Post> searchPosts(String keyword, Long categoryId,
