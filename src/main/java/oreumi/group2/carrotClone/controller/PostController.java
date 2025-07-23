@@ -67,7 +67,7 @@ public class PostController {
         model.addAttribute("user", user);
 
         String location;
-        if(user == null || user.getLocation().isEmpty()) {
+        if(user == null || user.getLocation() == null|| user.getLocation().isEmpty()) {
             location = "서울특별시 강서구 화곡동";
         } else {
             location = user.getLocation();
@@ -94,9 +94,6 @@ public class PostController {
         } else {
             model.addAttribute("dongList", null);
         }
-
-
-
 
         if (priceMin == null) priceMin = 0;
         if (priceMax == null) priceMax = Integer.MAX_VALUE;
@@ -280,6 +277,4 @@ public class PostController {
         postService.deletePost(id);
         return "redirect:/posts";
     }
-    /* 게시글 좋아요 추가 */
-    /* 좋아요 취소 */
 }
