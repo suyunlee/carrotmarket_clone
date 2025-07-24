@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -64,7 +65,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             // 새 사용자 생성
             user = new User();
             user.setUsername(email);
-            user.setPassword("qwe123@!#q");
+            user.setPassword(generateSecureRandomPassword());
             user.setRole(UserRole.USER);
             user.setProvider(AuthProvider.valueOf(registrationId.toUpperCase()));
             user.setProviderId(id);
@@ -73,5 +74,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
         // CustomUserPrincipal 로 통합
         return new CustomUserPrincipal(user, attributes);
+    }
+
+    private String generateSecureRandomPassword() {
+        // 안전한 랜덤 비밀번호 생성 (UUID + 타임스탬프)
+        return UUID.randomUUID().toString() + "-" + System.currentTimeMillis();
     }
 }
