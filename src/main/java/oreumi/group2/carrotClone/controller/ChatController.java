@@ -26,6 +26,18 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
+/**
+ * 채팅방 로직 중 채팅방 입장, 메세지 전달/읽음 담당하는 컨트롤러 클래스
+ *
+ * <ul>
+ *      <li>채팅방 진입 (GET /chat/room/{roomId})</li>
+ *      <li>채팅기록 전체 반환 (GET /chat/room/{roomId}/messages)</li>
+ *      <li>채팅 메세지 전달 (MessageMapping /app/room/{roomId}/send)</li>
+ *      <li>메세지 실시간 읽음 (MessageMapping /app/room/{roomId}/read)</li>
+ *      <li>메세지 초기 읽음 (Post /chat/room/{roomId}/read)</li>
+ * </ul>
+ */
+
 @Controller
 @RequestMapping("/chat/room/{roomId}")
 @RequiredArgsConstructor
@@ -37,7 +49,14 @@ public class ChatController {
     private final UserService userService;
     private final GeminiService geminiService;
 
-    /* 채팅방 입장 */
+    /**
+     * 채팅방 페이지 진입 (기존 채팅방있을 시 반환)
+     *
+     * @param roomId    조회할 채팅방 ID
+     * @param principal 현재 로그인한 사용자 정보
+     * @param model     뷰에 전달할 모델 객체
+     * @return 채팅방 페이지 (chat/chat_message_room)
+     */
     @GetMapping
     public String enterChat(
             @PathVariable Long roomId,
@@ -64,11 +83,9 @@ public class ChatController {
             model.addAttribute("postId", post.getId());
             model.addAttribute("post",post);
             model.addAttribute("postOwner",post.getUser().getUsername());
-
             if(post.getImages().size() > 0){
                 model.addAttribute("postImage", post.getImages().get(0).getImageUrl());
             }
-
         }
         model.addAttribute("isChatBot", chatRoom.isChatBot());
         List<ChatMessageDTO> dtos = chatMessageService.getMessages(roomId)
@@ -80,16 +97,28 @@ public class ChatController {
         return "chat/chat_message_room";
     }
 
-    // 클라이언트가 이 엔드포인트를 구독하면 과거 메시지 전체를 반환
+    /**
+     * 채팅방 전체 메세지 이력을 JSON 으로 반환
+     *
+     * @param roomId 조회할 채팅방 ID
+     * @return 메세지 DTO 리스트
+     */
     @GetMapping("/messages")
     @ResponseBody
     public List<ChatMessageDTO> getHistory(@PathVariable Long roomId) {
         return chatMessageService.getMessages(roomId)
                 .stream()
-                .map(ChatMessageDTO :: fromEntity) // 만들어둔 Entity 랑 비교해서 필터링
+                .map(ChatMessageDTO :: fromEntity) // DTO랑 비교해서 필터링
                 .toList();
     }
 
+    /**
+     * 클라이언트가 보낸 채팅 메세지를 저장하고 브로드캐스트
+     *
+     * @param roomId 메세지를 보낼 채팅방 ID
+     * @param payload 클라이언트에서 보낸 메세지 DTO
+     * @param principal 메세지를 보낸 사용자 정보
+     */
     @MessageMapping("/room/{roomId}/send")
     public void stompMessage(
             @DestinationVariable Long roomId,
@@ -97,24 +126,22 @@ public class ChatController {
             @Payload ChatMessageDTO payload,
            Principal principal)
     {
-        String username = principal.getName();
-
-        User user = userService.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("로그인 유저를 찾을 수 없습니다." + username));
+        User user = userService.findByUsername(principal.getName())
+                .orElseThrow(() -> new IllegalArgumentException("로그인 유저를 찾을 수 없습니다." + principal.getName()));
 
         /* 메세지 저장 (방 ID, 내용, 보낸 사람아름) */
         ChatMessage saved = chatMessageService.saveMessage(
                 roomId,
                 payload.getContent(),
-                username
+                principal.getName()
         );
+
         // DTO 로 변환 (필터링)
         ChatMessageDTO dto = ChatMessageDTO.fromEntity(saved);
         template.convertAndSend("/topic/chat/" + roomId,dto);
 
         ChatRoom room = chatRoomService.findChatRoomById(roomId);
         if (room.isChatBot()) {
-
             chatMessageService.markSingleRead(saved.getId());
             ReadReceiptDTO receipt = new ReadReceiptDTO();
             receipt.setReaderUsername("chatbot");
@@ -124,6 +151,7 @@ public class ChatController {
                     + roomId +
                     "/read",receipt
             );
+            // Gemini 답변 생성
             String aiReplyText = geminiService.generateReply(payload.getContent());
             var aiSaved = chatMessageService.saveMessage(
                     roomId,
@@ -135,7 +163,12 @@ public class ChatController {
         }
     }
 
-    /* 실시간 읽음 처리 */
+    /**
+     * 실시간 읽음 처리 요청을 받아 해당 메세지를 읽음 처리하고 알림 전송
+     *
+     * @param roomId 읽음 처리할 채팅방 ID
+     * @param receiptDTO 읽음 처리할 메세지 ID 리스트를 담은 DTO
+     */
     @MessageMapping("/room/{roomId}/read")
     public void stompRead(
             @DestinationVariable Long roomId,
@@ -145,6 +178,12 @@ public class ChatController {
         template.convertAndSend("/topic/chat/" + roomId + "/read", receiptDTO);
     }
 
+    /**
+     * HTTP Post 요청으로 채팅방 입장 시 일괄 읽음 처리
+     * 
+     * @param roomId 읽음 처리할 채팅방 ID
+     * @param username 읽음 처리할 사용자 이름
+     */
     @PostMapping("/read")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void markRead(@PathVariable Long roomId,
