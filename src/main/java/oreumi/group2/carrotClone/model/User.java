@@ -14,9 +14,10 @@ import java.util.List;
 
 @Entity
 @Table(name="users")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class User {
 
     @Id
@@ -67,9 +68,6 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>(); /* post */
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Like> likes = new ArrayList<>(); /* like */
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<ChatRoom> chatRooms = new ArrayList<>();

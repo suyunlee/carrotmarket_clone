@@ -1,15 +1,14 @@
 package oreumi.group2.carrotClone.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "image")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class Image {
 
     @Id
@@ -35,11 +34,4 @@ public class Image {
         this.s3Key = s3Key;
         this.originalFilename = originalFilename;
     }
-
-    //ToString 무한 순환참조 방지
-    @Override
-    public String toString(){
-        return this.imageUrl;
-    }
-
 }
