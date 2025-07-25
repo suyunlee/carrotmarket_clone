@@ -19,6 +19,17 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
+
+/**
+ * 지도 인증 로직 중 URL처리를 담당하는 컨트롤러 클래스
+ *
+ * <ul>
+ *     <li>지도 권한 페이지 진입 (GET /maps/permission)</li>
+ *     <li>지도 인증 페이지 진입 (GET /maps/verify)</li>
+ *     <li>지도 인증 정보 주입 (POST /maps/verify)</li>
+ * </ul>
+ *
+ */
 @Controller
 @RequestMapping("/maps")
 public class MapsController {
@@ -28,6 +39,12 @@ public class MapsController {
     @Autowired
     UserService userService;
 
+    /**
+     * 유저 로그인 여부 체크 후, 지도 권한 체크 페이지 진입
+     * @param principal 유저 정보 CustomPrincipal
+     * @param model View 모델
+     * @return location/permission 지도 권한 페이지
+     */
     @GetMapping("/permission")
     public String showPermissionPage(@AuthenticationPrincipal CustomUserPrincipal principal, Model model){
         if (principal == null || principal.toString().equals("anonymousUser") ) {
@@ -42,6 +59,13 @@ public class MapsController {
         return "location/permission";
     }
 
+    /**
+     * 유저 정보, 위치 권한 체크 후 지도 인증 페이지 진입
+     * 
+     * @param principal 유저 정보 CustomPrincipal
+     * @param model View 모델
+     * @return location/verify 지도 인증 페이지
+     */
     @GetMapping("/verify")
     public String showMaps(@AuthenticationPrincipal CustomUserPrincipal principal, Model model){
         if (principal == null) {
@@ -56,6 +80,14 @@ public class MapsController {
         return "location/verify";
     }
 
+    /**
+     * 위치 인증 조건 만족 시, 해당 정보를 유저 엔티티에 전달 후 홈으로 복귀
+     *
+     * @param principal 유저 정보
+     * @param userCurrentAddress 유저 위치(지역 스트링)
+     * @param redirectAttributes 결과 전달을 위한 리다이렉트 속성
+     * @return "redirect:/"  유저 정보 저장 후, 홈으로 리다이렉트
+     */
     @PostMapping("/verify")
     public String verifyLocation(@AuthenticationPrincipal CustomUserPrincipal principal,
                                  @RequestParam String userCurrentAddress,

@@ -1,10 +1,7 @@
 package oreumi.group2.carrotClone.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -12,7 +9,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "chat_message")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
